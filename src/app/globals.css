@@ -32,6 +32,10 @@
   --warning: #facc15;
   --error: #dc2626;
   --info: #2563eb;
+  --dark: #000000;
+  --ok: #B9FF94;
+  --alert: #F3FF89;
+  --critic: #FF5050;
 
   /* RADII */
   --radius-sm: 0.375rem;
