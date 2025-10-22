@@ -6,16 +6,7 @@ import { MoveRight } from "lucide-react";
 export default function CreateProject() {
     return (
         <div className="flex flex-row h-full">
-            <div className="bg-[var(--primary)] 
-                            w-1/2 
-                            flex 
-                            items-center 
-                            justify-center 
-                            min-h-screen
-                            border-r-3
-                            flex-col
-                            gap-15
-                            "
+            <div className="bg-[var(--primary)] w-1/2 flex items-center justify-center min-h-screen border-r-3 flex-col gap-15"
             >
                 <div className="w-55 text-center">
                     <p className="font-bold text-lg text-[var(--divider)] mb-3">

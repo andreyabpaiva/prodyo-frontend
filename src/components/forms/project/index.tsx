@@ -15,13 +15,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { ColorSelector } from "@/components/utils/ColorSelector";
 import { MembersSelect } from "@/components/utils/MemberSelect";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { projectSchema } from "./resolver";
+import { criarProjeto } from "@/services/project";
 
 type ProjectFormValues = {
     name: string;
     colorSelect?: string;
     description: string;
-    members?: string[],
-    prodRange?: { ok?: string; alert?: string; critical?: string };
+    members: string[];
+    prodRange: { ok: string; alert: string; critical: string };
 };
 
 export default function ProjectForm() {
@@ -29,16 +32,24 @@ export default function ProjectForm() {
         defaultValues: {
             name: "",
             description: "",
+            members: [],
+            colorSelect: undefined,
+            prodRange: { ok: "", alert: "", critical: "" },
         },
+        resolver: zodResolver(projectSchema),
     });
+
+
 
     return (
         <Form {...form}>
             <form
-                onSubmit={form.handleSubmit((data) => console.log(data))}
+                onSubmit={form.handleSubmit(async (data) => {
+                    console.log("Form Data:", data);
+                    await criarProjeto(data);
+                })}
                 className="flex flex-col w-full px-30"
             >
-                {/* Nome do projeto */}
                 <FormField
                     control={form.control}
                     name="name"
@@ -69,7 +80,7 @@ export default function ProjectForm() {
                             <FormLabel className="mb-4">
                                 Defina uma cor para o seu projeto
                             </FormLabel>
-                            <ColorSelector value={field.value} onChange={field.onChange} />
+                            <ColorSelector value={field.value ?? ""} onChange={field.onChange} />
                             <FormMessage />
                         </FormItem>
                     )}
@@ -116,7 +127,6 @@ export default function ProjectForm() {
                             </FormLabel>
 
                             <div className="flex flex-col gap-3">
-                                {/* Faixa OK */}
                                 <div className="flex items-center gap-3">
                                     <Badge
                                         variant="outline"
@@ -140,7 +150,6 @@ export default function ProjectForm() {
                                     </FormControl>
                                 </div>
 
-                                {/* Faixa ALERTA */}
                                 <div className="flex items-center gap-3">
                                     <Badge
                                         variant="outline"

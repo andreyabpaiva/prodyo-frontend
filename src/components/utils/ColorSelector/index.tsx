@@ -25,7 +25,7 @@ export function ColorSelector({ value, onChange }: {
                 {colors.map((c) => (
                     <label key={c.value}>
                         <RadioGroupItem
-                            value={c.value}
+                            value={c.color}
                             className="peer sr-only"
                         />
                         <div
