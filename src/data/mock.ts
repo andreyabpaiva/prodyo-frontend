@@ -256,6 +256,14 @@ const iterations: Iteration[] = [
     startAt: "2024-12-05T08:00:00Z",
     endAt: "2024-12-12T18:00:00Z",
   },
+  {
+    id: "iter-05",
+    projectId: "proj-01",
+    number: 5,
+    description: "Preparação para o próximo quarter.",
+    startAt: "2024-12-05T08:00:00Z",
+    endAt: "2024-12-12T18:00:00Z",
+  },
 ];
 
 const causes: Cause[] = [

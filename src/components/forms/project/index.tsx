@@ -17,7 +17,7 @@ import { MembersSelect } from "@/components/utils/MemberSelect";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { projectSchema } from "./resolver";
-import { criarProjeto } from "@/services/project";
+import { projectService } from "@/services";
 
 type ProjectFormValues = {
     name: string;
@@ -46,7 +46,7 @@ export default function ProjectForm() {
             <form
                 onSubmit={form.handleSubmit(async (data) => {
                     console.log("Form Data:", data);
-                    await criarProjeto(data);
+                    await projectService.create(data);
                 })}
                 className="flex flex-col w-full px-30"
             >

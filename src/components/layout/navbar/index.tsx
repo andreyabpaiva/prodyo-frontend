@@ -1,26 +1,18 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-
-const navLinks = [
-    { label: "Projetos", href: "/projects" },
-    { label: "Indicadores", href: "/projects/proj-01/indicators" },
-];
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
     const router = useRouter();
-    const pathname = usePathname();
 
     return (
         <header
-            className="bg-[var(--primary)] border-b-[3px] border-b-[var(--dark)] px-8 py-4 flex items-center justify-between"
+            className="bg-[var(--primary)] border-b-[3px] border-b-[var(--dark)] px-5 py-2 flex items-center justify-between"
         >
             <p className="font-bold text-2xl tracking-tight">Prodyo</p>
 
-            <nav className="flex items-center gap-4">
+            {/* <nav className="flex items-center gap-4">
                 {navLinks.map((link) => (
                     <Link
                         key={link.href}
@@ -35,10 +27,10 @@ export default function Navbar() {
                         {link.label}
                     </Link>
                 ))}
-            </nav>
+            </nav> */}
 
             <Button
-                className="font-bold rounded-full border-[3px] border-[var(--dark)] text-sm uppercase tracking-[0.3em]"
+                className="font-bold rounded-full border-[3px] border-[var(--dark)] text-sm"
                 variant={"outline"}
                 onClick={() => router.push("/create-project")}
             >

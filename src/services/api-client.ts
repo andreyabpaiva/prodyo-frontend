@@ -3,7 +3,8 @@ const API_BASE_URL =
 
 type Primitive = string | number | boolean | undefined | null;
 
-export type ApiRequestOptions = RequestInit & {
+export type ApiRequestOptions = Omit<RequestInit, "body"> & {
+  body?: unknown;
   params?: Record<string, Primitive>;
   skipJsonParsing?: boolean;
 };

@@ -23,7 +23,7 @@ export default function CreateProject() {
                     <MoveRight strokeWidth={2.25} />
                 </div>
             </div>
-            <div className="w-1/2 bg-[var(--dark)] text-[var(--primary)] flex items-center justify-center">
+            <div className="w-1/2 bg-[var(--background)] text-[var(--text)] flex items-center justify-center">
                 <div className="w-full max-w-3xl px-16 py-20">
                     <ProjectForm />
                 </div>

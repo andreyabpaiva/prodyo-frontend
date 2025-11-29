@@ -1,5 +1,4 @@
 import { IndicatorBoard } from "@/components/dashboard/indicator-board";
-import { ProfileChip, SideRail } from "@/components/dashboard/decor";
 import { mockData } from "@/data/mock";
 import { notFound } from "next/navigation";
 
@@ -18,8 +17,8 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
 
     return (
         <main className="relative min-h-screen bg-[var(--dark)] px-12 py-12 text-[var(--primary)]">
-            <SideRail />
-            <ProfileChip label="Admin" />
+                {/* <SideRail />
+                <ProfileChip label="Admin" /> */}
 
             <header className="mb-12">
                 <p className="text-sm font-semibold uppercase tracking-[0.6em] text-[var(--divider)]">
