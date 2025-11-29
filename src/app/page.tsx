@@ -1,5 +1,5 @@
-import Navbar from "@/components/layout/navbar";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return (<></>);
+  redirect("/projects");
 }

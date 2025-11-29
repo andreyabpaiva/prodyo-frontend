@@ -5,31 +5,28 @@ import { MoveRight } from "lucide-react";
 
 export default function CreateProject() {
     return (
-        <div className="flex flex-row h-full">
-            <div className="bg-[var(--primary)] w-1/2 flex items-center justify-center min-h-screen border-r-3 flex-col gap-15"
-            >
-                <div className="w-55 text-center">
-                    <p className="font-bold text-lg text-[var(--divider)] mb-3">
-                        Vamos iniciar seu novo projeto no
-                    </p>
-                </div>
-                <div>
-                    <TypeWriterComponent
-                        loop={3}
-                        words={["Prodyo"]}
-                        fontSize="text-8xl"
-                        deleteSpeed={0}
-                    />
-                </div>
-                <div className="justify-center items-center flex gap-3 mt-6">
-                    <h6 className="font-bold">
-                        Insira as informações ao lado
-                    </h6>
+        <div className="flex min-h-screen">
+            <div className="bg-[var(--primary)] w-1/2 flex items-center justify-center border-r-[3px] border-[var(--dark)] flex-col gap-6 px-6 text-center">
+                <p className="font-bold text-lg text-[var(--divider)]">
+                    Vamos iniciar seu novo projeto no
+                </p>
+
+                <TypeWriterComponent
+                    loop={3}
+                    words={["Prodyo"]}
+                    fontSize="text-8xl"
+                    deleteSpeed={0}
+                />
+
+                <div className="flex items-center justify-center gap-3 text-lg font-bold">
+                    <span>Insira as informações ao lado</span>
                     <MoveRight strokeWidth={2.25} />
                 </div>
             </div>
-            <div className="w-1/2 flex items-center justify-center min-h-screen">
-                <ProjectForm />
+            <div className="w-1/2 bg-[var(--dark)] text-[var(--primary)] flex items-center justify-center">
+                <div className="w-full max-w-3xl px-16 py-20">
+                    <ProjectForm />
+                </div>
             </div>
         </div>
     );

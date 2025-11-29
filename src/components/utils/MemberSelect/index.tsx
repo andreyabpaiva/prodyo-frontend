@@ -15,7 +15,6 @@ import {
     CommandItem,
     CommandList,
     CommandEmpty,
-    CommandSeparator,
 } from "@/components/ui/command"
 import { cn } from "@/lib/utils"
 
@@ -25,6 +24,7 @@ type MembersSelectProps = {
     label?: string
     placeholder?: string
     suggestions?: string[]
+    className?: string
 }
 
 export function MembersSelect({
@@ -33,6 +33,7 @@ export function MembersSelect({
     label = "Membros do projeto",
     placeholder = "Adicionar membro...",
     suggestions = ["Andreya", "Carlos", "Beatriz", "João", "Marina", "Lucas"],
+    className,
 }: MembersSelectProps) {
     const [inputValue, setInputValue] = React.useState("")
     const inputRef = React.useRef<HTMLInputElement>(null)
@@ -75,7 +76,7 @@ export function MembersSelect({
         onChange(value.filter((m) => m !== member))
 
     return (
-        <FormItem className="flex flex-col w-full gap-4 mt-4">
+        <FormItem className={cn("flex flex-col w-full gap-4 mt-4", className)}>
             <FormLabel>{label}</FormLabel>
 
             <FormControl>

@@ -1,5 +1,4 @@
 "use client";
-import { JSX } from "react";
 import { Typewriter } from "react-simple-typewriter";
 
 type Props = {
