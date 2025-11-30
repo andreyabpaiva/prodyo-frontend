@@ -8,7 +8,7 @@ export default function Navbar() {
 
     return (
         <header
-            className="bg-[var(--primary)] border-b-[3px] border-b-[var(--dark)] px-5 py-2 flex items-center justify-between"
+            className="fixed top-0 h-14 left-0 right-0 z-50 bg-[var(--primary)] border-b-[3px] border-b-[var(--dark)] px-5 py-2 flex items-center justify-between"
         >
             <p className="font-bold text-2xl tracking-tight">Prodyo</p>
 

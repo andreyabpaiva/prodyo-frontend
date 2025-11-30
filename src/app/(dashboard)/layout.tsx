@@ -5,7 +5,9 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
     return (
         <>  
             <Navbar/> 
-            {children}
+            <div className="pt-14">
+                {children}
+            </div>
         </>
     );
 }

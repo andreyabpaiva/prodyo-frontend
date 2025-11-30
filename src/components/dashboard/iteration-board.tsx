@@ -30,17 +30,17 @@ export function IterationBoard({ projectId, iterations, tasksByIteration }: Iter
     }
 
     return (
-        <div className="flex min-h-screen">
+        <>
             <IterationSidebar
                 iterations={iterations}
                 activeIterationId={activeIterationId}
                 projectId={projectId}
                 onSelectIteration={setActiveIterationId}
             />
-            <div className="flex-1 px-4 py-8">
+            <div className="ml-50 min-h-screen px-4 py-8">
                 <IterationTaskList tasks={activeTasks} iterationLabel={`Iteração ${activeIteration.number}`} />
             </div>
-        </div>
+        </>
     );
 }
 

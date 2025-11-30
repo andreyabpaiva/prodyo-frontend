@@ -18,7 +18,7 @@ export function IterationSidebar({ iterations, activeIterationId, projectId, onS
     const [isGraphsOpen, setIsGraphsOpen] = useState(false);
 
     return (
-        <aside className="sticky top-3 min-h-screen w-50 min-w-50 border-r-[3px] border-[var(--dark)] bg-[var(--background)] px-4 py-8">
+        <aside className="fixed top-14 left-0 h-[calc(100vh-3.5rem)] w-50 min-w-50 z-40 border-r-[3px] border-[var(--dark)] bg-[var(--background)] px-4 py-8 overflow-y-auto">
             <div className="flex h-full flex-col">
                 <div className="flex items-center gap-2">
                     <button

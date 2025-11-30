@@ -6,7 +6,7 @@ type ProjectDetailProps = {
     params: { projectId: string };
 };
 
-export default function ProjectDetailPage({ params }: ProjectDetailProps) {
+export default async function ProjectDetailPage({ params }: ProjectDetailProps) {
     const project = mockData.getProjectById(params.projectId);
 
     if (!project) {
