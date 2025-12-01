@@ -5,10 +5,12 @@ import { Task } from "@/types/domain";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, Plus, Trash2, Upload, UserRound } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type IterationTaskListProps = {
     tasks: Task[];
     iterationLabel: string;
+    projectId: string;
 };
 
 type SearchState = {
@@ -29,9 +31,10 @@ const statusTone: Record<Task["status"], string> = {
     COMPLETED: "bg-[var(--ok)] text-[var(--text)]",
 };
 
-export function IterationTaskList({ tasks, iterationLabel }: IterationTaskListProps) {
+export function IterationTaskList({ tasks, iterationLabel, projectId }: IterationTaskListProps) {
     const [expandedTaskId, setExpandedTaskId] = useState<string | null>(tasks[0]?.id ?? null);
     const [search, setSearch] = useState<SearchState>({ name: "", status: "", points: "" });
+    const router = useRouter();
 
     const filteredTasks = useMemo(() => {
         return tasks.filter((task) => {
@@ -48,13 +51,17 @@ export function IterationTaskList({ tasks, iterationLabel }: IterationTaskListPr
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <h1 className="text-2xl font-bold">{iterationLabel}</h1>
-                        <Badge className="rounded-full border-[2px] border-[var(--dark)] bg-[var(--primary)] h-8 w-8 text-sm font-bold">1</Badge>
+                        <Badge className="rounded-full border-2 border-[--dark] bg-[--primary] h-8 w-8 text-sm font-bold">1</Badge>
                     </div>
                     <div className="flex items-center gap-2">
                         <Button variant="outline" size="icon" >
                             <Trash2 strokeWidth={2.5} size={18} />
                         </Button>
-                        <Button variant="outline" size="icon" >
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => router.push(`/projects/${projectId}/create-iteration`)}
+                        >
                             <Plus strokeWidth={2.5} size={18} />
                         </Button>
                     </div>

@@ -20,7 +20,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
     }, {});
 
     return (
-        <main className="min-h-screen bg-[var(--background)] text-[var(--text)]">
+        <main className="min-h-screen bg-[--background] text-[--text]">
             <IterationBoard projectId={project.id} iterations={iterations} tasksByIteration={tasksByIteration} />
         </main>
     );

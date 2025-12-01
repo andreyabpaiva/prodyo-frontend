@@ -16,12 +16,12 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
     const indicators = iteration ? mockData.getIndicatorsByIteration(iteration.id) : [];
 
     return (
-        <main className="relative min-h-screen bg-[var(--dark)] px-12 py-12 text-[var(--primary)]">
+        <main className="relative min-h-screen bg-[--dark] px-12 py-12 text-[--primary]">
                 {/* <SideRail />
                 <ProfileChip label="Admin" /> */}
 
             <header className="mb-12">
-                <p className="text-sm font-semibold uppercase tracking-[0.6em] text-[var(--divider)]">
+                <p className="text-sm font-semibold uppercase tracking-[0.6em] text-[--divider]">
                     Prodyo
                 </p>
                 <h1 className="mt-2 text-5xl font-extrabold">Indicadores</h1>

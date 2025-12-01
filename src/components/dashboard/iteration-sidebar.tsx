@@ -18,7 +18,7 @@ export function IterationSidebar({ iterations, activeIterationId, projectId, onS
     const [isGraphsOpen, setIsGraphsOpen] = useState(false);
 
     return (
-        <aside className="fixed top-14 left-0 h-[calc(100vh-3.5rem)] w-50 min-w-50 z-40 border-r-[3px] border-[var(--dark)] bg-[var(--background)] px-4 py-8 overflow-y-auto">
+        <aside className="fixed top-14 left-0 h-[calc(100vh-3.5rem)] w-50 min-w-50 z-40 border-r-[3px] border-[--dark] bg-[--background] px-4 py-8 overflow-y-auto">
             <div className="flex h-full flex-col">
                 <div className="flex items-center gap-2">
                     <button
@@ -32,12 +32,13 @@ export function IterationSidebar({ iterations, activeIterationId, projectId, onS
                         )}
                         <span>Iterações</span>
                     </button>
-                    <button
-                        className="rounded-full border-[2px] border-[var(--dark)] bg-[var(--background)] cursor-pointer"
+                    <Link
+                        href={`/projects/${projectId}/create-iteration`}
+                        className="rounded-full border-2 border-[--dark] bg-[--background] cursor-pointer"
                         aria-label="Adicionar iteração"
                     >
                         <Plus size={16} strokeWidth={3} />
-                    </button>
+                    </Link>
                 </div>
 
                 <div

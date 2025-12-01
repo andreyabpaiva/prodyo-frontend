@@ -23,7 +23,7 @@ export function IterationBoard({ projectId, iterations, tasksByIteration }: Iter
 
     if (!activeIteration) {
         return (
-            <div className="rounded-[18px] border-[3px] border-[var(--dark)] bg-[var(--primary)] p-8 text-center text-lg font-semibold shadow-[0_6px_0_rgba(0,0,0,0.25)]">
+            <div className="rounded-[18px] border-[3px] border-[--dark] bg-[--primary] p-8 text-center text-lg font-semibold shadow-[0_6px_0_rgba(0,0,0,0.25)]">
                 Nenhuma iteração disponível.
             </div>
         );
@@ -38,7 +38,7 @@ export function IterationBoard({ projectId, iterations, tasksByIteration }: Iter
                 onSelectIteration={setActiveIterationId}
             />
             <div className="ml-50 min-h-screen px-4 py-8">
-                <IterationTaskList tasks={activeTasks} iterationLabel={`Iteração ${activeIteration.number}`} />
+                <IterationTaskList tasks={activeTasks} iterationLabel={`Iteração ${activeIteration.number}`} projectId={projectId} />
             </div>
         </>
     );

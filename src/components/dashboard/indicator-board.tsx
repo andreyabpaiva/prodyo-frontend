@@ -29,7 +29,7 @@ function StatusBadge({ level }: { level: ProductivityLevel }) {
     const tone =
         level === "CRITICAL" ? "bg-[var(--critic)] text-[var(--primary)]" : level === "ALERT" ? "bg-[var(--alert)] text-[var(--dark)]" : "bg-[var(--ok)] text-[var(--dark)]";
     return (
-        <Badge className={`rounded-full border-[3px] border-[var(--dark)] px-6 py-1 text-sm font-bold ${tone}`}>
+        <Badge className={`rounded-full border-[3px] border-[--dark] px-6 py-1 text-sm font-bold ${tone}`}>
             {text}
         </Badge>
     );
@@ -54,17 +54,17 @@ function LineChart({ values, color }: { values: number[]; color: string }) {
 function IndicatorPanel({ indicator }: { indicator: Indicator }) {
     const copy = metricCopy[indicator.metric];
     return (
-        <div className="flex flex-col gap-4 rounded-[32px] border-[3px] border-[var(--dark)] bg-[var(--primary)] px-8 py-6">
+        <div className="flex flex-col gap-4 rounded-[32px] border-[3px] border-[--dark] bg-[--primary] px-8 py-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.4em] text-[var(--divider)]">{copy.yLabel}</p>
+                    <p className="text-sm font-semibold uppercase tracking-[0.4em] text-[--divider]">{copy.yLabel}</p>
                     <p className="text-2xl font-bold">{copy.title}</p>
                 </div>
                 <StatusBadge level={indicator.productivityLevel} />
             </div>
-            <div className="rounded-[24px] border-[3px] border-dashed border-[var(--divider)]/60 bg-white/60 p-4">
+            <div className="rounded-[24px] border-[3px] border-dashed border-[--divider]/60 bg-white/60 p-4">
                 <LineChart values={indicator.valueSeries} color={copy.color} />
-                <div className="flex justify-between text-xs font-semibold uppercase tracking-[0.3em] text-[var(--divider)]">
+                <div className="flex justify-between text-xs font-semibold uppercase tracking-[0.3em] text-[--divider]">
                     <span>{copy.xLabel}</span>
                     <span>{indicator.labels.join("   ")}</span>
                 </div>
@@ -83,7 +83,7 @@ export function IndicatorBoard({ indicators, causes, actions }: { indicators: In
 
     return (
         <section className="space-y-10">
-            <div className="flex flex-wrap items-center justify-between gap-4 text-[var(--primary)]">
+            <div className="flex flex-wrap items-center justify-between gap-4 text-[--primary]">
                 <StatusBadge level={velocity?.productivityLevel ?? "OK"} />
                 <IndicatorAnalysisDialog
                     trigger={
@@ -106,12 +106,12 @@ export function IndicatorBoard({ indicators, causes, actions }: { indicators: In
                     level="ALERT"
                     metricLabel="ÍNDICE DE RETRABALHO"
                     trigger={
-                        <Button className="rounded-full border-[3px] border-[var(--dark)] bg-[var(--alert)] text-[var(--dark)]">
+                        <Button className="rounded-full border-[3px] border-[--dark] bg-[--alert] text-[--dark]">
                             + Adicionar causa
                         </Button>
                     }
                 />
-                <Badge className="rounded-full border-[3px] border-[var(--dark)] bg-[var(--alert)] px-5 py-1 text-sm font-bold text-[var(--dark)]">
+                <Badge className="rounded-full border-[3px] border-[--dark] bg-[--alert] px-5 py-1 text-sm font-bold text-[--dark]">
                     ALERTA
                 </Badge>
             </div>
@@ -122,7 +122,7 @@ export function IndicatorBoard({ indicators, causes, actions }: { indicators: In
                 <ActionDialog
                     metricLabel="ÍNDICE DE INSTABILIDADE"
                     trigger={
-                        <Button className="rounded-full border-[3px] border-[var(--dark)] bg-[var(--critic)] text-[var(--primary)]">
+                        <Button className="rounded-full border-[3px] border-[--dark] bg-[--critic] text-[--primary]">
                             + Adicionar ação
                         </Button>
                     }
@@ -130,12 +130,12 @@ export function IndicatorBoard({ indicators, causes, actions }: { indicators: In
                 <CauseActionDialog
                     metricLabel="ÍNDICE DE RETRABALHO"
                     trigger={
-                        <Button variant="outline" className="rounded-full border-[3px] border-[var(--dark)] bg-[var(--primary)] text-[var(--dark)]">
+                        <Button variant="outline" className="rounded-full border-[3px] border-[--dark] bg-[--primary] text-[--dark]">
                             Relacionar causa + ação
                         </Button>
                     }
                 />
-                <Badge className="rounded-full border-[3px] border-[var(--dark)] bg-[var(--critic)] px-5 py-1 text-sm font-bold text-[var(--primary)]">
+                <Badge className="rounded-full border-[3px] border-[--dark] bg-[--critic] px-5 py-1 text-sm font-bold text-[--primary]">
                     CRÍTICO
                 </Badge>
             </div>
