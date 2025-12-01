@@ -54,19 +54,24 @@ function LineChart({ values, color }: { values: number[]; color: string }) {
 function IndicatorPanel({ indicator }: { indicator: Indicator }) {
     const copy = metricCopy[indicator.metric];
     return (
-        <div className="flex flex-col gap-4 rounded-[32px] border-[3px] border-[--dark] bg-[--primary] px-8 py-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.4em] text-[--divider]">{copy.yLabel}</p>
-                    <p className="text-2xl font-bold">{copy.title}</p>
-                </div>
+        <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-end">
                 <StatusBadge level={indicator.productivityLevel} />
             </div>
-            <div className="rounded-[24px] border-[3px] border-dashed border-[--divider]/60 bg-white/60 p-4">
-                <LineChart values={indicator.valueSeries} color={copy.color} />
-                <div className="flex justify-between text-xs font-semibold uppercase tracking-[0.3em] text-[--divider]">
-                    <span>{copy.xLabel}</span>
-                    <span>{indicator.labels.join("   ")}</span>
+            <div className="flex flex-col gap-4 rounded-[32px] border-[3px] border-[--dark] bg-[var(--primary)] px-8 py-6">
+                <div className="flex items-center justify-between">
+                    <div>
+                        {/* <p className="text-sm font-semibold uppercase text-[--divider]">{copy.yLabel}</p> */}
+                        <p className="text-md font-bold">{copy.title}</p>
+                    </div>
+
+                </div>
+                <div>
+                    <LineChart values={indicator.valueSeries} color={copy.color} />
+                    <div className="flex justify-between text-xs font-semibold uppercase tracking-[0.3em] text-[--divider]">
+                        <span>{copy.xLabel}</span>
+                        <span>{indicator.labels.join("   ")}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -82,14 +87,14 @@ export function IndicatorBoard({ indicators, causes, actions }: { indicators: In
     const indicatorActions = actions.filter((action) => indicatorIds.has(action.indicatorId));
 
     return (
-        <section className="space-y-10">
-            <div className="flex flex-wrap items-center justify-between gap-4 text-[--primary]">
-                <StatusBadge level={velocity?.productivityLevel ?? "OK"} />
+        <section className="space-y-5">
+            <div className="flex flex-wrap items-center justify-end gap-4 text-[--primary]">
+                {/* <StatusBadge level={velocity?.productivityLevel ?? "OK"} /> */}
                 <IndicatorAnalysisDialog
                     trigger={
-                        <button className="text-sm font-semibold uppercase tracking-[0.4em] underline-offset-4 hover:underline">
+                        <Button variant="default">
                             Visualizar análise do indicador
-                        </button>
+                        </Button>
                     }
                     causes={indicatorCauses}
                     actions={indicatorActions}
@@ -111,9 +116,9 @@ export function IndicatorBoard({ indicators, causes, actions }: { indicators: In
                         </Button>
                     }
                 />
-                <Badge className="rounded-full border-[3px] border-[--dark] bg-[--alert] px-5 py-1 text-sm font-bold text-[--dark]">
+                {/* <Badge className="rounded-full border-[3px] border-[--dark] bg-[--alert] px-5 py-1 text-sm font-bold text-[--dark]">
                     ALERTA
-                </Badge>
+                </Badge> */}
             </div>
 
             {instability && <IndicatorPanel indicator={instability} />}

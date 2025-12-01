@@ -152,7 +152,8 @@ export function IterationTaskList({ tasks, iterationLabel, projectId }: Iteratio
                                                 <p className="text-sm font-semibold underline">Melhorias</p>
                                                 <button
                                                     className="rounded-full border-[2px] border-[var(--dark)] cursor-pointer"
-                                                    aria-label="Adicionar iteração"
+                                                    aria-label="Adicionar melhoria"
+                                                    onClick={() => router.push(`/projects/${projectId}/create-improvement?taskId=${task.id}`)}
                                                 >
                                                     <Plus size={16} strokeWidth={3} />
                                                 </button>
@@ -183,7 +184,8 @@ export function IterationTaskList({ tasks, iterationLabel, projectId }: Iteratio
                                                 <p className="text-sm font-semibold underline">Bugs</p>
                                                 <button
                                                     className="rounded-full border-[2px] border-[var(--dark)] cursor-pointer"
-                                                    aria-label="Adicionar iteração"
+                                                    aria-label="Adicionar bug"
+                                                    onClick={() => router.push(`/projects/${projectId}/create-bug?taskId=${task.id}`)}
                                                 >
                                                     <Plus size={16} strokeWidth={3} />
                                                 </button>
