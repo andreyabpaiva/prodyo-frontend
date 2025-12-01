@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Action, Cause, ProductivityLevel, Task, TaskStatus } from "@/types/domain";
 import { ChevronDown, Plus, UserRound } from "lucide-react";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 
 const levelClasses: Record<ProductivityLevel, string> = {
     OK: "bg-[var(--ok)] text-[var(--dark)]",
@@ -376,6 +376,87 @@ export function IndicatorAnalysisDialog({
                             </div>
                         </div>
                     ))}
+                </div>
+            </ModalCard>
+        </Dialog>
+    );
+}
+
+export function CreateTaskDialog({
+    trigger,
+    onSubmit,
+}: {
+    trigger: ReactNode;
+    onSubmit?: (task: { name: string; description: string; points: number; status: TaskStatus }) => void;
+}) {
+    const [name, setName] = useState("Tarefa 1");
+    const [description, setDescription] = useState("");
+    const [points, setPoints] = useState(10);
+    const [status, setStatus] = useState<TaskStatus>("NOT_STARTED");
+    const [open, setOpen] = useState(false);
+
+    const handleSubmit = () => {
+        onSubmit?.({ name, description, points, status });
+        setOpen(false);
+        setName("Tarefa 1");
+        setDescription("");
+        setPoints(10);
+        setStatus("NOT_STARTED");
+    };
+
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>{trigger}</DialogTrigger>
+            <ModalCard>
+                <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[var(--divider)] mb-4">
+                    cadastro de tarefa
+                </p>
+
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <Badge className={`${statusClasses[status]} border-[3px] border-[var(--dark)] px-6 py-1 text-sm font-bold`}>
+                            {status === "NOT_STARTED"
+                                ? "NÃO INICIADO"
+                                : status === "IN_PROGRESS"
+                                    ? "EM PROGRESSO"
+                                    : "FINALIZADO"}
+                        </Badge>
+                        <ModalUserSelector />
+                    </div>
+                </div>
+
+                <div className="mt-6 flex items-center gap-3">
+                    <Input
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="flex-1 border-none bg-transparent p-0 text-3xl font-bold outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                        placeholder="Nome da tarefa"
+                    />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--dark)] text-sm font-bold text-[var(--primary)]">
+                        <input
+                            type="number"
+                            value={points}
+                            onChange={(e) => setPoints(Number(e.target.value) || 0)}
+                            className="w-6 bg-transparent text-center outline-none"
+                            min={0}
+                        />
+                    </div>
+                </div>
+
+                <Textarea
+                    placeholder="Descrição"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="mt-4 h-36 rounded-[16px] border-[3px] border-[var(--dark)] bg-[#d9d9d9] px-6 py-4 text-lg text-[var(--dark)]"
+                />
+
+                <div className="mt-6 flex justify-end">
+                    <Button
+                        onClick={handleSubmit}
+                        className="rounded-full border-[3px] border-[var(--dark)] bg-[var(--dark)] px-6 py-2 text-sm font-bold text-[var(--primary)]"
+                    >
+                        Criar Tarefa
+                    </Button>
                 </div>
             </ModalCard>
         </Dialog>

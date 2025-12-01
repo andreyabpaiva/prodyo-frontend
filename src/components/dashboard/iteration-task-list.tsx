@@ -84,7 +84,10 @@ export function IterationTaskList({ tasks, iterationLabel, projectId }: Iteratio
 
                 </div>
                 <div className="flex items-center justify-end">
-                    <Button variant="default">
+                    <Button 
+                        variant="default"
+                        onClick={() => router.push(`/projects/${projectId}/create-task`)}
+                    >
                         <Plus strokeWidth={2.5} size={16} />
                         Adicionar tarefa
                     </Button>
