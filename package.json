@@ -7,7 +7,7 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "swagger": "npx swagger-typescript-api generate -p http://localhost:8081/swagger/v1/swagger.json -o src/apis --modular -r --extract-request-params"
+    "swagger": "npx swagger-typescript-api generate -p http://localhost:8081/swagger/v1/doc.json -o src/apis --modular -r --extract-request-params"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
