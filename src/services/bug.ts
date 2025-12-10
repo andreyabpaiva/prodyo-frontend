@@ -1,38 +1,21 @@
-import { Bug, ProductivityLevel } from "@/types/domain";
+import { Bug } from "@/types/domain";
 import { apiFetch } from "./api-client";
+import type { HandlersCreateBugRequest } from "@/apis/data-contracts";
 
 const BUGS_PATH = "/bugs";
 
-export type UpsertBugPayload = {
-  taskId: string;
-  number: number;
-  description: string;
-  severity: ProductivityLevel;
-  assigneeId: string;
-};
+export type CreateBugPayload = HandlersCreateBugRequest;
 
 export const bugService = {
-  list: (params?: { taskId?: string }) =>
+  list: (params: { task_id: string }) =>
     apiFetch<Bug[]>(BUGS_PATH, { params }),
 
   getById: (bugId: string) => apiFetch<Bug>(`${BUGS_PATH}/${bugId}`),
 
-  create: (payload: UpsertBugPayload) =>
-    apiFetch<Bug>(BUGS_PATH, {
+  create: (payload: CreateBugPayload) =>
+    apiFetch<Record<string, any>>(BUGS_PATH, {
       method: "POST",
       body: payload,
-    }),
-
-  update: (bugId: string, payload: Partial<UpsertBugPayload>) =>
-    apiFetch<Bug>(`${BUGS_PATH}/${bugId}`, {
-      method: "PUT",
-      body: payload,
-    }),
-
-  delete: (bugId: string) =>
-    apiFetch<void>(`${BUGS_PATH}/${bugId}`, {
-      method: "DELETE",
-      skipJsonParsing: true,
     }),
 };
 

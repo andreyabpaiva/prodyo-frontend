@@ -1,77 +1,111 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { registerSchema, type RegisterFormValues } from "./resolvers/register-resolver";
+import { authService } from "@/services/auth";
+import { useRouter } from "next/navigation";
 
 type RegisterField = {
   id: string;
   label: string;
+  placeholder: string;
   type?: string;
 };
 
 const registerFields: RegisterField[] = [
-  { id: "name", label: "nome" },
-  { id: "email", label: "email", type: "email" },
-  { id: "password", label: "senha", type: "password" },
-  { id: "confirmPassword", label: "confirme sua senha", type: "password" },
+  { id: "name", label: "Nome", placeholder: "Insira seu nome..." },
+  {
+    id: "email",
+    label: "Email",
+    type: "email",
+    placeholder: "Insira seu email...",
+  },
+  {
+    id: "password",
+    label: "Senha",
+    type: "password",
+    placeholder: "Insira sua senha...",
+  },
+  {
+    id: "confirmPassword",
+    label: "Confirme sua senha",
+    type: "password",
+    placeholder: "Confirme sua senha...",
+  },
 ];
 
 export function RegisterForm() {
-  const [formState, setFormState] = useState(
-    registerFields.reduce<Record<string, string>>((acc, field) => {
-      acc[field.id] = "";
-      return acc;
-    }, {}),
-  );
+  const router = useRouter();
+  const form = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-  const handleChange = (fieldId: string, value: string) => {
-    setFormState((prev) => ({ ...prev, [fieldId]: value }));
-  };
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log("register attempt", formState);
+  const onSubmit = async (data: RegisterFormValues) => {
+    try {
+      const { confirmPassword, ...registerData } = data;
+      await authService.register(registerData);
+      router.push("/login");
+    } catch (error) {
+      throw error;
+    }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex w-full max-w-lg flex-col gap-7 text-[var(--primary)]"
-    >
-      {registerFields.map((field) => (
-        <label
-          key={field.id}
-          htmlFor={field.id}
-          className="text-sm font-semibold uppercase tracking-[0.4em] text-[var(--divider)]"
-        >
-          {field.label}
-          <input
-            id={field.id}
-            name={field.id}
-            type={field.type ?? "text"}
-            value={formState[field.id]}
-            onChange={(event) => handleChange(field.id, event.target.value)}
-            className="mt-4 w-full border-b-[3px] border-[var(--primary)]/50 bg-transparent pb-3 text-xl font-semibold text-[var(--primary)] outline-none placeholder:text-[var(--divider)] focus:border-[var(--primary)]"
-            placeholder={`Digite ${field.label}`}
-          />
-        </label>
-      ))}
-
-      <div className="flex justify-between text-xs uppercase tracking-[0.4em] text-[var(--divider)]">
-        <Link href="/login" className="hover:text-[var(--primary)]">
-          Entrar
-        </Link>
-        <span>Bem-vindo!</span>
-      </div>
-
-      <Button
-        type="submit"
-        className="ml-auto rounded-full border-[3px] border-[var(--primary)] bg-[var(--primary)] px-10 py-6 text-lg font-bold uppercase text-[var(--dark)]"
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex w-100 max-w-lg flex-col gap-6 text-[var(--primary)]"
       >
-        Cadastrar
-      </Button>
-    </form>
+        {registerFields.map((field) => (
+          <FormField
+            key={field.id}
+            control={form.control}
+            name={field.id as keyof RegisterFormValues}
+            render={({ field: formField }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-bold text-[var(--divider)] mb-2">
+                  {field.label}
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type={field.type ?? "text"}
+                    placeholder={field.placeholder}
+                    {...formField}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ))}
+        <div className="flex justify-center mt-6">
+          <Button
+            type="submit"
+            className="w-full max-w-3xs"
+            disabled={form.formState.isSubmitting}
+          >
+            {form.formState.isSubmitting ? "Cadastrando..." : "Cadastrar"}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 }
 

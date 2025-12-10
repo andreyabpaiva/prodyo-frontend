@@ -1,51 +1,37 @@
-import {
-  Action,
-  Cause,
-  Indicator,
-  MetricType,
-  ProductivityLevel,
-} from "@/types/domain";
+import { Indicator } from "@/types/domain";
 import { apiFetch } from "./api-client";
+import type {
+  HandlersCreateIndicatorRequest,
+  HandlersCreateActionRequest,
+  HandlersCreateCauseRequest,
+} from "@/apis/data-contracts";
 
 const INDICATORS_PATH = "/indicators";
 
-export type UpsertIndicatorPayload = {
-  iterationId: string;
-  metric: MetricType;
-  labels: string[];
-  valueSeries: number[];
-  productivityLevel: ProductivityLevel;
-};
+export type CreateIndicatorPayload = HandlersCreateIndicatorRequest;
+export type CreateActionPayload = HandlersCreateActionRequest;
+export type CreateCausePayload = HandlersCreateCauseRequest;
 
 export const indicatorService = {
-  list: (params?: { iterationId?: string }) =>
-    apiFetch<Indicator[]>(INDICATORS_PATH, { params }),
+  list: (params: { iteration_id: string }) =>
+    apiFetch<Indicator>(INDICATORS_PATH, { params }),
 
-  getById: (indicatorId: string) =>
-    apiFetch<Indicator>(`${INDICATORS_PATH}/${indicatorId}`),
-
-  create: (payload: UpsertIndicatorPayload) =>
-    apiFetch<Indicator>(INDICATORS_PATH, {
+  create: (payload: CreateIndicatorPayload) =>
+    apiFetch<Record<string, any>>(INDICATORS_PATH, {
       method: "POST",
       body: payload,
     }),
 
-  update: (indicatorId: string, payload: Partial<UpsertIndicatorPayload>) =>
-    apiFetch<Indicator>(`${INDICATORS_PATH}/${indicatorId}`, {
-      method: "PUT",
+  createAction: (payload: CreateActionPayload) =>
+    apiFetch<Record<string, any>>(`${INDICATORS_PATH}/actions`, {
+      method: "POST",
       body: payload,
     }),
 
-  delete: (indicatorId: string) =>
-    apiFetch<void>(`${INDICATORS_PATH}/${indicatorId}`, {
-      method: "DELETE",
-      skipJsonParsing: true,
+  createCause: (payload: CreateCausePayload) =>
+    apiFetch<Record<string, any>>(`${INDICATORS_PATH}/causes`, {
+      method: "POST",
+      body: payload,
     }),
-
-  getCauses: (indicatorId: string) =>
-    apiFetch<Cause[]>(`${INDICATORS_PATH}/${indicatorId}/causes`),
-
-  getActions: (indicatorId: string) =>
-    apiFetch<Action[]>(`${INDICATORS_PATH}/${indicatorId}/actions`),
 };
 

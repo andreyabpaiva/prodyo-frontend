@@ -1,34 +1,28 @@
-import {
-  Bug,
-  Improvement,
-  Task,
-  TaskStatus,
-  User,
-} from "@/types/domain";
+import { Task } from "@/types/domain";
 import { apiFetch } from "./api-client";
+import type {
+  HandlersCreateTaskRequest,
+  HandlersUpdateTaskRequest,
+} from "@/apis/data-contracts";
 
 const TASKS_PATH = "/tasks";
 
-export type UpsertTaskPayload = {
-  iterationId: string;
-  name: string;
-  description: string;
-  status: TaskStatus;
-  points: number;
-  assigneeId: string;
-  totalTime?: string;
-};
+export type CreateTaskPayload = HandlersCreateTaskRequest;
+export type UpdateTaskPayload = HandlersUpdateTaskRequest;
 
 export const taskService = {
-  list: (params?: { iterationId?: string }) =>
+  list: (params: { iteration_id: string }) =>
     apiFetch<Task[]>(TASKS_PATH, { params }),
 
   getById: (taskId: string) => apiFetch<Task>(`${TASKS_PATH}/${taskId}`),
 
-  create: (payload: UpsertTaskPayload) =>
-    apiFetch<Task>(TASKS_PATH, { method: "POST", body: payload }),
+  create: (payload: CreateTaskPayload) =>
+    apiFetch<Record<string, any>>(TASKS_PATH, {
+      method: "POST",
+      body: payload,
+    }),
 
-  update: (taskId: string, payload: Partial<UpsertTaskPayload>) =>
+  update: (taskId: string, payload: UpdateTaskPayload) =>
     apiFetch<Task>(`${TASKS_PATH}/${taskId}`, {
       method: "PUT",
       body: payload,
@@ -38,18 +32,6 @@ export const taskService = {
     apiFetch<void>(`${TASKS_PATH}/${taskId}`, {
       method: "DELETE",
       skipJsonParsing: true,
-    }),
-
-  getImprovements: (taskId: string) =>
-    apiFetch<Improvement[]>(`${TASKS_PATH}/${taskId}/improvements`),
-
-  getBugs: (taskId: string) =>
-    apiFetch<Bug[]>(`${TASKS_PATH}/${taskId}/bugs`),
-
-  reassign: (taskId: string, assignee: User) =>
-    apiFetch<Task>(`${TASKS_PATH}/${taskId}/assignee`, {
-      method: "PUT",
-      body: { assigneeId: assignee.id },
     }),
 };
 

@@ -1,75 +1,109 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { loginSchema, type LoginFormValues } from "./resolvers/login-resolver";
+import { authService } from "@/services/auth";
 
 type AuthField = {
-  id: string;
+  id: keyof LoginFormValues;
   label: string;
+  placeholder: string;
   type?: string;
 };
 
 const fields: AuthField[] = [
-  { id: "login", label: "login" },
-  { id: "password", label: "senha", type: "password" },
+  { id: "email", label: "Email", placeholder: "Insira seu login..." },
+  {
+    id: "password",
+    label: "Senha",
+    placeholder: "Insira sua senha...",
+    type: "password",
+  },
 ];
 
 export function LoginForm() {
-  const [formState, setFormState] = useState(
-    fields.reduce<Record<string, string>>((acc, field) => {
-      acc[field.id] = "";
-      return acc;
-    }, {}),
-  );
+  const router = useRouter();
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-  const handleChange = (fieldId: string, value: string) => {
-    setFormState((prev) => ({ ...prev, [fieldId]: value }));
-  };
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // placeholder para futura integração
-    console.log("login attempt", formState);
+  const onSubmit = async (data: LoginFormValues) => {
+    try {
+      const response = await authService.login(data);
+      // TODO: Store token and user data (e.g., in localStorage or context)
+      if (response.token) {
+        // Store token for future authenticated requests
+        // localStorage.setItem("token", response.token);
+      }
+      // Redirect to dashboard or home page
+      router.push("/projects");
+    } catch (error) {
+      console.error("Login error:", error);
+      // TODO: Handle error (show toast, etc.)
+      throw error;
+    }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex w-full max-w-lg flex-col gap-8 text-[var(--primary)]"
-    >
-      {fields.map((field) => (
-        <label
-          key={field.id}
-          htmlFor={field.id}
-          className="text-sm font-semibold uppercase tracking-[0.4em] text-[var(--divider)]"
-        >
-          {field.label}
-          <input
-            id={field.id}
-            name={field.id}
-            type={field.type ?? "text"}
-            value={formState[field.id]}
-            onChange={(event) => handleChange(field.id, event.target.value)}
-            className="mt-4 w-full border-b-[3px] border-[var(--primary)]/50 bg-transparent pb-3 text-xl font-semibold text-[var(--primary)] outline-none placeholder:text-[var(--divider)] focus:border-[var(--primary)]"
-            placeholder={`Digite seu ${field.label}`}
-          />
-        </label>
-      ))}
-
-      <div className="flex flex-col gap-4 text-right text-xs uppercase tracking-[0.4em] text-[var(--divider)]">
-        <Link href="/(access)/register" className="hover:text-[var(--primary)]">
-          Criar conta
-        </Link>
-      </div>
-
-      <Button
-        type="submit"
-        className="ml-auto rounded-full border-[3px] border-[var(--primary)] bg-[var(--primary)] px-10 py-6 text-lg font-bold uppercase text-[var(--dark)]"
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex w-100 max-w-lg flex-col gap-6 text-[var(--primary)]"
       >
-        Acessar
-      </Button>
-    </form>
+        {fields.map((field) => (
+          <FormField
+            key={field.id}
+            control={form.control}
+            name={field.id}
+            render={({ field: formField }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-bold text-[var(--divider)] mb-2">
+                  {field.label}
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type={field.type ?? "text"}
+                    placeholder={field.placeholder}
+                    {...formField}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ))}
+
+        <Button asChild variant="link">
+          <Link href="/register">Não possui conta ainda?</Link>
+        </Button>
+        <div className="flex justify-center">
+          <Button
+            type="submit"
+            className="w-full max-w-3xs"
+            disabled={form.formState.isSubmitting}
+          >
+            {form.formState.isSubmitting ? "Acessando..." : "Acessar"}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 }
 

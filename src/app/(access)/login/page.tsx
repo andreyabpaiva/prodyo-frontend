@@ -20,7 +20,7 @@ export default function LoginPage() {
                     <MoveRight strokeWidth={2.25} />
                 </div>
             </div>
-            <div className="w-1/2 bg-[var(--dark)] flex items-center justify-center px-10">
+            <div className="w-1/2 bg-[var(--background)] flex items-center justify-center px-10">
                 <LoginForm />
             </div>
         </div>

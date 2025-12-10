@@ -1,32 +1,21 @@
-import { Indicator, Iteration, Task } from "@/types/domain";
+import { Iteration } from "@/types/domain";
 import { apiFetch } from "./api-client";
+import type { HandlersCreateIterationRequest } from "@/apis/data-contracts";
 
 const ITERATIONS_PATH = "/iterations";
 
-export type UpsertIterationPayload = {
-  projectId: string;
-  number: number;
-  description?: string;
-  startAt: string;
-  endAt: string;
-};
+export type CreateIterationPayload = HandlersCreateIterationRequest;
 
 export const iterationService = {
-  list: (params?: { projectId?: string }) =>
+  list: (params: { project_id: string }) =>
     apiFetch<Iteration[]>(ITERATIONS_PATH, { params }),
 
   getById: (iterationId: string) =>
     apiFetch<Iteration>(`${ITERATIONS_PATH}/${iterationId}`),
 
-  create: (payload: UpsertIterationPayload) =>
-    apiFetch<Iteration>(ITERATIONS_PATH, {
+  create: (payload: CreateIterationPayload) =>
+    apiFetch<Record<string, any>>(ITERATIONS_PATH, {
       method: "POST",
-      body: payload,
-    }),
-
-  update: (iterationId: string, payload: Partial<UpsertIterationPayload>) =>
-    apiFetch<Iteration>(`${ITERATIONS_PATH}/${iterationId}`, {
-      method: "PUT",
       body: payload,
     }),
 
@@ -35,11 +24,5 @@ export const iterationService = {
       method: "DELETE",
       skipJsonParsing: true,
     }),
-
-  getTasks: (iterationId: string) =>
-    apiFetch<Task[]>(`${ITERATIONS_PATH}/${iterationId}/tasks`),
-
-  getIndicators: (iterationId: string) =>
-    apiFetch<Indicator[]>(`${ITERATIONS_PATH}/${iterationId}/indicators`),
 };
 

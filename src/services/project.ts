@@ -1,30 +1,29 @@
-import { Iteration, Member, Project } from "@/types/domain";
+import { Project } from "@/types/domain";
 import { apiFetch } from "./api-client";
+import type {
+  HandlersCreateProjectRequest,
+  HandlersUpdateProjectRequest,
+} from "@/apis/data-contracts";
 
 const PROJECTS_PATH = "/projects";
 
-export type CreateProjectPayload = {
-  name: string;
-  description: string;
-  members: string[];
-  colorSelect?: string;
-  prodRange: { ok: string; alert: string; critical: string };
-};
+export type CreateProjectPayload = HandlersCreateProjectRequest;
+export type UpdateProjectPayload = HandlersUpdateProjectRequest;
 
 export const projectService = {
-  list: (params?: { userId?: string }) =>
-    apiFetch<Project[]>(PROJECTS_PATH, { params }),
+  list: (params?: { page?: number; page_size?: number }) =>
+    apiFetch<Record<string, any>>(PROJECTS_PATH, { params }),
 
   getById: (projectId: string) =>
     apiFetch<Project>(`${PROJECTS_PATH}/${projectId}`),
 
   create: (payload: CreateProjectPayload) =>
-    apiFetch<Project>(PROJECTS_PATH, {
+    apiFetch<Record<string, any>>(PROJECTS_PATH, {
       method: "POST",
       body: payload,
     }),
 
-  update: (projectId: string, payload: Partial<Project>) =>
+  update: (projectId: string, payload: UpdateProjectPayload) =>
     apiFetch<Project>(`${PROJECTS_PATH}/${projectId}`, {
       method: "PUT",
       body: payload,
@@ -32,24 +31,6 @@ export const projectService = {
 
   delete: (projectId: string) =>
     apiFetch<void>(`${PROJECTS_PATH}/${projectId}`, {
-      method: "DELETE",
-      skipJsonParsing: true,
-    }),
-
-  getIterations: (projectId: string) =>
-    apiFetch<Iteration[]>(`${PROJECTS_PATH}/${projectId}/iterations`),
-
-  getMembers: (projectId: string) =>
-    apiFetch<Member[]>(`${PROJECTS_PATH}/${projectId}/members`),
-
-  addMember: (projectId: string, memberPayload: Partial<Member>) =>
-    apiFetch<Member[]>(`${PROJECTS_PATH}/${projectId}/members`, {
-      method: "POST",
-      body: memberPayload,
-    }),
-
-  removeMember: (projectId: string, memberId: string) =>
-    apiFetch<void>(`${PROJECTS_PATH}/${projectId}/members/${memberId}`, {
       method: "DELETE",
       skipJsonParsing: true,
     }),
