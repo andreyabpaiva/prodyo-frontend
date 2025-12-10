@@ -17,13 +17,14 @@ import {
     CommandEmpty,
 } from "@/components/ui/command"
 import { cn } from "@/lib/utils"
+import { userService } from "@/services/user"
+import type { ModelsUser } from "@/apis/data-contracts"
 
 type MembersSelectProps = {
     value: string[]
     onChange: (value: string[]) => void
     label?: string
     placeholder?: string
-    suggestions?: string[]
     className?: string
 }
 
@@ -32,48 +33,72 @@ export function MembersSelect({
     onChange,
     label = "Membros do projeto",
     placeholder = "Adicionar membro...",
-    suggestions = ["Andreya", "Carlos", "Beatriz", "João", "Marina", "Lucas"],
     className,
 }: MembersSelectProps) {
     const [inputValue, setInputValue] = React.useState("")
+    const [users, setUsers] = React.useState<ModelsUser[]>([])
+    const [isLoading, setIsLoading] = React.useState(false)
     const inputRef = React.useRef<HTMLInputElement>(null)
 
-    // Filtra por conteúdo (mas o Enter só adiciona correspondência exata)
-    const filtered = suggestions.filter(
-        (m) =>
-            m.toLowerCase().includes(inputValue.toLowerCase()) &&
-            !value.includes(m)
+    React.useEffect(() => {
+        const fetchUsers = async () => {
+            setIsLoading(true)
+            try {
+                const response = await userService.list({ page_size: 100 })
+                const usersList = Array.isArray(response) ? response : (response?.data || [])
+                setUsers(usersList)
+            } catch (error) {
+                console.error("Error fetching users:", error)
+                setUsers([])
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        fetchUsers()
+    }, [])
+
+    const filtered = users.filter(
+        (user) =>
+            user.name?.toLowerCase().includes(inputValue.toLowerCase()) &&
+            user.id &&
+            !value.includes(user.id)
     )
 
-    const handleSelect = (member: string) => {
-        if (!value.includes(member)) {
-            onChange([...value, member])
+    const userIdToName = React.useMemo(() => {
+        const map = new Map<string, string>()
+        users.forEach((user) => {
+            if (user.id && user.name) {
+                map.set(user.id, user.name)
+            }
+        })
+        return map
+    }, [users])
+
+    const handleSelect = (userId: string) => {
+        if (!value.includes(userId)) {
+            onChange([...value, userId])
         }
         setInputValue("")
-        // mantém foco para seguir adicionando/removendo
         requestAnimationFrame(() => inputRef.current?.focus())
     }
 
     const handleKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
             e.preventDefault()
-            // só adiciona quando houver correspondência exata (case-insensitive)
-            const match = suggestions.find(
-                (m) => m.toLowerCase() === inputValue.trim().toLowerCase()
+            const match = filtered.find(
+                (user) => user.name?.toLowerCase() === inputValue.trim().toLowerCase()
             )
-            if (match && !value.includes(match)) {
-                handleSelect(match)
-            } else {
-                // opcional: você pode mostrar feedback visual aqui se quiser
+            if (match?.id && !value.includes(match.id)) {
+                handleSelect(match.id)
             }
         } else if (e.key === "Backspace" && !inputValue && value.length > 0) {
-            // remove último badge com Backspace se input vazio
             onChange(value.slice(0, -1))
         }
     }
 
-    const removeMember = (member: string) =>
-        onChange(value.filter((m) => m !== member))
+    const removeMember = (userId: string) =>
+        onChange(value.filter((id) => id !== userId))
 
     return (
         <FormItem className={cn("flex flex-col w-full gap-4 mt-4", className)}>
@@ -87,14 +112,14 @@ export function MembersSelect({
                     )}
                     onClick={() => inputRef.current?.focus()}
                 >
-                    {value.map((member) => (
+                    {value.map((userId) => (
                         <Badge
-                            key={member}
+                            key={userId}
                             variant="outline"
                             className="flex items-center gap-1 cursor-default"
                         >
-                            {member}
-                            <div onClick={() => removeMember(member)} className="cursor-pointer">
+                            {userIdToName.get(userId) || userId}
+                            <div onClick={() => removeMember(userId)} className="cursor-pointer">
                                 <X className="h-3 w-3"/>
                             </div>
                         </Badge>
@@ -134,23 +159,27 @@ export function MembersSelect({
                 >
                     <Command>
                         <CommandList>
-                            {filtered.length > 0 ? (
+                            {isLoading ? (
+                                <CommandEmpty className="px-4 py-3">Carregando...</CommandEmpty>
+                            ) : filtered.length > 0 ? (
                                 <>
                                     <CommandGroup>
-                                        {filtered.map((member) => (
-                                            <CommandItem
-                                                key={member}
-                                                onSelect={() => handleSelect(member)}
-                                                className={cn(
-                                                    "px-4 py-3 cursor-pointer",
-                                                    "hover:bg-[var(--primary)] transition-colors duration-150",
-                                                    "flex items-center"
-                                                )}
-                                                role="button"
-                                                tabIndex={0}
-                                            >
-                                                {member}
-                                            </CommandItem>
+                                        {filtered.map((user) => (
+                                            user.id && (
+                                                <CommandItem
+                                                    key={user.id}
+                                                    onSelect={() => handleSelect(user.id!)}
+                                                    className={cn(
+                                                        "px-4 py-3 cursor-pointer",
+                                                        "hover:bg-[var(--primary)] transition-colors duration-150",
+                                                        "flex items-center"
+                                                    )}
+                                                    role="button"
+                                                    tabIndex={0}
+                                                >
+                                                    {user.name || user.email || user.id}
+                                                </CommandItem>
+                                            )
                                         ))}
                                     </CommandGroup>
                                 </>

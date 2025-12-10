@@ -31,7 +31,9 @@ export class Users<
    * @name UsersList
    * @summary Get all users
    * @request GET:/users
+   * @secure
    * @response `200` `Record<string,any>` Users with pagination
+   * @response `401` `string` Unauthorized
    * @response `500` `string` Internal server error
    */
   usersList = (query: UsersListParams, params: RequestParams = {}) =>
@@ -39,6 +41,7 @@ export class Users<
       path: `/users`,
       method: "GET",
       query: query,
+      secure: true,
       type: ContentType.Json,
       format: "json",
       ...params,

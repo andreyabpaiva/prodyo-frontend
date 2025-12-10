@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { projectSchema } from "./resolver";
 import { projectService } from "@/services";
+import { useRouter } from "next/navigation";
 
 type ProjectFormValues = {
     name: string;
@@ -28,6 +29,7 @@ type ProjectFormValues = {
 };
 
 export default function ProjectForm() {
+    const router = useRouter();
     const form = useForm<ProjectFormValues>({
         defaultValues: {
             name: "",
@@ -39,15 +41,35 @@ export default function ProjectForm() {
         resolver: zodResolver(projectSchema),
     });
 
-
+    const onSubmit = async (data: ProjectFormValues) => {
+        try {
+            const payload = {
+                name: data.name,
+                description: data.description,
+                color: data.colorSelect,
+                member_ids: data.members,
+                prod_range: data.prodRange
+                    ? {
+                          ok: Number(data.prodRange.ok),
+                          alert: Number(data.prodRange.alert),
+                          critical: Number(data.prodRange.critical),
+                      }
+                    : undefined,
+            };
+            
+            await projectService.create(payload);
+            form.reset();
+            router.push("/projects");
+        } catch (error) {
+            console.error("Error creating project:", error);
+            throw error;
+        }
+    };
 
     return (
         <Form {...form}>
             <form
-                onSubmit={form.handleSubmit(async (data) => {
-                    console.log("Form Data:", data);
-                    await projectService.create(data);
-                })}
+                onSubmit={form.handleSubmit(onSubmit)}
                 className="flex flex-col w-full px-30"
             >
                 <FormField

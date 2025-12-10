@@ -47,16 +47,15 @@ export function LoginForm() {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       const response = await authService.login(data);
-      // TODO: Store token and user data (e.g., in localStorage or context)
       if (response.token) {
-        // Store token for future authenticated requests
-        // localStorage.setItem("token", response.token);
+        localStorage.setItem("token", response.token);
       }
-      // Redirect to dashboard or home page
+      if (response.user) {
+        localStorage.setItem("user", JSON.stringify(response.user));
+      }
       router.push("/projects");
     } catch (error) {
       console.error("Login error:", error);
-      // TODO: Handle error (show toast, etc.)
       throw error;
     }
   };
