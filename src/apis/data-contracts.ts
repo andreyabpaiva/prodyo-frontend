@@ -311,6 +311,25 @@ export interface ProjectsListParams {
   page_size?: number;
 }
 
+export interface MemberDetailParams {
+  /**
+   * Page number
+   * @default 1
+   */
+  page?: number;
+  /**
+   * Page size
+   * @max 100
+   * @default 20
+   */
+  page_size?: number;
+  /**
+   * User ID
+   * @format uuid
+   */
+  userId: string;
+}
+
 export interface ProjectsDetailParams {
   /**
    * Project ID

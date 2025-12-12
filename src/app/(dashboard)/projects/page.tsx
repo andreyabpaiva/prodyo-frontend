@@ -1,11 +1,30 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
 import { ProjectsGrid } from "@/components/dashboard/projects-grid";
-import { mockData } from "@/data/mock";
+import { projectService } from "@/services/project";
+import { useAppSelector } from "@/store/hooks";
+import type { RootState } from "@/store/store";
 
 export default function Projects() {
-    const iterationCounter = mockData.iterations.reduce<Record<string, number>>((acc, iteration) => {
-        acc[iteration.projectId] = (acc[iteration.projectId] ?? 0) + 1;
-        return acc;
-    }, {});
+    const user = useAppSelector((state: RootState) => state.auth.user);
+    
+    const { data: memberDetail, isLoading, error } = useQuery({
+        queryKey: ["memberDetail", user?.id],
+        queryFn: () => {
+            if (!user?.id) {
+                throw new Error("User ID is required");
+            }
+            return projectService.memberDetail({
+                userId: user.id,
+                page: 1,
+                page_size: 20,
+            });
+        },
+        enabled: !!user?.id,
+    });
+    
+    const projects = memberDetail?.data || memberDetail?.projects || (Array.isArray(memberDetail) ? memberDetail : []);
 
     return (
         <main className="min-h-screen bg-[var(--background)] px-4 py-8 text-[var(--text)]">
@@ -18,7 +37,11 @@ export default function Projects() {
                 </div>
 
                 <div className="mt-8">
-                    <ProjectsGrid projects={mockData.projects} iterationCounter={iterationCounter} />
+                    <ProjectsGrid 
+                        projects={projects} 
+                        isLoading={isLoading}
+                        error={error}
+                    />
                 </div>
             </div>
         </main>

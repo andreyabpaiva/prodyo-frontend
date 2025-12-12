@@ -33,7 +33,6 @@ export class Users<
    * @request GET:/users
    * @secure
    * @response `200` `Record<string,any>` Users with pagination
-   * @response `401` `string` Unauthorized
    * @response `500` `string` Internal server error
    */
   usersList = (query: UsersListParams, params: RequestParams = {}) =>

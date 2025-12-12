@@ -1,17 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Iteration, Task } from "@/types/domain";
 import { IterationSidebar } from "./iteration-sidebar";
 import { IterationTaskList } from "./iteration-task-list";
+import type { ModelsProject, ModelsIteration } from "@/apis/data-contracts";
 
 type IterationBoardProps = {
     projectId: string;
-    iterations: Iteration[];
-    tasksByIteration: Record<string, Task[]>;
+    project?: ModelsProject;
+    iterations: ModelsIteration[];
+    tasksByIteration: Record<string, any[]>;
 };
 
-export function IterationBoard({ projectId, iterations, tasksByIteration }: IterationBoardProps) {
+export function IterationBoard({ projectId, project, iterations, tasksByIteration }: IterationBoardProps) {
     const [activeIterationId, setActiveIterationId] = useState(iterations[0]?.id);
 
     const activeIteration = useMemo(
@@ -38,7 +39,7 @@ export function IterationBoard({ projectId, iterations, tasksByIteration }: Iter
                 onSelectIteration={setActiveIterationId}
             />
             <div className="ml-50 min-h-screen px-4 py-8">
-                <IterationTaskList tasks={activeTasks} iterationLabel={`Iteração ${activeIteration.number}`} projectId={projectId} />
+                <IterationTaskList tasks={activeTasks} iterationLabel={`Iteração ${activeIteration.number || 0}`} projectId={projectId} />
             </div>
         </>
     );

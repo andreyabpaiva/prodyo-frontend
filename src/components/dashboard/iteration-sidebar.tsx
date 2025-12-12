@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Iteration } from "@/types/domain";
 import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronRight, Plus, UserRound } from "lucide-react";
 import { useState } from "react";
+import type { ModelsIteration } from "@/apis/data-contracts";
 
 type IterationSidebarProps = {
-    iterations: Iteration[];
+    iterations: ModelsIteration[];
     activeIterationId?: string;
     projectId: string;
     onSelectIteration?: (iterationId: string) => void;
@@ -51,10 +51,11 @@ export function IterationSidebar({ iterations, activeIterationId, projectId, onS
                     <div className="flex flex-col gap-2">
                         {iterations.map((iteration) => {
                             const isActive = iteration.id === activeIterationId;
+                            if (!iteration.id) return null;
                             return (
                                 <button
                                     key={iteration.id}
-                                    onClick={() => onSelectIteration?.(iteration.id)}
+                                    onClick={() => onSelectIteration?.(iteration.id!)}
                                     className="relative z-10 flex items-center gap-3 text-left"
                                 >
                                     <span
@@ -69,7 +70,7 @@ export function IterationSidebar({ iterations, activeIterationId, projectId, onS
                                             isActive ? "text-[var(--text)]" : "text-[var(--disabled)]"
                                         )}
                                     >
-                                        Iteração {iteration.number}
+                                        Iteração {iteration.number || 0}
                                     </span>
                                 </button>
                             );
@@ -102,6 +103,7 @@ export function IterationSidebar({ iterations, activeIterationId, projectId, onS
                         <div className="flex flex-col gap-2">
                             {iterations.map((iteration) => {
                                 const isActive = iteration.id === activeIterationId;
+                                if (!iteration.id) return null;
                                 return (
                                     <Link
                                         key={iteration.id}
@@ -120,7 +122,7 @@ export function IterationSidebar({ iterations, activeIterationId, projectId, onS
                                                 isActive ? "" : "text-[var(--disabled)]"
                                             )}
                                         >
-                                            Iteração {iteration.number}
+                                            Iteração {iteration.number || 0}
                                         </span>
                                     </Link>
                                 );

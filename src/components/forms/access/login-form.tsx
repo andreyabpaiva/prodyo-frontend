@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/form";
 import { loginSchema, type LoginFormValues } from "./resolvers/login-resolver";
 import { authService } from "@/services/auth";
+import { useAppDispatch } from "@/store/hooks";
+import { setCredentials } from "@/store/authSlice";
 
 type AuthField = {
   id: keyof LoginFormValues;
@@ -36,6 +38,7 @@ const fields: AuthField[] = [
 
 export function LoginForm() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -47,13 +50,19 @@ export function LoginForm() {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       const response = await authService.login(data);
-      if (response.token) {
-        localStorage.setItem("token", response.token);
+      if (response.token && response.user) {
+        dispatch(
+          setCredentials({
+            token: response.token,
+            user: {
+              id: response.user.id || "",
+              name: response.user.name || "",
+              email: response.user.email || "",
+            },
+          })
+        );
+        router.push("/projects");
       }
-      if (response.user) {
-        localStorage.setItem("user", JSON.stringify(response.user));
-      }
-      router.push("/projects");
     } catch (error) {
       console.error("Login error:", error);
       throw error;

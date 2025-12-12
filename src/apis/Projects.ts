@@ -13,6 +13,7 @@
 import {
   HandlersCreateProjectRequest,
   HandlersUpdateProjectRequest,
+  MemberDetailParams,
   ModelsProject,
   ProjectsDeleteParams,
   ProjectsDetailParams,
@@ -65,6 +66,31 @@ export class Projects<
       path: `/projects`,
       method: "POST",
       body: project,
+      secure: true,
+      type: ContentType.Json,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description Get all projects where the specified user is a member
+   *
+   * @tags projects
+   * @name MemberDetail
+   * @summary Get projects by member ID
+   * @request GET:/projects/member/{userId}
+   * @secure
+   * @response `200` `Record<string,any>` Projects with pagination
+   * @response `400` `string` Invalid user ID
+   * @response `500` `string` Internal server error
+   */
+  memberDetail = (
+    { userId, ...query }: MemberDetailParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<Record<string, any>, string>({
+      path: `/projects/member/${userId}`,
+      method: "GET",
+      query: query,
       secure: true,
       type: ContentType.Json,
       format: "json",

@@ -19,6 +19,8 @@ import {
 import { cn } from "@/lib/utils"
 import { userService } from "@/services/user"
 import type { ModelsUser } from "@/apis/data-contracts"
+import { useRef, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 
 type MembersSelectProps = {
     value: string[]
@@ -35,28 +37,18 @@ export function MembersSelect({
     placeholder = "Adicionar membro...",
     className,
 }: MembersSelectProps) {
-    const [inputValue, setInputValue] = React.useState("")
-    const [users, setUsers] = React.useState<ModelsUser[]>([])
-    const [isLoading, setIsLoading] = React.useState(false)
-    const inputRef = React.useRef<HTMLInputElement>(null)
+    const [inputValue, setInputValue] = useState("")
+    const inputRef = useRef<HTMLInputElement>(null)
 
-    React.useEffect(() => {
-        const fetchUsers = async () => {
-            setIsLoading(true)
-            try {
-                const response = await userService.list({ page_size: 100 })
-                const usersList = Array.isArray(response) ? response : (response?.data || [])
-                setUsers(usersList)
-            } catch (error) {
-                console.error("Error fetching users:", error)
-                setUsers([])
-            } finally {
-                setIsLoading(false)
-            }
-        }
+    const { data: usersResponse, isLoading } = useQuery({
+        queryKey: ["users"],
+        queryFn: () => userService.list({ page_size: 100 }),
+        enabled: true,
+    })
 
-        fetchUsers()
-    }, [])
+    const users: ModelsUser[] = Array.isArray(usersResponse) 
+        ? usersResponse 
+        : (usersResponse?.data || [])
 
     const filtered = users.filter(
         (user) =>

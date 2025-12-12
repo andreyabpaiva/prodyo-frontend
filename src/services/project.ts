@@ -4,6 +4,8 @@ import { Projects } from "@/apis/Projects";
 import type {
   HandlersCreateProjectRequest,
   HandlersUpdateProjectRequest,
+  MemberDetailParams,
+  ProjectsDetailParams,
 } from "@/apis/data-contracts";
 
 const PROJECTS_PATH = "/projects";
@@ -35,6 +37,11 @@ export const projectService = {
   getById: (projectId: string) =>
     apiFetch<Project>(`${PROJECTS_PATH}/${projectId}`),
 
+  getDetail: async (params: ProjectsDetailParams) => {
+    const response = await projectsApi.projectsDetail(params);
+    return response.data;
+  },
+
   create: async (payload: CreateProjectPayload) => {
     const response = await projectsApi.projectsCreate(payload);
     return response.data;
@@ -51,4 +58,9 @@ export const projectService = {
       method: "DELETE",
       skipJsonParsing: true,
     }),
+
+  memberDetail: async (params: MemberDetailParams) => {
+    const response = await projectsApi.memberDetail(params);
+    return response.data;
+  },
 };
