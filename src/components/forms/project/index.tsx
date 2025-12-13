@@ -19,6 +19,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { projectSchema } from "./resolver";
 import { projectService } from "@/services";
 import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAppSelector } from "@/store/hooks";
+import type { RootState } from "@/store/store";
 
 type ProjectFormValues = {
     name: string;
@@ -30,6 +33,9 @@ type ProjectFormValues = {
 
 export default function ProjectForm() {
     const router = useRouter();
+    const queryClient = useQueryClient();
+    const user = useAppSelector((state: RootState) => state.auth.user);
+    
     const form = useForm<ProjectFormValues>({
         defaultValues: {
             name: "",
@@ -41,8 +47,8 @@ export default function ProjectForm() {
         resolver: zodResolver(projectSchema),
     });
 
-    const onSubmit = async (data: ProjectFormValues) => {
-        try {
+    const mutation = useMutation({
+        mutationFn: async (data: ProjectFormValues) => {
             const payload = {
                 name: data.name,
                 description: data.description,
@@ -57,13 +63,22 @@ export default function ProjectForm() {
                     : undefined,
             };
             
-            await projectService.create(payload);
+            return await projectService.create(payload);
+        },
+        onSuccess: async () => {
             form.reset();
+            if (user?.id) {
+                await queryClient.refetchQueries({ queryKey: ["memberDetail", user.id] });
+            }
             router.push("/projects");
-        } catch (error) {
+        },
+        onError: (error) => {
             console.error("Error creating project:", error);
-            throw error;
-        }
+        },
+    });
+
+    const onSubmit = (data: ProjectFormValues) => {
+        mutation.mutate(data);
     };
 
     return (
@@ -227,8 +242,22 @@ export default function ProjectForm() {
 
 
                 <div className="flex justify-center mt-5">
-                    <Button variant="default" className="w-40">Criar</Button>
+                    <Button 
+                        variant="default" 
+                        className="w-40"
+                        disabled={mutation.isPending}
+                    >
+                        {mutation.isPending ? "Criando..." : "Criar"}
+                    </Button>
                 </div>
+                
+                {mutation.isError && (
+                    <div className="mt-4 p-3 rounded-[12px] bg-red-100 border-2 border-red-500">
+                        <p className="text-sm text-red-700 font-semibold text-center">
+                            Erro ao criar projeto. Tente novamente.
+                        </p>
+                    </div>
+                )}
             </form>
         </Form>
     );

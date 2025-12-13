@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronRight, Plus, UserRound } from "lucide-react";
 import { useState } from "react";
 import type { ModelsIteration } from "@/apis/data-contracts";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 type IterationSidebarProps = {
     iterations: ModelsIteration[];
@@ -16,6 +18,7 @@ type IterationSidebarProps = {
 export function IterationSidebar({ iterations, activeIterationId, projectId, onSelectIteration }: IterationSidebarProps) {
     const [isOpen, setIsOpen] = useState(true);
     const [isGraphsOpen, setIsGraphsOpen] = useState(false);
+    const userName  = useSelector((state: RootState) => state.auth.user?.name);
 
     return (
         <aside className="fixed top-14 left-0 h-[calc(100vh-3.5rem)] w-50 min-w-50 z-40 border-r-[3px] border-[--dark] bg-[--background] px-4 py-8 overflow-y-auto">
@@ -135,7 +138,7 @@ export function IterationSidebar({ iterations, activeIterationId, projectId, onS
                     <div className="flex h-7 w-7 items-center justify-center gap-2 rounded-full border-[3px] border-[var(--dark)] bg-[var(--primary)]">
                         <UserRound />
                     </div>
-                    <span className="text-sm font-semibold">Admin</span>
+                    <span className="text-sm font-semibold">{userName ?? "Admin"}</span>
                 </div>
             </div>
         </aside>

@@ -1,7 +1,7 @@
 import { Iteration } from "@/types/domain";
 import { apiFetch } from "./api-client";
 import { Iterations } from "@/apis/Iterations";
-import type { HandlersCreateIterationRequest, IterationsListParams } from "@/apis/data-contracts";
+import type { HandlersCreateIterationRequest, IterationsDeleteParams, IterationsListParams } from "@/apis/data-contracts";
 
 const ITERATIONS_PATH = "/iterations";
 const API_BASE_URL =
@@ -33,16 +33,14 @@ export const iterationService = {
   getById: (iterationId: string) =>
     apiFetch<Iteration>(`${ITERATIONS_PATH}/${iterationId}`),
 
-  create: (payload: CreateIterationPayload) =>
-    apiFetch<Record<string, any>>(ITERATIONS_PATH, {
-      method: "POST",
-      body: payload,
-    }),
+  create: async (payload: CreateIterationPayload) => {
+    const response = await iterationsApi.iterationsCreate(payload);
+    return response.data;
+  },
 
-  delete: (iterationId: string) =>
-    apiFetch<void>(`${ITERATIONS_PATH}/${iterationId}`, {
-      method: "DELETE",
-      skipJsonParsing: true,
-    }),
+  delete: async (params: IterationsDeleteParams) => {
+    const response = await iterationsApi.iterationsDelete(params);
+    return response.data;
+  },
 };
 

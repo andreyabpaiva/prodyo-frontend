@@ -1,8 +1,11 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { ModelsProject } from "@/apis/data-contracts";
 
 interface ProjectWithIterations extends ModelsProject {
-    iteration_count?: number;
+    iterations_count?: number;
 }
 
 function ProjectCard({ project }: { project: ProjectWithIterations }) {
@@ -17,7 +20,7 @@ function ProjectCard({ project }: { project: ProjectWithIterations }) {
                 >
                     <p className="text-xl font-semibold">{project.name || "Sem nome"}</p>
                     <p className="mt-1 text-sm font-semibold uppercase text-[var(--disabled)]">
-                        {project.iteration_count ?? 0} iterações
+                        {project.iterations_count || 0} iterações
                     </p>
                 </div>
             </article>
@@ -32,7 +35,15 @@ type ProjectsGridProps = {
 };
 
 export function ProjectsGrid({ projects, isLoading, error }: ProjectsGridProps) {
-    if (isLoading) {
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const showLoading = mounted && isLoading && (!projects || projects.length === 0);
+
+    if (showLoading) {
         return (
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                 {[1, 2, 3].map((i) => (

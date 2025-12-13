@@ -11,6 +11,7 @@ type IterationTaskListProps = {
     tasks: Task[];
     iterationLabel: string;
     projectId: string;
+    iterationId?: string;
 };
 
 type SearchState = {
@@ -31,7 +32,7 @@ const statusTone: Record<Task["status"], string> = {
     COMPLETED: "bg-[var(--ok)] text-[var(--text)]",
 };
 
-export function IterationTaskList({ tasks, iterationLabel, projectId }: IterationTaskListProps) {
+export function IterationTaskList({ tasks, iterationLabel, projectId, iterationId }: IterationTaskListProps) {
     const [expandedTaskId, setExpandedTaskId] = useState<string | null>(tasks[0]?.id ?? null);
     const [search, setSearch] = useState<SearchState>({ name: "", status: "", points: "" });
     const router = useRouter();
@@ -51,10 +52,10 @@ export function IterationTaskList({ tasks, iterationLabel, projectId }: Iteratio
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <h1 className="text-2xl font-bold">{iterationLabel}</h1>
-                        <Badge className="rounded-full border-2 border-[--dark] bg-[--primary] h-8 w-8 text-sm font-bold">1</Badge>
+                        {/* <Badge className="rounded-full border-2 border-[--dark] bg-[--primary] h-8 w-8 text-sm font-bold">1</Badge> */}
                     </div>
                     <div className="flex items-center gap-2">
-                        <Button variant="outline" size="icon" >
+                        <Button variant="outline" size="icon"  onClick={() => router.push(`/projects/${projectId}/delete-iteration/${iterationId}`)}>
                             <Trash2 strokeWidth={2.5} size={18} />
                         </Button>
                         <Button

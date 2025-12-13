@@ -1,27 +1,28 @@
 "use client";
 
+import { use } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { IterationBoard } from "@/components/dashboard/iteration-board";
 import { projectService } from "@/services/project";
 import { iterationService } from "@/services/iteration";
-import type { ModelsProject } from "@/apis/data-contracts";
-import type { ModelsIteration } from "@/apis/data-contracts";
 
 type ProjectDetailProps = {
-    params: { projectId: string };
+    params: Promise<{ projectId: string }>;
 };
 
 export default function ProjectDetailPage({ params }: ProjectDetailProps) {
+    const { projectId } = use(params);
+    
     const { data: project, isLoading: isLoadingProject, error: projectError } = useQuery({
-        queryKey: ["projectDetail", params.projectId],
-        queryFn: () => projectService.getDetail({ id: params.projectId }),
+        queryKey: ["projectDetail", projectId],
+        queryFn: () => projectService.getDetail({ id: projectId }),
     });
 
     const { data: iterations = [], isLoading: isLoadingIterations } = useQuery({
-        queryKey: ["iterations", params.projectId],
-        queryFn: () => iterationService.list({ project_id: params.projectId }),
-        enabled: !!params.projectId,
+        queryKey: ["iterations", projectId],
+        queryFn: () => iterationService.list({ project_id: projectId }),
+        enabled: !!projectId,
     });
 
     const isLoading = isLoadingProject || isLoadingIterations;
@@ -39,7 +40,8 @@ export default function ProjectDetailPage({ params }: ProjectDetailProps) {
     }
 
     const tasksByIteration: Record<string, any[]> = {};
-    iterations.forEach((iteration) => {
+    const iterationsList = iterations || [];
+    iterationsList.forEach((iteration) => {
         if (iteration.id && iteration.tasks) {
             tasksByIteration[iteration.id] = iteration.tasks;
         }
@@ -48,9 +50,9 @@ export default function ProjectDetailPage({ params }: ProjectDetailProps) {
     return (
         <main className="min-h-screen bg-[--background] text-[--text]">
             <IterationBoard 
-                projectId={project.id || params.projectId} 
+                projectId={project.id || projectId} 
                 project={project}
-                iterations={iterations} 
+                iterations={iterationsList} 
                 tasksByIteration={tasksByIteration} 
             />
         </main>
