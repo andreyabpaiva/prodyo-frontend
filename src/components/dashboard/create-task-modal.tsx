@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { UserSelect } from "@/components/utils/UserSelect";
 import { taskService } from "@/services/task";
 import type { HandlersCreateTaskRequest } from "@/apis/data-contracts";
+import { useAppSelector } from "@/store/hooks";
 
 type CreateTaskModalProps = {
     projectId: string;
@@ -35,10 +36,12 @@ const statusLabels: Record<TaskStatus, string> = {
     COMPLETED: "FINALIZADO",
 };
 
-export function CreateTaskModal({ projectId, iterationId }: CreateTaskModalProps) {
+export function CreateTaskModal({ projectId }: CreateTaskModalProps) {
     const router = useRouter();
     const queryClient = useQueryClient();
-    
+
+    const iterationId = useAppSelector((state) => state.iteration.iterationId);
+
     const form = useForm<TaskFormValues>({
         defaultValues: {
             name: "",
@@ -55,9 +58,10 @@ export function CreateTaskModal({ projectId, iterationId }: CreateTaskModalProps
             const payload: HandlersCreateTaskRequest = {
                 name: data.name || undefined,
                 description: data.description || undefined,
-                iteration_id: iterationId,
+                iteration_id: iterationId || undefined,
                 assignee_id: data.assigneeId || undefined,
                 status: status,
+                points: data.points || undefined  
             };
             
             return await taskService.create(payload);
@@ -79,6 +83,7 @@ export function CreateTaskModal({ projectId, iterationId }: CreateTaskModalProps
     };
 
     const onSubmit = (data: TaskFormValues) => {
+        console.log(iterationId)
         mutation.mutate(data);
     };
 

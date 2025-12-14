@@ -3,8 +3,11 @@
 import { X, ChevronDown, UserRound, MoveDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserSelect } from "../utils/UserSelect";
+import { improvementService } from "@/services/improvement";
+import type { HandlersCreateImprovRequest } from "@/apis/data-contracts";
 
 type CreateImprovementModalProps = {
     projectId: string;
@@ -13,18 +16,58 @@ type CreateImprovementModalProps = {
 
 export function CreateImprovementModal({ projectId, taskId }: CreateImprovementModalProps) {
     const router = useRouter();
+    const queryClient = useQueryClient();
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const [points, setPoints] = useState(10);
+    const [points, setPoints] = useState(0);
     const [assigneeId, setAssigneeId] = useState("");
+
+    const { data: improvements = [] } = useQuery({
+        queryKey: ["improvements", taskId],
+        queryFn: () => {
+            if (!taskId) {
+                throw new Error("Task ID is required");
+            }
+            return improvementService.list({ task_id: taskId });
+        },
+        enabled: !!taskId,
+    });
+
+    const nextImprovementNumber = useMemo(() => {
+        if (!improvements || improvements.length === 0) {
+            return 1;
+        }
+        const maxNumber = Math.max(...improvements.map((imp: any) => imp.number || 0));
+        return maxNumber + 1;
+    }, [improvements]);
+
+    const mutation = useMutation({
+        mutationFn: async () => {
+            const payload: HandlersCreateImprovRequest = {
+                task_id: taskId,
+                description: description || undefined,
+                assignee_id: assigneeId || undefined,
+                points: points || undefined,
+                number: nextImprovementNumber,
+            };
+            
+            return await improvementService.create(payload);
+        },
+        onSuccess: async () => {
+            await queryClient.refetchQueries({ queryKey: ["improvements", taskId] });
+            router.back();
+        },
+        onError: (error) => {
+            console.error("Error creating improvement:", error);
+        },
+    });
 
     const handleClose = () => {
         router.back();
     };
 
     const handleSubmit = () => {
-        console.log({ name, description, points, projectId, taskId });
-        router.back();
+        mutation.mutate();
     };
 
     return (
@@ -58,18 +101,12 @@ export function CreateImprovementModal({ projectId, taskId }: CreateImprovementM
                 </div>
 
                 <div className="flex justify-end gap-1">
-                    <p className="text-xs text-[var(--divider)]">selecione a pontuação da tarefa</p>
+                    <p className="text-xs text-[var(--divider)]">selecione a pontuação da melhoria</p>
                     <MoveDown color="var(--divider)" className="w-4 h-4 items-center justify-center" />
                 </div>
 
                 <div className="mt-6 flex items-center">
-                    <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Melhoria 1"
-                        className="flex-1 bg-transparent text-3xl font-bold outline-none placeholder:text-[var(--dark)]"
-                    />
+                    <h1 className="flex-1 text-3xl font-bold">Melhoria {nextImprovementNumber}</h1>
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--alert)] border-[3px] border-[var(--dark)] text-sm font-bold text-[var(--dark)]">
                         <input
                             type="text"
@@ -91,12 +128,21 @@ export function CreateImprovementModal({ projectId, taskId }: CreateImprovementM
                     className="mt-6 h-36 w-full rounded-[16px] border-[3px] border-[var(--dark)] bg-[var(--modal)] px-6 py-4 text-md text-[var(--dark)] outline-none resize-none"
                 />
 
+                {mutation.isError && (
+                    <div className="mt-4 p-3 rounded-[12px] bg-red-100 border-2 border-red-500">
+                        <p className="text-sm text-red-700 font-semibold text-center">
+                            Erro ao criar melhoria. Tente novamente.
+                        </p>
+                    </div>
+                )}
+
                 <div className="mt-6 flex justify-end">
                     <Button
                         onClick={handleSubmit}
                         variant="default"
+                        disabled={mutation.isPending}
                     >
-                        Criar Melhoria
+                        {mutation.isPending ? "Criando..." : "Criar Melhoria"}
                     </Button>
                 </div>
             </div>

@@ -8,6 +8,8 @@ import type { ModelsProject, ModelsIteration } from "@/apis/data-contracts";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { taskService } from "@/services/task";
+import { useAppDispatch } from "@/store/hooks";
+import { setIterationId } from "@/store/iterationSlice";
 
 type IterationBoardProps = {
     projectId: string;
@@ -18,15 +20,26 @@ type IterationBoardProps = {
 
 export function IterationBoard({ projectId, iterations, tasksByIteration }: IterationBoardProps) {
     const [activeIterationId, setActiveIterationId] = useState(iterations[0]?.id);
+    const dispatch = useAppDispatch();
     const router = useRouter();
 
     useEffect(() => {
         if (iterations.length > 0) {
             if (!activeIterationId || !iterations.find(iter => iter.id === activeIterationId)) {
-                setActiveIterationId(iterations[0]?.id);
+                const firstIterationId = iterations[0]?.id;
+                setActiveIterationId(firstIterationId);
+                if (firstIterationId) {
+                    dispatch(setIterationId(firstIterationId));
+                }
             }
         }
-    }, [iterations, activeIterationId]);
+    }, [iterations, activeIterationId, dispatch]);
+
+    useEffect(() => {
+        if (activeIterationId) {
+            dispatch(setIterationId(activeIterationId));
+        }
+    }, [activeIterationId, dispatch]);
 
     const activeIteration = useMemo(
         () => iterations.find((iteration) => iteration.id === activeIterationId),

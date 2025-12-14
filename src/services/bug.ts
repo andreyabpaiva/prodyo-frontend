@@ -35,10 +35,9 @@ export const bugService = {
 
   getById: (bugId: string) => apiFetch<Bug>(`${BUGS_PATH}/${bugId}`),
 
-  create: (payload: CreateBugPayload) =>
-    apiFetch<Record<string, any>>(BUGS_PATH, {
-      method: "POST",
-      body: payload,
-    }),
+  create: async (payload: CreateBugPayload) => {
+    const response = await bugsApi.bugsCreate(payload);
+    return response.data;
+  }
 };
 

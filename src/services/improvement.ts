@@ -36,10 +36,9 @@ export const improvementService = {
   getById: (improvId: string) =>
     apiFetch<Improvement>(`${IMPROVEMENTS_PATH}/${improvId}`),
 
-  create: (payload: CreateImprovementPayload) =>
-    apiFetch<Record<string, any>>(IMPROVEMENTS_PATH, {
-      method: "POST",
-      body: payload,
-    }),
+  create: async (payload: CreateImprovementPayload) => {
+    const response = await improvementsApi.improvementsCreate(payload);
+    return response.data;
+  }
 };
 
