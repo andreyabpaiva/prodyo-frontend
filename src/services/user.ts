@@ -4,6 +4,7 @@ import { Users } from "@/apis/Users";
 import type {
   HandlersCreateUserRequest,
   HandlersUpdateUserRequest,
+  ProjectDetailParams,
   UsersListParams,
 } from "@/apis/data-contracts";
 
@@ -54,5 +55,10 @@ export const userService = {
       method: "DELETE",
       skipJsonParsing: true,
     }),
+
+  projectDetail: async (params: ProjectDetailParams) => {
+    const response = await usersApi.projectDetail(params);
+    return response.data;
+  },
 };
 

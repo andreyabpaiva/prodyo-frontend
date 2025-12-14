@@ -38,6 +38,7 @@ export interface HandlersCreateBugRequest {
   assignee_id?: string;
   description?: string;
   number?: number;
+  points?: number;
   task_id?: string;
 }
 
@@ -52,6 +53,7 @@ export interface HandlersCreateImprovRequest {
   assignee_id?: string;
   description?: string;
   number?: number;
+  points?: number;
   task_id?: string;
 }
 
@@ -80,6 +82,7 @@ export interface HandlersCreateTaskRequest {
   description?: string;
   iteration_id?: string;
   name?: string;
+  points?: number;
   status?: string;
   timer?: string;
 }
@@ -122,6 +125,7 @@ export interface HandlersUpdateTaskRequest {
   assignee_id?: string;
   description?: string;
   name?: string;
+  points?: number;
   status?: string;
   timer?: string;
 }
@@ -146,6 +150,7 @@ export interface ModelsBug {
   description?: string;
   id?: string;
   number?: number;
+  points?: number;
   task_id?: string;
   updated_at?: string;
 }
@@ -166,6 +171,7 @@ export interface ModelsImprov {
   description?: string;
   id?: string;
   number?: number;
+  points?: number;
   task_id?: string;
   updated_at?: string;
 }
@@ -217,6 +223,7 @@ export interface ModelsTask {
   improvements?: ModelsImprov[];
   iteration_id?: string;
   name?: string;
+  points?: number;
   status?: ModelsStatusEnum;
   /** Sub-tasks */
   tasks?: ModelsTask[];
@@ -398,6 +405,25 @@ export interface UsersListParams {
    * @default 20
    */
   page_size?: number;
+}
+
+export interface ProjectDetailParams {
+  /**
+   * Page number
+   * @default 1
+   */
+  page?: number;
+  /**
+   * Page size
+   * @max 100
+   * @default 20
+   */
+  page_size?: number;
+  /**
+   * Project ID
+   * @format uuid
+   */
+  projectId: string;
 }
 
 export interface UsersDetailParams {

@@ -1,9 +1,10 @@
 "use client";
 
-import { X, ChevronDown, UserRound } from "lucide-react";
+import { X, ChevronDown, UserRound, MoveDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { UserSelect } from "../utils/UserSelect";
 
 type CreateImprovementModalProps = {
     projectId: string;
@@ -15,6 +16,7 @@ export function CreateImprovementModal({ projectId, taskId }: CreateImprovementM
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [points, setPoints] = useState(10);
+    const [assigneeId, setAssigneeId] = useState("");
 
     const handleClose = () => {
         router.back();
@@ -27,11 +29,11 @@ export function CreateImprovementModal({ projectId, taskId }: CreateImprovementM
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div 
-                className="absolute inset-0 bg-black/50" 
+            <div
+                className="absolute inset-0 bg-black/50"
                 onClick={handleClose}
             />
-            
+
             <div className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[32px] border-[3px] border-[var(--dark)] bg-[var(--primary)] px-10 py-8">
                 <button
                     onClick={handleClose}
@@ -43,13 +45,21 @@ export function CreateImprovementModal({ projectId, taskId }: CreateImprovementM
                 {/* <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[var(--divider)] mb-6">
                     cadastro de melhoria
                 </p> */}
-
-                <div className="flex items-center gap-1">
-                    <button className="flex items-center gap-2  py-2 text-sm font-semibold">
+                <div className="flex items-center">
+                    {/* <button className="flex items-center gap-2  py-2 text-sm font-semibold">
                         <UserRound size={16} />
                         Andreya
                         <ChevronDown size={16} />
-                    </button>
+                    </button> */}
+                    <UserSelect
+                        value={assigneeId}
+                        onChange={(value) => setAssigneeId(value)}
+                    />
+                </div>
+
+                <div className="flex justify-end gap-1">
+                    <p className="text-xs text-[var(--divider)]">selecione a pontuação da tarefa</p>
+                    <MoveDown color="var(--divider)" className="w-4 h-4 items-center justify-center" />
                 </div>
 
                 <div className="mt-6 flex items-center">
@@ -82,7 +92,7 @@ export function CreateImprovementModal({ projectId, taskId }: CreateImprovementM
                 />
 
                 <div className="mt-6 flex justify-end">
-                    <Button 
+                    <Button
                         onClick={handleSubmit}
                         variant="default"
                     >

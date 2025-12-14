@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { IterationSidebar } from "./iteration-sidebar";
 import { IterationTaskList } from "./iteration-task-list";
 import type { ModelsProject, ModelsIteration } from "@/apis/data-contracts";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import { taskService } from "@/services/task";
 
 type IterationBoardProps = {
     projectId: string;
@@ -31,7 +33,18 @@ export function IterationBoard({ projectId, iterations, tasksByIteration }: Iter
         [iterations, activeIterationId]
     );
 
-    const activeTasks = activeIterationId ? tasksByIteration[activeIterationId] ?? [] : [];
+    const { data: tasks = [] } = useQuery({
+        queryKey: ["tasks", activeIterationId],
+        queryFn: () => {
+            if (!activeIterationId) {
+                throw new Error("Iteration ID is required");
+            }
+            return taskService.list({ iteration_id: activeIterationId });
+        },
+        enabled: !!activeIterationId,
+    });
+
+    const activeTasks = activeIterationId ? (tasks as any[]) : [];
 
     if (iterations.length === 0) {
         return (

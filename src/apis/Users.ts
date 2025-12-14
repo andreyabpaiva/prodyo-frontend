@@ -14,6 +14,7 @@ import {
   HandlersCreateUserRequest,
   HandlersUpdateUserRequest,
   ModelsUser,
+  ProjectDetailParams,
   UsersDeleteParams,
   UsersDetailParams,
   UsersListParams,
@@ -61,6 +62,31 @@ export class Users<
       path: `/users`,
       method: "POST",
       body: user,
+      type: ContentType.Json,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description Get all users who are members of the specified project
+   *
+   * @tags users
+   * @name ProjectDetail
+   * @summary Get users by project ID
+   * @request GET:/users/project/{projectId}
+   * @secure
+   * @response `200` `Record<string,any>` Users with pagination
+   * @response `400` `string` Invalid project ID
+   * @response `500` `string` Internal server error
+   */
+  projectDetail = (
+    { projectId, ...query }: ProjectDetailParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<Record<string, any>, string>({
+      path: `/users/project/${projectId}`,
+      method: "GET",
+      query: query,
+      secure: true,
       type: ContentType.Json,
       format: "json",
       ...params,
