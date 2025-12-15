@@ -12,11 +12,13 @@
 
 import {
   HandlersCreateTaskRequest,
+  HandlersPatchTaskRequest,
   HandlersUpdateTaskRequest,
   ModelsTask,
   TasksDeleteParams,
   TasksDetailParams,
   TasksListParams,
+  TasksPartialUpdateParams,
   TasksUpdateParams,
 } from "./data-contracts";
 import { ContentType, HttpClient, RequestParams } from "./http-client";
@@ -139,6 +141,33 @@ export class Tasks<
       method: "DELETE",
       secure: true,
       type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * @description Partially update an existing task (only provided fields will be updated)
+   *
+   * @tags tasks
+   * @name TasksPartialUpdate
+   * @summary Partially update task
+   * @request PATCH:/tasks/{id}
+   * @secure
+   * @response `200` `ModelsTask` Updated task
+   * @response `400` `string` Invalid task ID or request body
+   * @response `404` `string` Task not found
+   * @response `500` `string` Failed to update task
+   */
+  tasksPartialUpdate = (
+    { id, ...query }: TasksPartialUpdateParams,
+    task: HandlersPatchTaskRequest,
+    params: RequestParams = {},
+  ) =>
+    this.request<ModelsTask, string>({
+      path: `/tasks/${id}`,
+      method: "PATCH",
+      body: task,
+      secure: true,
+      type: ContentType.Json,
+      format: "json",
       ...params,
     });
 }

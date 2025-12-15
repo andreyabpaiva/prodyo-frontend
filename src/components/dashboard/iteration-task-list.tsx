@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, Plus, Trash2, Upload, UserRound } from "lucide-react";
@@ -10,12 +10,15 @@ import { ModelsStatusEnum, ModelsTask } from "@/apis/data-contracts";
 import { useDispatch } from "react-redux";
 import { bugService } from "@/services/bug";
 import { improvementService } from "@/services/improvement";
+import { taskService } from "@/services/task";
+import { userService } from "@/services/user";
 
 type IterationTaskListProps = {
     tasks: ModelsTask[];
     iterationLabel: string;
     projectId: string;
     iterationId?: string;
+    iterationDescription?: string;
 };
 
 type SearchState = {
@@ -36,7 +39,7 @@ const statusTone: Record<ModelsStatusEnum, string> = {
     [ModelsStatusEnum.StatusCompleted]: "bg-[var(--ok)] text-[var(--text)]",
 };
 
-export function IterationTaskList({ tasks, iterationLabel, projectId, iterationId }: IterationTaskListProps) {
+export function IterationTaskList({ tasks, iterationLabel, projectId, iterationId, iterationDescription }: IterationTaskListProps) {
     const [expandedTaskId, setExpandedTaskId] = useState<string | null>(tasks[0]?.id ?? null);
     const [search, setSearch] = useState<SearchState>({ name: "", status: "", points: "" });
     const router = useRouter();
@@ -64,6 +67,7 @@ export function IterationTaskList({ tasks, iterationLabel, projectId, iterationI
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <h1 className="text-2xl font-bold">{iterationLabel}</h1>
+                        <p className="text-sm text-[var(--disabled)]">{iterationDescription}</p>
                         {/* <Badge className="rounded-full border-2 border-[--dark] bg-[--primary] h-8 w-8 text-sm font-bold">1</Badge> */}
                     </div>
                     <div className="flex items-center gap-2">
@@ -114,6 +118,7 @@ export function IterationTaskList({ tasks, iterationLabel, projectId, iterationI
                         task={task}
                         isExpanded={expandedTaskId === task.id}
                         projectId={projectId}
+                        iterationId={iterationId}
                         onToggleExpand={() => {
                             setExpandedTaskId(expandedTaskId === task.id ? null : task.id ?? null);
                         }}
@@ -124,18 +129,23 @@ export function IterationTaskList({ tasks, iterationLabel, projectId, iterationI
     );
 }
 
-function TaskItem({ 
-    task, 
-    isExpanded, 
-    projectId, 
-    onToggleExpand 
-}: { 
-    task: ModelsTask; 
-    isExpanded: boolean; 
-    projectId: string; 
+function TaskItem({
+    task,
+    isExpanded,
+    projectId,
+    iterationId,
+    onToggleExpand
+}: {
+    task: ModelsTask;
+    isExpanded: boolean;
+    projectId: string;
+    iterationId?: string;
     onToggleExpand: () => void;
 }) {
     const router = useRouter();
+    const queryClient = useQueryClient();
+    const [isAssigneeOpen, setIsAssigneeOpen] = useState(false);
+    const [isStatusOpen, setIsStatusOpen] = useState(false);
 
     const { data: bugs = [] } = useQuery({
         queryKey: ["bugs", task.id],
@@ -159,6 +169,55 @@ function TaskItem({
         enabled: !!task.id,
     });
 
+    const { data: usersData, isLoading: isLoadingUsers } = useQuery({
+        queryKey: ["users", "project", projectId],
+        queryFn: () => {
+            if (!projectId) {
+                throw new Error("Project ID is required");
+            }
+            return userService.projectDetail({
+                projectId,
+                page: 1,
+                page_size: 100,
+            });
+        },
+        enabled: !!projectId && isAssigneeOpen,
+    });
+
+    const users = usersData?.data || usersData?.users || (Array.isArray(usersData) ? usersData : []);
+
+    const updateTaskMutation = useMutation({
+        mutationFn: async ({ assigneeId, status }: { assigneeId?: string; status?: string }) => {
+            if (!task.id) {
+                throw new Error("Task ID is required");
+            }
+            return await taskService.patch(
+                task.id, {
+                ...(assigneeId !== undefined && { assignee_id: assigneeId || undefined }),
+                ...(status !== undefined && { status }),
+            });
+        },
+        onSuccess: async () => {
+            const taskIterationId = task.iteration_id || iterationId;
+            if (taskIterationId) {
+                await queryClient.refetchQueries({ queryKey: ["tasks", taskIterationId] });
+            }
+            setIsAssigneeOpen(false);
+            setIsStatusOpen(false);
+        },
+        onError: (error) => {
+            console.error("Error updating task:", error);
+        },
+    });
+
+    const handleAssigneeSelect = (userId: string) => {
+        updateTaskMutation.mutate({ assigneeId: userId || undefined });
+    };
+
+    const handleStatusSelect = (status: ModelsStatusEnum) => {
+        updateTaskMutation.mutate({ status });
+    };
+
     return (
         <div className="rounded-[18px] border-[3px] border-[var(--dark)] bg-[var(--primary)] px-4 py-3 shadow-[0_4px_0_rgba(0,0,0,0.15)]">
             <div className="flex flex-wrap items-center gap-3">
@@ -170,9 +229,58 @@ function TaskItem({
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 rounded-full border-[2px] border-[var(--dark)] bg-[var(--primary)] px-3 py-1">
-                    <UserRound size={16} />
-                    <span className="text-sm font-semibold">{task.assignee?.name}</span>
+                <div className="relative">
+                    <div
+                        className="flex items-center gap-2 rounded-full border-[2px] border-[var(--dark)] bg-[var(--primary)] px-3 py-1 cursor-pointer hover:bg-[var(--background)] transition-colors"
+                        onClick={() => setIsAssigneeOpen(!isAssigneeOpen)}
+                    >
+                        <UserRound size={16} />
+                        <span className="text-sm font-semibold">
+                            {task.assignee?.name || "Sem atribuição"}
+                        </span>
+                    </div>
+                    {isAssigneeOpen && (
+                        <>
+                            <div
+                                className="fixed inset-0 z-10"
+                                onClick={() => setIsAssigneeOpen(false)}
+                            />
+                            <div className="absolute top-full left-0 mt-2 z-20 w-48 rounded-[12px] border-[3px] border-[var(--dark)] bg-[var(--primary)] shadow-lg max-h-60 overflow-y-auto">
+                                {isLoadingUsers ? (
+                                    <div className="px-4 py-2 text-sm text-[var(--disabled)]">
+                                        Carregando...
+                                    </div>
+                                ) : users.length === 0 ? (
+                                    <div className="px-4 py-2 text-sm text-[var(--disabled)]">
+                                        Nenhum usuário encontrado
+                                    </div>
+                                ) : (
+                                    <>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleAssigneeSelect("")}
+                                            className={`w-full text-left px-4 py-2 text-sm font-semibold hover:bg-[var(--background)] transition-colors ${!task.assignee?.id ? "bg-[var(--modal)]" : ""
+                                                }`}
+                                        >
+                                            Sem atribuição
+                                        </button>
+                                        {users.map((user: any) => (
+                                            <button
+                                                key={user.id}
+                                                type="button"
+                                                onClick={() => handleAssigneeSelect(user.id)}
+                                                disabled={updateTaskMutation.isPending}
+                                                className={`w-full text-left px-4 py-2 text-sm font-semibold hover:bg-[var(--background)] transition-colors ${task.assignee?.id === user.id ? "bg-[var(--modal)]" : ""
+                                                    } ${updateTaskMutation.isPending ? "opacity-50 cursor-not-allowed" : ""}`}
+                                            >
+                                                {user.name}
+                                            </button>
+                                        ))}
+                                    </>
+                                )}
+                            </div>
+                        </>
+                    )}
                 </div>
                 {/* <Button variant="outline" size="icon" className="rounded-full border-[2px] border-[var(--dark)]">
                     <Upload strokeWidth={2.5} size={18} />
@@ -190,9 +298,38 @@ function TaskItem({
                     )}
                 </Button>
 
-                <Badge className={`rounded-full border-[2px] border-[var(--dark)] px-4 py-1 text-xs font-bold ${task.status ? statusTone[task.status as ModelsStatusEnum] || "" : ""}`}>
-                    {task.status ? statusLabels[task.status as ModelsStatusEnum] || task.status : ""}
-                </Badge>
+                <div className="relative">
+                    <Badge
+                        className={`rounded-full border-[2px] border-[var(--dark)] px-4 py-1 text-xs font-bold cursor-pointer hover:opacity-80 transition-opacity ${task.status ? statusTone[task.status as ModelsStatusEnum] || "" : ""} ${updateTaskMutation.isPending ? "opacity-50 cursor-not-allowed" : ""}`}
+                        onClick={() => !updateTaskMutation.isPending && setIsStatusOpen(!isStatusOpen)}
+                    >
+                        {task.status ? statusLabels[task.status as ModelsStatusEnum] || task.status : ""}
+                    </Badge>
+                    {isStatusOpen && (
+                        <>
+                            <div
+                                className="fixed inset-0 z-10"
+                                onClick={() => setIsStatusOpen(false)}
+                            />
+                            <div className="absolute top-full right-0 mt-2 z-20 w-40 rounded-[12px] border-[3px] border-[var(--dark)] bg-[var(--primary)] shadow-lg overflow-hidden">
+                                {Object.entries(statusLabels).map(([status, label], index) => (
+                                    <button
+                                        key={status}
+                                        type="button"
+                                        onClick={() => handleStatusSelect(status as ModelsStatusEnum)}
+                                        disabled={updateTaskMutation.isPending}
+                                        className={`w-full text-left px-4 py-2 text-sm cursor-pointer font-semibold transition-colors ${statusTone[status as ModelsStatusEnum] || ""
+                                            } ${updateTaskMutation.isPending ? "opacity-50 cursor-not-allowed" : ""} ${index === 0 ? "rounded-t-[9px]" : ""
+                                            } ${index === Object.entries(statusLabels).length - 1 ? "rounded-b-[9px]" : ""
+                                            }`}
+                                    >
+                                        {label}
+                                    </button>
+                                ))}
+                            </div>
+                        </>
+                    )}
+                </div>
             </div>
 
             <div

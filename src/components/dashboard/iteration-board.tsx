@@ -93,6 +93,7 @@ export function IterationBoard({ projectId, iterations, tasksByIteration }: Iter
             <div className="ml-50 min-h-screen px-4 py-8">
                 <IterationTaskList
                     tasks={activeTasks}
+                    iterationDescription={activeIteration.description}
                     iterationLabel={`Iteração ${activeIteration.number || 0}`}
                     projectId={projectId}
                     iterationId={activeIteration.id}

@@ -106,6 +106,15 @@ export interface HandlersLoginResponse {
   };
 }
 
+export interface HandlersPatchTaskRequest {
+  assignee_id?: string;
+  description?: string;
+  name?: string;
+  points?: number;
+  status?: string;
+  timer?: string;
+}
+
 export interface HandlersRegisterRequest {
   email: string;
   name: string;
@@ -386,6 +395,14 @@ export interface TasksUpdateParams {
 }
 
 export interface TasksDeleteParams {
+  /**
+   * Task ID
+   * @format uuid
+   */
+  id: string;
+}
+
+export interface TasksPartialUpdateParams {
   /**
    * Task ID
    * @format uuid

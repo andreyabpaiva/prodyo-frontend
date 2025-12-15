@@ -3,6 +3,7 @@ import { apiFetch } from "./api-client";
 import { Tasks } from "@/apis/Tasks";
 import type {
   HandlersCreateTaskRequest,
+  HandlersPatchTaskRequest,
   HandlersUpdateTaskRequest,
   TasksListParams,
 } from "@/apis/data-contracts";
@@ -28,6 +29,7 @@ const tasksApi = new Tasks({
 
 export type CreateTaskPayload = HandlersCreateTaskRequest;
 export type UpdateTaskPayload = HandlersUpdateTaskRequest;
+export type PatchTaskPayload = HandlersPatchTaskRequest;
 
 export const taskService = {
   list: async (params: TasksListParams) => {
@@ -42,16 +44,20 @@ export const taskService = {
     return response.data;
   },
 
-  update: (taskId: string, payload: UpdateTaskPayload) =>
-    apiFetch<Task>(`${TASKS_PATH}/${taskId}`, {
-      method: "PUT",
-      body: payload,
-    }),
+  update: async (taskId: string, payload: UpdateTaskPayload) => {
+    const response = await tasksApi.tasksUpdate({ id: taskId }, payload);
+    return response.data;
+  },
 
   delete: (taskId: string) =>
     apiFetch<void>(`${TASKS_PATH}/${taskId}`, {
       method: "DELETE",
       skipJsonParsing: true,
     }),
+
+  patch: async (taskId: string, payload: PatchTaskPayload) => {
+    const response = await tasksApi.tasksPartialUpdate({ id: taskId }, payload);
+    return response.data;
+  },
 };
 
