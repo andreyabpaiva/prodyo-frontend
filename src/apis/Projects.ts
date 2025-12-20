@@ -13,7 +13,11 @@
 import {
   HandlersCreateProjectRequest,
   HandlersUpdateProjectRequest,
+  IndicatorRangesDefaultCreateParams,
+  IndicatorRangesDetailParams,
+  IndicatorRangesListParams,
   MemberDetailParams,
+  ModelsIndicatorRange,
   ModelsProject,
   ProjectsDeleteParams,
   ProjectsDetailParams,
@@ -47,7 +51,7 @@ export class Projects<
       ...params,
     });
   /**
-   * @description Create a new project with members and productivity range
+   * @description Create a new project with members. Use POST /projects/{project_id}/indicator-ranges/default to set up indicator ranges.
    *
    * @tags projects
    * @name ProjectsCreate
@@ -167,6 +171,78 @@ export class Projects<
       method: "DELETE",
       secure: true,
       type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * @description Get all productivity ranges configured for a project
+   *
+   * @tags indicators
+   * @name IndicatorRangesList
+   * @summary Get all indicator ranges for a project
+   * @request GET:/projects/{project_id}/indicator-ranges
+   * @secure
+   * @response `200` `(ModelsIndicatorRange)[]` List of ranges
+   * @response `400` `string` Invalid project_id
+   * @response `500` `string` Failed to get ranges
+   */
+  indicatorRangesList = (
+    { projectId, ...query }: IndicatorRangesListParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<ModelsIndicatorRange[], string>({
+      path: `/projects/${projectId}/indicator-ranges`,
+      method: "GET",
+      secure: true,
+      type: ContentType.Json,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description Create default productivity ranges for all indicator types for a project
+   *
+   * @tags indicators
+   * @name IndicatorRangesDefaultCreate
+   * @summary Create default indicator ranges for a project
+   * @request POST:/projects/{project_id}/indicator-ranges/default
+   * @secure
+   * @response `201` `Record<string,any>` Default ranges created
+   * @response `400` `string` Invalid project_id
+   * @response `500` `string` Failed to create default ranges
+   */
+  indicatorRangesDefaultCreate = (
+    { projectId, ...query }: IndicatorRangesDefaultCreateParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<Record<string, any>, string>({
+      path: `/projects/${projectId}/indicator-ranges/default`,
+      method: "POST",
+      secure: true,
+      type: ContentType.Json,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description Get the productivity range for a specific indicator type of a project
+   *
+   * @tags indicators
+   * @name IndicatorRangesDetail
+   * @summary Get range for a specific indicator type
+   * @request GET:/projects/{project_id}/indicator-ranges/{indicator_type}
+   * @secure
+   * @response `200` `ModelsIndicatorRange` Range configuration
+   * @response `400` `string` Invalid parameters
+   * @response `404` `string` Range not found
+   */
+  indicatorRangesDetail = (
+    { projectId, indicatorType, ...query }: IndicatorRangesDetailParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<ModelsIndicatorRange, string>({
+      path: `/projects/${projectId}/indicator-ranges/${indicatorType}`,
+      method: "GET",
+      secure: true,
+      type: ContentType.Json,
+      format: "json",
       ...params,
     });
 }

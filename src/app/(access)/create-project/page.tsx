@@ -24,7 +24,7 @@ export default function CreateProject() {
                 </div>
             </div>
             <div className="w-1/2 bg-[var(--background)] text-[var(--text)] flex items-center justify-center">
-                <div className="w-full max-w-3xl px-16 py-20">
+                <div className="w-full max-w-3xl px-13">
                     <ProjectForm />
                 </div>
             </div>

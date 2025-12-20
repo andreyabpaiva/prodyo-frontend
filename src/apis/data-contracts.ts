@@ -28,6 +28,12 @@ export enum ModelsMetricEnum {
   MetricInstabilityIndex = "InstabilityIndex",
 }
 
+export enum ModelsIndicatorEnum {
+  IndicatorSpeedPerIteration = "SpeedPerIteration",
+  IndicatorReworkPerIteration = "ReworkPerIteration",
+  IndicatorInstabilityIndex = "InstabilityIndex",
+}
+
 export interface HandlersCreateActionRequest {
   cause_id?: string;
   description?: string;
@@ -74,7 +80,6 @@ export interface HandlersCreateProjectRequest {
   description?: string;
   member_ids?: string[];
   name: string;
-  prod_range?: ModelsProductivityRange;
 }
 
 export interface HandlersCreateTaskRequest {
@@ -115,6 +120,17 @@ export interface HandlersPatchTaskRequest {
   timer?: string;
 }
 
+export interface HandlersProductivityRangeRequest {
+  alert?: HandlersRangeValuesRequest;
+  critical?: HandlersRangeValuesRequest;
+  ok?: HandlersRangeValuesRequest;
+}
+
+export interface HandlersRangeValuesRequest {
+  max?: number;
+  min?: number;
+}
+
 export interface HandlersRegisterRequest {
   email: string;
   name: string;
@@ -122,12 +138,24 @@ export interface HandlersRegisterRequest {
   password: string;
 }
 
+export interface HandlersSetRangeRequest {
+  /** SpeedPerIteration, ReworkPerIteration, InstabilityIndex */
+  indicator_type?: string;
+  project_id?: string;
+  range?: HandlersProductivityRangeRequest;
+}
+
+export interface HandlersUpdateMetricValuesRequest {
+  instability_value?: number;
+  rework_value?: number;
+  speed_value?: number;
+}
+
 export interface HandlersUpdateProjectRequest {
   color?: string;
   description?: string;
   member_ids?: string[];
   name: string;
-  prod_range?: ModelsProductivityRange;
 }
 
 export interface HandlersUpdateTaskRequest {
@@ -187,10 +215,39 @@ export interface ModelsImprov {
 
 export interface ModelsIndicator {
   actions?: ModelsAction[];
+  /** Associated causes and actions for improvement */
   causes?: ModelsCause[];
   created_at?: string;
   id?: string;
+  instability_level?: ModelsProductivityEnum;
+  /** improvements / tasks */
+  instability_value?: number;
   iteration_id?: string;
+  rework_level?: ModelsProductivityEnum;
+  /** bugs / tasks */
+  rework_value?: number;
+  /**
+   * Calculated productivity levels based on project-level ranges
+   * These are computed at runtime, not stored in DB
+   */
+  speed_level?: ModelsProductivityEnum;
+  /** Calculated metric values (stored in DB for performance) */
+  speed_value?: number;
+  updated_at?: string;
+}
+
+export interface ModelsIndicatorMetricValue {
+  indicator_type?: ModelsIndicatorEnum;
+  productivity_level?: ModelsProductivityEnum;
+  value?: number;
+}
+
+export interface ModelsIndicatorRange {
+  created_at?: string;
+  id?: string;
+  indicator_type?: ModelsIndicatorEnum;
+  project_id?: string;
+  range?: ModelsProductivityRange;
   updated_at?: string;
 }
 
@@ -207,9 +264,9 @@ export interface ModelsIteration {
 }
 
 export interface ModelsProductivityRange {
-  alert?: number;
-  critical?: number;
-  ok?: number;
+  alert?: ModelsRangeValues;
+  critical?: ModelsRangeValues;
+  ok?: ModelsRangeValues;
 }
 
 export interface ModelsProject {
@@ -219,8 +276,12 @@ export interface ModelsProject {
   id?: string;
   members?: ModelsUser[];
   name?: string;
-  prod_range?: ModelsProductivityRange;
   updated_at?: string;
+}
+
+export interface ModelsRangeValues {
+  max?: number;
+  min?: number;
 }
 
 export interface ModelsTask {
@@ -287,6 +348,30 @@ export interface IndicatorsListParams {
    * @format uuid
    */
   iteration_id: string;
+}
+
+export interface RangesDeleteParams {
+  /**
+   * Range ID
+   * @format uuid
+   */
+  rangeId: string;
+}
+
+export interface MetricsUpdateParams {
+  /**
+   * Indicator ID
+   * @format uuid
+   */
+  indicatorId: string;
+}
+
+export interface SummaryListParams {
+  /**
+   * Indicator ID
+   * @format uuid
+   */
+  indicatorId: string;
 }
 
 export interface IterationsListParams {
@@ -368,6 +453,32 @@ export interface ProjectsDeleteParams {
    * @format uuid
    */
   id: string;
+}
+
+export interface IndicatorRangesListParams {
+  /**
+   * Project ID
+   * @format uuid
+   */
+  projectId: string;
+}
+
+export interface IndicatorRangesDefaultCreateParams {
+  /**
+   * Project ID
+   * @format uuid
+   */
+  projectId: string;
+}
+
+export interface IndicatorRangesDetailParams {
+  /**
+   * Project ID
+   * @format uuid
+   */
+  projectId: string;
+  /** Indicator type (SpeedPerIteration, ReworkPerIteration, InstabilityIndex) */
+  indicatorType: string;
 }
 
 export interface TasksListParams {
