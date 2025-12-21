@@ -14,7 +14,7 @@ import { taskService } from "@/services/task";
 import { userService } from "@/services/user";
 
 type IterationTaskListProps = {
-    tasks: ModelsTask[];
+    tasks: ModelsTask[] | null;
     iterationLabel: string;
     projectId: string;
     iterationId?: string;
@@ -40,12 +40,13 @@ const statusTone: Record<ModelsStatusEnum, string> = {
 };
 
 export function IterationTaskList({ tasks, iterationLabel, projectId, iterationId, iterationDescription }: IterationTaskListProps) {
-    const [expandedTaskId, setExpandedTaskId] = useState<string | null>(tasks[0]?.id ?? null);
+    const [expandedTaskId, setExpandedTaskId] = useState<string | null>(tasks?.[0]?.id ?? null);
     const [search, setSearch] = useState<SearchState>({ name: "", status: "", points: "" });
     const router = useRouter();
     const dispatch = useDispatch();
 
     const filteredTasks = useMemo(() => {
+        if (!tasks) return [];
         return tasks.filter((task) => {
             const nameMatch = task.name
                 ? task.name.toLowerCase().includes(search.name.toLowerCase())

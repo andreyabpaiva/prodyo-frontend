@@ -46,8 +46,8 @@ export function MembersSelect({
         enabled: true,
     })
 
-    const users: ModelsUser[] = Array.isArray(usersResponse) 
-        ? usersResponse 
+    const users: ModelsUser[] = Array.isArray(usersResponse)
+        ? usersResponse
         : (usersResponse?.data || [])
 
     const filtered = users.filter(
@@ -94,7 +94,10 @@ export function MembersSelect({
 
     return (
         <FormItem className={cn("flex flex-col w-full gap-4 mt-4", className)}>
-            <FormLabel>{label}</FormLabel>
+            <div className="flex items-center gap-3">
+                <FormLabel>{label}</FormLabel>
+                <FormMessage />
+            </div>
 
             <FormControl>
                 <div
@@ -112,7 +115,7 @@ export function MembersSelect({
                         >
                             {userIdToName.get(userId) || userId}
                             <div onClick={() => removeMember(userId)} className="cursor-pointer">
-                                <X className="h-3 w-3"/>
+                                <X className="h-3 w-3" />
                             </div>
                         </Badge>
                     ))}
@@ -182,8 +185,6 @@ export function MembersSelect({
                     </Command>
                 </div>
             )}
-
-            <FormMessage />
         </FormItem>
     )
 }

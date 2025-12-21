@@ -78,6 +78,8 @@ export interface HandlersCreateIterationRequest {
 export interface HandlersCreateProjectRequest {
   color?: string;
   description?: string;
+  /** Optional: custom indicator ranges */
+  indicator_ranges?: HandlersIndicatorRangeRequest[];
   member_ids?: string[];
   name: string;
 }
@@ -95,6 +97,12 @@ export interface HandlersCreateTaskRequest {
 export interface HandlersCreateUserRequest {
   email: string;
   name: string;
+}
+
+export interface HandlersIndicatorRangeRequest {
+  /** SpeedPerIteration, ReworkPerIteration, InstabilityIndex */
+  indicator_type?: string;
+  range?: HandlersProductivityRangeRequest;
 }
 
 export interface HandlersLoginRequest {

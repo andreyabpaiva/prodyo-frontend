@@ -51,7 +51,7 @@ export class Projects<
       ...params,
     });
   /**
-   * @description Create a new project with members. Use POST /projects/{project_id}/indicator-ranges/default to set up indicator ranges.
+   * @description Create a new project with members and optional custom indicator ranges. If indicator_ranges is not provided, default ranges will be created.
    *
    * @tags projects
    * @name ProjectsCreate

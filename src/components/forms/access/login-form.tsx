@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ import { loginSchema, type LoginFormValues } from "./resolvers/login-resolver";
 import { authService } from "@/services/auth";
 import { useAppDispatch } from "@/store/hooks";
 import { setCredentials } from "@/store/authSlice";
+import { Eye, EyeOff } from "lucide-react";
 
 type AuthField = {
   id: keyof LoginFormValues;
@@ -37,6 +39,7 @@ const fields: AuthField[] = [
 ];
 
 export function LoginForm() {
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const form = useForm<LoginFormValues>({
@@ -86,11 +89,32 @@ export function LoginForm() {
                   {field.label}
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    type={field.type ?? "text"}
-                    placeholder={field.placeholder}
-                    {...formField}
-                  />
+                  {field.type === "password" ? (
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder={field.placeholder}
+                        {...formField}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="w-5 h-5" />
+                        ) : (
+                          <Eye className="w-5 h-5" />
+                        )}
+                      </button>
+                    </div>
+                  ) : (
+                    <Input
+                      type={field.type ?? "text"}
+                      placeholder={field.placeholder}
+                      {...formField}
+                    />
+                  )}
                 </FormControl>
                 <FormMessage />
               </FormItem>
