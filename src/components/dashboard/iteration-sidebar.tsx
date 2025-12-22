@@ -5,20 +5,24 @@ import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronRight, Plus, UserRound } from "lucide-react";
 import { useState } from "react";
 import type { ModelsIteration } from "@/apis/data-contracts";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store/store";
+import { setActiveIterationsId, setActiveGraphsId } from "@/store/iterationSlice";
+import { useRouter } from "next/navigation";
 
 type IterationSidebarProps = {
     iterations: ModelsIteration[];
-    activeIterationId?: string;
     projectId: string;
-    onSelectIteration?: (iterationId: string) => void;
 };
 
-export function IterationSidebar({ iterations, activeIterationId, projectId, onSelectIteration }: IterationSidebarProps) {
+export function IterationSidebar({ iterations, projectId }: IterationSidebarProps) {
     const [isOpen, setIsOpen] = useState(true);
     const [isGraphsOpen, setIsGraphsOpen] = useState(false);
-    const userName  = useSelector((state: RootState) => state.auth.user?.name);
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const userName = useSelector((state: RootState) => state.auth.user?.name);
+    const activeIterationsId = useSelector((state: RootState) => state.iteration.activeIterationsId);
+    const activeGraphsId = useSelector((state: RootState) => state.iteration.activeGraphsId);
 
     return (
         <aside className="fixed top-14 left-0 h-[calc(100vh-3.5rem)] w-50 min-w-50 z-40 border-r-[3px] border-[--dark] bg-[--background] px-4 py-8 overflow-y-auto">
@@ -53,12 +57,16 @@ export function IterationSidebar({ iterations, activeIterationId, projectId, onS
                     <span className="absolute left-[27px] top-4 bottom-2 w-[1px] bg-[var(--divider)]" aria-hidden />
                     <div className="flex flex-col gap-2">
                         {iterations.map((iteration) => {
-                            const isActive = iteration.id === activeIterationId;
+                            const isActive = iteration.id === activeIterationsId;
                             if (!iteration.id) return null;
                             return (
-                                <button
+                                <Link
+                                    href={`/projects/${projectId}/`}
                                     key={iteration.id}
-                                    onClick={() => onSelectIteration?.(iteration.id!)}
+                                    onClick={() => {
+                                        dispatch(setActiveIterationsId(iteration.id || null));
+                                        router.push(`/projects/${projectId}/`);
+                                    }}
                                     className="relative z-10 flex items-center gap-3 text-left"
                                 >
                                     <span
@@ -75,7 +83,7 @@ export function IterationSidebar({ iterations, activeIterationId, projectId, onS
                                     >
                                         Iteração {iteration.number || 0}
                                     </span>
-                                </button>
+                                </Link>
                             );
                         })}
                     </div>
@@ -105,12 +113,13 @@ export function IterationSidebar({ iterations, activeIterationId, projectId, onS
                         <span className="absolute left-[27px] top-4 bottom-2 w-[1px] bg-[var(--divider)]" aria-hidden />
                         <div className="flex flex-col gap-2">
                             {iterations.map((iteration) => {
-                                const isActive = iteration.id === activeIterationId;
+                                const isActive = iteration.id === activeGraphsId;
                                 if (!iteration.id) return null;
                                 return (
                                     <Link
                                         key={iteration.id}
                                         href={`/projects/${projectId}/indicators?iteration=${iteration.id}`}
+                                        onClick={() => dispatch(setActiveGraphsId(iteration.id || null))}
                                         className="relative z-10 flex items-center gap-3 text-left"
                                     >
                                         <span

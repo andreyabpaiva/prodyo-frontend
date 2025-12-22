@@ -4,18 +4,40 @@ import type {
   HandlersCreateIndicatorRequest,
   HandlersCreateActionRequest,
   HandlersCreateCauseRequest,
+  IndicatorsListParams,
 } from "@/apis/data-contracts";
+import { Indicators } from "@/apis/Indicators";
 
 const INDICATORS_PATH = "/indicators";
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8081/api/v1";
+
+const indicatorsApi = new Indicators({
+  baseUrl: API_BASE_URL,
+  securityWorker: () => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (token) {
+      return {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+    }
+    return {};
+  },
+});
 
 export type CreateIndicatorPayload = HandlersCreateIndicatorRequest;
 export type CreateActionPayload = HandlersCreateActionRequest;
 export type CreateCausePayload = HandlersCreateCauseRequest;
 
 export const indicatorService = {
-  list: (params: { iteration_id: string }) =>
-    apiFetch<Indicator>(INDICATORS_PATH, { params }),
-
+  list: async (params: IndicatorsListParams) => {
+    const response = await indicatorsApi.indicatorsList(params);
+    return response.data;
+  },
+  
   create: (payload: CreateIndicatorPayload) =>
     apiFetch<Record<string, any>>(INDICATORS_PATH, {
       method: "POST",

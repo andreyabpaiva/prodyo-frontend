@@ -156,7 +156,7 @@ function TaskItem({
             }
             return bugService.list({ task_id: task.id });
         },
-        enabled: !!task.id,
+        enabled: !!task.id && isExpanded,
     });
 
     const { data: improvements = [] } = useQuery({
@@ -167,7 +167,7 @@ function TaskItem({
             }
             return improvementService.list({ task_id: task.id });
         },
-        enabled: !!task.id,
+        enabled: !!task.id && isExpanded,
     });
 
     const { data: usersData, isLoading: isLoadingUsers } = useQuery({

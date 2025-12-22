@@ -1,15 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { IterationSidebar } from "./iteration-sidebar";
 import { IterationTaskList } from "./iteration-task-list";
 import type { ModelsProject, ModelsIteration } from "@/apis/data-contracts";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { taskService } from "@/services/task";
-import { useAppDispatch } from "@/store/hooks";
-import { setIterationId } from "@/store/iterationSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setIterationId, setActiveIterationsId } from "@/store/iterationSlice";
 
 type IterationBoardProps = {
     projectId: string;
@@ -19,45 +18,47 @@ type IterationBoardProps = {
 };
 
 export function IterationBoard({ projectId, iterations, tasksByIteration }: IterationBoardProps) {
-    const [activeIterationId, setActiveIterationId] = useState(iterations[0]?.id);
     const dispatch = useAppDispatch();
     const router = useRouter();
+    const activeIterationsId = useAppSelector((state) => state.iteration.activeIterationsId);
 
+    // Set default iteration if none is active
     useEffect(() => {
         if (iterations.length > 0) {
-            if (!activeIterationId || !iterations.find(iter => iter.id === activeIterationId)) {
+            if (!activeIterationsId || !iterations.find(iter => iter.id === activeIterationsId)) {
                 const firstIterationId = iterations[0]?.id;
-                setActiveIterationId(firstIterationId);
                 if (firstIterationId) {
+                    dispatch(setActiveIterationsId(firstIterationId));
                     dispatch(setIterationId(firstIterationId));
                 }
             }
         }
-    }, [iterations, activeIterationId, dispatch]);
+    }, [iterations, activeIterationsId, dispatch]);
 
+    // Sync iterationId with activeIterationsId
     useEffect(() => {
-        if (activeIterationId) {
-            dispatch(setIterationId(activeIterationId));
+        if (activeIterationsId) {
+            dispatch(setIterationId(activeIterationsId));
         }
-    }, [activeIterationId, dispatch]);
+    }, [activeIterationsId, dispatch]);
 
     const activeIteration = useMemo(
-        () => iterations.find((iteration) => iteration.id === activeIterationId),
-        [iterations, activeIterationId]
+        () => iterations.find((iteration) => iteration.id === activeIterationsId),
+        [iterations, activeIterationsId]
     );
 
     const { data: tasks = [] } = useQuery({
-        queryKey: ["tasks", activeIterationId],
+        queryKey: ["tasks", activeIterationsId],
         queryFn: () => {
-            if (!activeIterationId) {
+            if (!activeIterationsId) {
                 throw new Error("Iteration ID is required");
             }
-            return taskService.list({ iteration_id: activeIterationId });
+            return taskService.list({ iteration_id: activeIterationsId });
         },
-        enabled: !!activeIterationId,
+        enabled: !!activeIterationsId,
     });
 
-    const activeTasks = activeIterationId ? (tasks as any[]) : [];
+    const activeTasks = activeIterationsId ? (tasks as any[]) : [];
 
     if (iterations.length === 0) {
         return (
@@ -83,23 +84,15 @@ export function IterationBoard({ projectId, iterations, tasksByIteration }: Iter
     }
 
     return (
-        <>
-            <IterationSidebar
-                iterations={iterations}
-                activeIterationId={activeIterationId}
+        <div className="ml-50 min-h-screen px-4 py-8">
+            <IterationTaskList
+                tasks={activeTasks}
+                iterationDescription={activeIteration.description}
+                iterationLabel={`Iteração ${activeIteration.number || 0}`}
                 projectId={projectId}
-                onSelectIteration={setActiveIterationId}
+                iterationId={activeIteration.id}
             />
-            <div className="ml-50 min-h-screen px-4 py-8">
-                <IterationTaskList
-                    tasks={activeTasks}
-                    iterationDescription={activeIteration.description}
-                    iterationLabel={`Iteração ${activeIteration.number || 0}`}
-                    projectId={projectId}
-                    iterationId={activeIteration.id}
-                />
-            </div>
-        </>
+        </div>
     );
 }
 
