@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { ModelsProject } from "@/apis/data-contracts";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ProjectWithIterations extends ModelsProject {
     iterations_count?: number;
@@ -32,26 +32,21 @@ type ProjectsGridProps = {
     projects: ProjectWithIterations[];
     isLoading?: boolean;
     error?: Error | null;
+    isFetched?: boolean;
 };
 
-export function ProjectsGrid({ projects, isLoading, error }: ProjectsGridProps) {
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
-
-    const showLoading = mounted && isLoading && (!projects || projects.length === 0);
-
-    if (showLoading) {
+export function ProjectsGrid({ projects, isLoading, error, isFetched }: ProjectsGridProps) {
+    // Show skeletons when loading or before first fetch
+    if (isLoading || !isFetched) {
         return (
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                {[1, 2, 3].map((i) => (
-                    <div
-                        key={i}
-                        className="rounded-[15px] border-[3px] border-[var(--dark)] bg-[var(--primary)] p-4 animate-pulse"
-                    >
-                        <div className="rounded-[12px] border-[3px] border-[var(--dark)] px-6 py-10 bg-gray-200 h-32" />
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <div key={i} className="flex flex-col space-y-3">
+                        <Skeleton className="h-[125px] w-full rounded-xl bg-[var(--divider)]" />
+                        <div className="space-y-2">
+                            <Skeleton className="h-4 w-3/4" />
+                            <Skeleton className="h-4 w-1/2" />
+                        </div>
                     </div>
                 ))}
             </div>

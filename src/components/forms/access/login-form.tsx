@@ -29,7 +29,12 @@ type AuthField = {
 };
 
 const fields: AuthField[] = [
-  { id: "email", label: "Email", placeholder: "Insira seu login..." },
+  {
+    id: "email",
+    label: "Email",
+    placeholder: "Insira seu email...",
+    type: "email",
+  },
   {
     id: "password",
     label: "Senha",

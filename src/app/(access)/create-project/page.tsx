@@ -19,7 +19,7 @@ export default function CreateProject() {
                 />
 
                 <div className="flex items-center justify-center gap-3 text-lg font-bold">
-                    <span>Insira as informações ao lado</span>
+                    <p>Insira as informações ao lado</p>
                     <MoveRight strokeWidth={2.25} />
                 </div>
             </div>
