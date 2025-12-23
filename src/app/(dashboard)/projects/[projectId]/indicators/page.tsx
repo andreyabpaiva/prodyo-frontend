@@ -1,11 +1,13 @@
 "use client";
 
 import { IndicatorBoard } from "@/components/dashboard/indicator-board";
+import { Button } from "@/components/ui/button";
+import { IndicatorAnalysisDialog } from "@/components/dashboard/modals";
 import { useQuery } from "@tanstack/react-query";
 import { iterationService } from "@/services/iteration";
 import { indicatorService } from "@/services/indicator";
 import { useSearchParams } from "next/navigation";
-import { useEffect, use } from "react";
+import { useEffect, use, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { setActiveGraphsId } from "@/store/iterationSlice";
@@ -68,6 +70,16 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
     // Find current iteration details
     const currentIteration = iterations?.find(i => i.id === activeGraphsId);
 
+    // Get causes and actions for the analysis dialog
+    const indicatorCauses = useMemo(() =>
+        indicator?.causes?.map(mapApiCauseToDomain) || [],
+        [indicator]
+    );
+    const indicatorActions = useMemo(() =>
+        indicator?.actions?.map(mapApiActionToDomain) || [],
+        [indicator]
+    );
+
     // Loading state
     if (isLoadingIterations) {
         return (
@@ -104,11 +116,24 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
 
     return (
         <main className="ml-50 relative min-h-screen bg-[--dark] px-12 py-5 text-[--primary]">
-            <header>
-                <h1 className="mt-2 text-4xl font-extrabold">Indicadores</h1>
-                <p className="mt-2 text-md text-[--divider]">
-                    Iteração {currentIteration?.number || "-"}
-                </p>
+            <header className="mb-8 flex items-center justify-between">
+                <div>
+                    <h1 className="mt-2 text-4xl font-extrabold">Indicadores</h1>
+                    <p className="mt-2 text-md text-[--divider]">
+                        Iteração {currentIteration?.number || "-"}
+                    </p>
+                </div>
+                {indicator && (
+                    <IndicatorAnalysisDialog
+                        trigger={
+                            <Button variant="default">
+                                Visualizar análise do indicador
+                            </Button>
+                        }
+                        causes={indicatorCauses}
+                        actions={indicatorActions}
+                    />
+                )}
             </header>
 
             {isLoadingIndicator && (
@@ -127,8 +152,6 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
             {!isLoadingIndicator && !indicatorError && indicator && (
                 <IndicatorBoard
                     indicators={createIndicatorsFromApiIndicator(indicator)}
-                    causes={indicator?.causes?.map(mapApiCauseToDomain) || []}
-                    actions={indicator?.actions?.map(mapApiActionToDomain) || []}
                 />
             )}
 

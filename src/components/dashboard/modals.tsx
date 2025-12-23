@@ -6,8 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Action, Cause, ProductivityLevel, Task, TaskStatus } from "@/types/domain";
-import { ChevronDown, Plus, UserRound } from "lucide-react";
-import { ReactNode, useState } from "react";
+import { ChevronDown, Plus, UserRound, X } from "lucide-react";
+import { ReactNode, useState, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { userService } from "@/services/user";
+import type { ModelsUser } from "@/apis/data-contracts";
+import { Command, CommandGroup, CommandItem, CommandList, CommandEmpty } from "@/components/ui/command";
+import { cn } from "@/lib/utils";
+import { UserSelect } from "../utils/UserSelect";
 
 const levelClasses: Record<ProductivityLevel, string> = {
     OK: "bg-[var(--ok)] text-[var(--dark)]",
@@ -31,64 +37,64 @@ function ModalCard({ children, className = "" }: { children: ReactNode; classNam
     );
 }
 
-function ModalUserSelector() {
-    return (
-        <button className="flex items-center gap-2 rounded-full border-[3px] border-[var(--dark)] px-4 py-2 text-sm font-semibold">
-            <UserRound size={16} />
-            Andreya
-            <ChevronDown size={16} />
-        </button>
-    );
-}
+// function ModalUserSelector() {
+//     return (
+//         <button className="flex items-center gap-2 rounded-full border-[3px] border-[var(--dark)] px-4 py-2 text-sm font-semibold">
+//             <UserRound size={16} />
+//             Andreya
+//             <ChevronDown size={16} />
+//         </button>
+//     );
+// }
 
 function DescriptionArea({ placeholder = "Descrição" }: { placeholder?: string }) {
     return (
         <Textarea
             placeholder={placeholder}
-            className="mt-4 h-36 rounded-[32px] border-[3px] border-[var(--dark)] bg-[#d9d9d9] px-6 py-4 text-lg text-[var(--dark)]"
+            className="mt-4 h-50 rounded-2xl border-[3px] border-[var(--dark)] bg-[var(--background)] px-6 py-4 text-lg text-[var(--dark)]"
         />
     );
 }
 
-export function ImprovementDialog({ trigger, title = "Melhoria 1" }: { trigger: ReactNode; title?: string }) {
-    return (
-        <Dialog>
-            <DialogTrigger asChild>{trigger}</DialogTrigger>
-            <ModalCard>
-                <div className="flex items-start justify-between">
-                    <ModalUserSelector />
-                    <button className="rounded-full border-[3px] border-[var(--dark)] px-4 py-2 text-sm font-semibold">
-                        10
-                    </button>
-                </div>
-                <DialogHeader className="mt-6">
-                    <DialogTitle className="text-3xl font-bold">{title}</DialogTitle>
-                </DialogHeader>
-                <DescriptionArea />
-            </ModalCard>
-        </Dialog>
-    );
-}
+// export function ImprovementDialog({ trigger, title = "Melhoria 1" }: { trigger: ReactNode; title?: string }) {
+//     return (
+//         <Dialog>
+//             <DialogTrigger asChild>{trigger}</DialogTrigger>
+//             <ModalCard>
+//                 <div className="flex items-start justify-between">
+//                     <ModalUserSelector />
+//                     <button className="rounded-full border-[3px] border-[var(--dark)] px-4 py-2 text-sm font-semibold">
+//                         10
+//                     </button>
+//                 </div>
+//                 <DialogHeader className="mt-6">
+//                     <DialogTitle className="text-3xl font-bold">{title}</DialogTitle>
+//                 </DialogHeader>
+//                 <DescriptionArea />
+//             </ModalCard>
+//         </Dialog>
+//     );
+// }
 
-export function BugDialog({ trigger, title = "Bug 1" }: { trigger: ReactNode; title?: string }) {
-    return (
-        <Dialog>
-            <DialogTrigger asChild>{trigger}</DialogTrigger>
-            <ModalCard>
-                <div className="flex items-start justify-between">
-                    <ModalUserSelector />
-                    <button className="rounded-full border-[3px] border-[var(--dark)] bg-[var(--critic)] px-4 py-2 text-sm font-bold text-[var(--primary)]">
-                        10
-                    </button>
-                </div>
-                <DialogHeader className="mt-6">
-                    <DialogTitle className="text-3xl font-bold">{title}</DialogTitle>
-                </DialogHeader>
-                <DescriptionArea />
-            </ModalCard>
-        </Dialog>
-    );
-}
+// export function BugDialog({ trigger, title = "Bug 1" }: { trigger: ReactNode; title?: string }) {
+//     return (
+//         <Dialog>
+//             <DialogTrigger asChild>{trigger}</DialogTrigger>
+//             <ModalCard>
+//                 <div className="flex items-start justify-between">
+//                     <ModalUserSelector />
+//                     <button className="rounded-full border-[3px] border-[var(--dark)] bg-[var(--critic)] px-4 py-2 text-sm font-bold text-[var(--primary)]">
+//                         10
+//                     </button>
+//                 </div>
+//                 <DialogHeader className="mt-6">
+//                     <DialogTitle className="text-3xl font-bold">{title}</DialogTitle>
+//                 </DialogHeader>
+//                 <DescriptionArea />
+//             </ModalCard>
+//         </Dialog>
+//     );
+// }
 
 export function CauseDialog({
     trigger,
@@ -108,23 +114,23 @@ export function CauseDialog({
             <DialogTrigger asChild>{trigger}</DialogTrigger>
             <ModalCard>
                 <div className="flex items-start justify-between">
-                    <ModalUserSelector />
+                    {/* <ModalUserSelector /> */}
                     <div className="flex gap-3">
-                        <Badge className={`${levelClasses[level]} border-[3px] border-[var(--dark)] px-6 py-1 text-sm font-bold`}>
+                        <Badge className={`${levelClasses[level]} border-3 rounded-2xl border-[var(--dark)] px-6 text-sm font-bold`}>
                             {level === "CRITICAL" ? "CRÍTICO" : level === "ALERT" ? "ALERTA" : "OK"}
                         </Badge>
-                        <Badge className={`${statusClasses[status]} border-[3px] border-[var(--dark)] px-6 py-1 text-sm font-bold`}>
+                        {/* <Badge className={`${statusClasses[status]} border-[3px] border-[var(--dark)] px-6 py-1 text-sm font-bold`}>
                             {status === "NOT_STARTED" ? "NÃO INICIADO" : status === "IN_PROGRESS" ? "EM PROGRESSO" : "FINALIZADO"}
-                        </Badge>
+                        </Badge> */}
                     </div>
                 </div>
 
-                <div className="mt-6 space-y-2">
-                    <p className="text-3xl font-bold">{title}</p>
-                    <p className="text-sm font-semibold uppercase tracking-[0.4em] text-[var(--divider)]">
+                <DialogHeader className="mt-6 space-y-2">
+                    <DialogTitle className="text-3xl font-bold">{title}</DialogTitle>
+                    <p className="text-sm font-semibold uppercase">
                         {metricLabel}
                     </p>
-                </div>
+                </DialogHeader>
 
                 <DescriptionArea />
             </ModalCard>
@@ -146,29 +152,33 @@ export function ActionDialog({
             <DialogTrigger asChild>{trigger}</DialogTrigger>
             <ModalCard className="max-w-3xl">
                 <div className="flex items-start justify-between">
-                    <ModalUserSelector />
+                    {/* <ModalUserSelector /> */}
                     <Badge className={`${levelClasses[level]} border-[3px] border-[var(--dark)] px-6 py-1 text-sm font-bold`}>
                         {level === "CRITICAL" ? "CRÍTICO" : level === "ALERT" ? "ALERTA" : "OK"}
                     </Badge>
                 </div>
 
                 <div className="mt-6 space-y-4">
-                    <div>
-                        <p className="text-3xl font-bold">Ação</p>
+                    <DialogHeader>
+                        <DialogTitle className="text-3xl font-bold">Ação</DialogTitle>
                         <p className="text-sm font-semibold uppercase tracking-[0.4em] text-[var(--divider)]">
                             {metricLabel}
                         </p>
-                    </div>
+                    </DialogHeader>
 
-                    <div className="flex items-center gap-4">
-                        <Input
+                    <div className="flex items-center gap-2 rounded-full border-2 border-[--dark] px-4 py-2">
+                        <input
+                            type="text"
                             placeholder="__/__/__"
-                            className="rounded-full border-[3px] border-[var(--dark)] px-6 py-3 text-center text-lg font-bold"
+                            maxLength={8}
+                            className="w-20 bg-transparent text-center font-semibold outline-none"
                         />
-                        <span className="text-2xl font-bold">à</span>
-                        <Input
+                        <span className="font-semibold">à</span>
+                        <input
+                            type="text"
                             placeholder="__/__/__"
-                            className="rounded-full border-[3px] border-[var(--dark)] px-6 py-3 text-center text-lg font-bold"
+                            maxLength={8}
+                            className="w-20 bg-transparent text-center font-semibold outline-none"
                         />
                     </div>
                 </div>
@@ -191,128 +201,60 @@ export function CauseActionDialog({
     return (
         <Dialog>
             <DialogTrigger asChild>{trigger}</DialogTrigger>
-            <ModalCard className="max-w-3xl space-y-6">
+            <ModalCard className="max-w-2xl space-y-5">
                 <div className="flex items-center justify-between">
-                    <ModalUserSelector />
-                    <Badge className={`${levelClasses[level]} border-[3px] border-[var(--dark)] px-6 py-1 text-sm font-bold`}>
+                    {/* <ModalUserSelector /> */}
+                    {/* <Badge className={`${levelClasses[level]} border-3 border-[var(--dark)] rounded-2xl px-3 py-1 text-sm font-bold`}>
                         {level === "CRITICAL" ? "CRÍTICO" : level === "ALERT" ? "ALERTA" : "OK"}
-                    </Badge>
+                    </Badge> */}
+                    <UserSelect />
                 </div>
 
-                <section className="space-y-3">
+                <section className="space-y-2">
                     <div className="flex items-center gap-3">
-                        <p className="text-3xl font-bold">Causa</p>
-                        <Badge className="bg-[#B8B8B8] border-[3px] border-[var(--dark)] px-6 py-1 text-sm font-bold">
+                        <p className="text-2xl font-bold">Causa</p>
+                        <Badge className={`${levelClasses[level]} border-3 border-[var(--dark)] rounded-2xl px-3 py-1 text-xs font-bold text-[var(--text)]`}>
+                            {level === "CRITICAL" ? "CRÍTICO" : level === "ALERT" ? "ALERTA" : "OK"}
+                        </Badge>
+                        <Badge className="border-[3px] bg-[var(--divider)] rounded-2xl border-[var(--dark)] px-4 py-1 text-xs font-bold">
                             NÃO INICIADO
                         </Badge>
                     </div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.4em] text-[var(--divider)]">
+                    <p className="text-xs font-semibold">
                         {metricLabel}
                     </p>
-                    <DescriptionArea />
+                    <Textarea
+                        placeholder="Descrição"
+                        className="mt-2 h-24 rounded-2xl border-[3px] border-[var(--dark)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--dark)]"
+                    />
                 </section>
 
-                <section className="space-y-3">
-                    <p className="text-3xl font-bold">Ação</p>
-                    <p className="text-sm font-semibold uppercase tracking-[0.4em] text-[var(--divider)]">
+                <section className="space-y-2">
+                    <p className="text-2xl font-bold">Ação</p>
+                    <p className="text-xs font-semibold">
                         ÍNDICE DE INSTABILIDADE
                     </p>
-                    <div className="flex items-center gap-4">
-                        <Input
+                    <div className="inline-flex gap-2 rounded-full border-2 border-[var(--text)] px-4 py-2 w-auto">
+                        <input
+                            type="text"
                             placeholder="__/__/__"
-                            className="rounded-full border-[3px] border-[var(--dark)] px-6 py-3 text-center text-lg font-bold"
+                            onChange={() => {}}
+                            maxLength={8}
+                            className="w-20 bg-transparent text-center font-semibold outline-none"
                         />
-                        <span className="text-2xl font-bold">à</span>
-                        <Input
+                        <span className="font-semibold">à</span>
+                        <input
+                            type="text"
                             placeholder="__/__/__"
-                            className="rounded-full border-[3px] border-[var(--dark)] px-6 py-3 text-center text-lg font-bold"
+                            onChange={() => {}}
+                            maxLength={8}
+                            className="w-20 bg-transparent text-center font-semibold outline-none"
                         />
                     </div>
-                    <DescriptionArea />
-                </section>
-            </ModalCard>
-        </Dialog>
-    );
-}
-
-export function TaskDetailsDialog({ trigger, task }: { trigger: ReactNode; task: Task }) {
-    return (
-        <Dialog>
-            <DialogTrigger asChild>{trigger}</DialogTrigger>
-            <ModalCard className="max-w-4xl space-y-6">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <Badge className="bg-[#B8B8B8] border-[3px] border-[var(--dark)] px-6 py-1 text-sm font-bold">
-                            {task.status === "NOT_STARTED"
-                                ? "NÃO INICIADO"
-                                : task.status === "IN_PROGRESS"
-                                    ? "EM PROGRESSO"
-                                    : "FINALIZADO"}
-                        </Badge>
-                        <ModalUserSelector />
-                    </div>
-                    <Badge className="rounded-full border-[3px] border-[var(--dark)] px-4 py-1 text-base font-bold">
-                        {task.points}
-                    </Badge>
-                </div>
-
-                <div>
-                    <p className="text-4xl font-bold">{task.name}</p>
-                    <p className="mt-2 text-lg text-[var(--divider)]">{task.description}</p>
-                </div>
-
-                <section className="space-y-4">
-                    <p className="text-lg font-semibold uppercase tracking-[0.3em] text-[var(--divider)]">
-                        Descrição
-                    </p>
-                    <DescriptionArea />
-                </section>
-
-                <div className="flex flex-wrap gap-4">
-                    <ImprovementDialog
-                        trigger={
-                            <Button className="rounded-full border-[3px] border-[var(--dark)] bg-[var(--alert)] text-[var(--dark)]">
-                                <Plus />
-                                Adicionar melhoria
-                            </Button>
-                        }
-                        title="Melhoria 1"
+                    <Textarea
+                        placeholder="Descrição"
+                        className="mt-2 h-24 rounded-2xl border-[3px] border-[var(--dark)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--dark)]"
                     />
-                    <BugDialog
-                        trigger={
-                            <Button className="rounded-full border-[3px] border-[var(--dark)] bg-[var(--critic)] text-[var(--primary)]">
-                                <Plus />
-                                Adicionar bug
-                            </Button>
-                        }
-                        title="Bug 1"
-                    />
-                </div>
-
-                <section className="grid gap-6 md:grid-cols-2">
-                    <div className="space-y-3 rounded-[28px] border-[3px] border-[var(--dark)] bg-[var(--alert)] p-6">
-                        <div className="flex items-center justify-between">
-                            <p className="text-xl font-bold">Melhoria 1</p>
-                            <Badge className="rounded-full border-[3px] border-[var(--dark)] bg-[var(--primary)] px-3 py-0.5 text-xs font-bold">
-                                {task.improvements.length}
-                            </Badge>
-                        </div>
-                        <p className="text-sm text-[var(--dark)]">
-                            Descrição descrição descrição descrição descrição descrição
-                        </p>
-                    </div>
-
-                    <div className="space-y-3 rounded-[28px] border-[3px] border-[var(--dark)] bg-[var(--critic)] p-6 text-[var(--primary)]">
-                        <div className="flex items-center justify-between">
-                            <p className="text-xl font-bold">Bug 1</p>
-                            <Badge className="rounded-full border-[3px] border-[var(--dark)] bg-[var(--primary)] px-3 py-0.5 text-xs font-bold text-[var(--dark)]">
-                                {task.bugs.length}
-                            </Badge>
-                        </div>
-                        <p className="text-sm">
-                            Descrição descrição descrição descrição descrição descrição
-                        </p>
-                    </div>
                 </section>
             </ModalCard>
         </Dialog>
@@ -328,51 +270,123 @@ export function IndicatorAnalysisDialog({
     causes: Cause[];
     actions: Action[];
 }) {
+    const [openAssigneeId, setOpenAssigneeId] = useState<string | null>(null);
+
+    const { data: usersResponse, isLoading: isLoadingUsers } = useQuery({
+        queryKey: ["users"],
+        queryFn: () => userService.list({ page_size: 100 }),
+        enabled: true,
+    });
+
+    const users: ModelsUser[] = Array.isArray(usersResponse)
+        ? usersResponse
+        : (usersResponse?.data || []);
+
+    const handleAssigneeSelect = (actionId: string, userId: string) => {
+        // TODO: Implement API call to update action assignee
+        console.log("Update action", actionId, "with assignee", userId);
+        setOpenAssigneeId(null);
+    };
+
     return (
         <Dialog>
             <DialogTrigger asChild>{trigger}</DialogTrigger>
-            <ModalCard className="max-w-3xl space-y-6">
+            <ModalCard className="max-w-3xl">
                 <DialogHeader>
-                    <DialogTitle className="text-4xl font-bold">Análise do indicador</DialogTitle>
+                    <DialogTitle className="text-3xl font-bold">Análise do indicador</DialogTitle>
                 </DialogHeader>
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-4 grid-cols-2 self-center">
                     {causes.map((cause) => (
                         <div
                             key={cause.id}
-                            className={`rounded-[24px] border-[3px] border-[var(--dark)] p-5 text-[var(--dark)] ${levelClasses[cause.productivityLevel]}`}
+                            className={`max-w-full rounded-3xl border-3 border-[var(--dark)] p-4 bg-[var(--primary)] shadow-[0_4px_0_rgba(0,0,0,0.20)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[1px_1px_0px_rgba(0,0,0,0.25)]`}
                         >
-                            <p className="text-xl font-bold">Causa</p>
-                            <p className="text-sm font-semibold uppercase tracking-[0.4em]">
-                                {cause.metric === "REWORK_INDEX"
-                                    ? "ÍNDICE DE RETRABALHO"
-                                    : cause.metric === "WORK_VELOCITY"
-                                        ? "VELOCIDADE"
-                                        : "ÍNDICE DE INSTABILIDADE"}
-                            </p>
-                            <p className="mt-2 text-sm">{cause.description}</p>
+                            <div className={`p-6 rounded-2xl ${levelClasses[cause.productivityLevel]}`}>
+                                <p className="text-xl font-bold text-[var(--dark)]">Causa</p>
+                                <p className="mt-1 text-sm text-[var(--dark)]">
+                                    {cause.metric === "REWORK_INDEX"
+                                        ? "ÍNDICE DE RETRABALHO"
+                                        : cause.metric === "WORK_VELOCITY"
+                                            ? "VELOCIDADE"
+                                            : "ÍNDICE DE INSTABILIDADE"}
+                                </p>
+                            </div>
                         </div>
                     ))}
                     {actions.map((action) => (
                         <div
                             key={action.id}
-                            className="rounded-[24px] border-[3px] border-[var(--dark)] bg-[var(--critic)] p-5 text-[var(--primary)]"
+                            className="max-w-full rounded-3xl border-3 border-[var(--dark)] px-4 pb-4 pt-2 bg-[var(--primary)] shadow-[0_4px_0_rgba(0,0,0,0.20)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[1px_1px_0px_rgba(0,0,0,0.25)]"
                         >
-                            <div className="flex items-center justify-between">
-                                <p className="text-xl font-bold">Ação</p>
-                                <Badge className="bg-[#B8B8B8] border-[3px] border-[var(--dark)] px-5 py-1 text-xs font-bold text-[var(--dark)]">
+                            <div className="flex justify-between items-start mb-2">
+                                <Badge className="bg-[#B8B8B8] border-3 rounded-2xl border-[var(--dark)] text-xs font-bold text-[var(--dark)] whitespace-nowrap">
                                     {action.status === "NOT_STARTED"
                                         ? "NÃO INICIADO"
                                         : action.status === "IN_PROGRESS"
                                             ? "EM PROGRESSO"
                                             : "FINALIZADO"}
                                 </Badge>
+
+                                <div className="relative">
+                                    <div
+                                        className="flex items-center gap-2 rounded-full border-[2px] border-[var(--dark)] bg-[var(--primary)] px-3 py-1 cursor-pointer hover:bg-[var(--background)] transition-colors"
+                                        onClick={() => setOpenAssigneeId(openAssigneeId === action.id ? null : action.id)}
+                                    >
+                                        <UserRound size={14} />
+                                        <span className="text-xs font-semibold">
+                                            {action.owner?.name || "Sem atribuição"}
+                                        </span>
+                                    </div>
+                                    {openAssigneeId === action.id && (
+                                        <>
+                                            <div
+                                                className="fixed inset-0 z-10"
+                                                onClick={() => setOpenAssigneeId(null)}
+                                            />
+                                            <div className="absolute top-full right-0 mt-2 z-20 w-48 rounded-[12px] border-[3px] border-[var(--dark)] bg-[var(--primary)] shadow-lg max-h-60 overflow-y-auto">
+                                                {isLoadingUsers ? (
+                                                    <div className="px-4 py-2 text-sm text-[var(--disabled)]">
+                                                        Carregando...
+                                                    </div>
+                                                ) : users.length === 0 ? (
+                                                    <div className="px-4 py-2 text-sm text-[var(--disabled)]">
+                                                        Nenhum usuário encontrado
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleAssigneeSelect(action.id, "")}
+                                                            className={`w-full text-left px-4 py-2 text-sm font-semibold hover:bg-[var(--background)] transition-colors ${!action.owner?.id ? "bg-[var(--modal)]" : ""}`}
+                                                        >
+                                                            Sem atribuição
+                                                        </button>
+                                                        {users.map((user) => (
+                                                            <button
+                                                                key={user.id}
+                                                                type="button"
+                                                                onClick={() => handleAssigneeSelect(action.id, user.id || "")}
+                                                                className={`w-full text-left px-4 py-2 text-sm font-semibold hover:bg-[var(--background)] transition-colors ${action.owner?.id === user.id ? "bg-[var(--modal)]" : ""}`}
+                                                            >
+                                                                {user.name}
+                                                            </button>
+                                                        ))}
+                                                    </>
+                                                )}
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
                             </div>
-                            <p className="text-sm font-semibold uppercase tracking-[0.4em]">
-                                ÍNDICE DE INSTABILIDADE
-                            </p>
-                            <div className="mt-3 flex items-center gap-2 rounded-full border-[3px] border-[var(--primary)] px-4 py-1 text-sm font-semibold">
-                                <UserRound size={16} />
-                                {action.owner.name}
+                            <div className={`p-6 rounded-2xl bg-[var(--critic)]`}>
+                                <p className="text-2xl font-bold">Ação</p>
+                                <p className="mt-1 text-base font-bold uppercase tracking-wider">
+                                    {action.indicatorId.includes("REWORK")
+                                        ? "ÍNDICE DE RETRABALHO"
+                                        : action.indicatorId.includes("VELOCITY")
+                                            ? "VELOCIDADE"
+                                            : "ÍNDICE DE INSTABILIDADE"}
+                                </p>
                             </div>
                         </div>
                     ))}
@@ -382,85 +396,5 @@ export function IndicatorAnalysisDialog({
     );
 }
 
-export function CreateTaskDialog({
-    trigger,
-    onSubmit,
-}: {
-    trigger: ReactNode;
-    onSubmit?: (task: { name: string; description: string; points: number; status: TaskStatus }) => void;
-}) {
-    const [name, setName] = useState("Tarefa 1");
-    const [description, setDescription] = useState("");
-    const [points, setPoints] = useState(10);
-    const [status, setStatus] = useState<TaskStatus>("NOT_STARTED");
-    const [open, setOpen] = useState(false);
-
-    const handleSubmit = () => {
-        onSubmit?.({ name, description, points, status });
-        setOpen(false);
-        setName("Tarefa 1");
-        setDescription("");
-        setPoints(10);
-        setStatus("NOT_STARTED");
-    };
-
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>{trigger}</DialogTrigger>
-            <ModalCard>
-                <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[var(--divider)] mb-4">
-                    cadastro de tarefa
-                </p>
-
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <Badge className={`${statusClasses[status]} border-[3px] border-[var(--dark)] px-6 py-1 text-sm font-bold`}>
-                            {status === "NOT_STARTED"
-                                ? "NÃO INICIADO"
-                                : status === "IN_PROGRESS"
-                                    ? "EM PROGRESSO"
-                                    : "FINALIZADO"}
-                        </Badge>
-                        <ModalUserSelector />
-                    </div>
-                </div>
-
-                <div className="mt-6 flex items-center gap-3">
-                    <Input
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="flex-1 border-none bg-transparent p-0 text-3xl font-bold outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
-                        placeholder="Nome da tarefa"
-                    />
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--dark)] text-sm font-bold text-[var(--primary)]">
-                        <input
-                            type="number"
-                            value={points}
-                            onChange={(e) => setPoints(Number(e.target.value) || 0)}
-                            className="w-6 bg-transparent text-center outline-none"
-                            min={0}
-                        />
-                    </div>
-                </div>
-
-                <Textarea
-                    placeholder="Descrição"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    className="mt-4 h-36 rounded-[16px] border-[3px] border-[var(--dark)] bg-[#d9d9d9] px-6 py-4 text-lg text-[var(--dark)]"
-                />
-
-                <div className="mt-6 flex justify-end">
-                    <Button
-                        onClick={handleSubmit}
-                        className="rounded-full border-[3px] border-[var(--dark)] bg-[var(--dark)] px-6 py-2 text-sm font-bold text-[var(--primary)]"
-                    >
-                        Criar Tarefa
-                    </Button>
-                </div>
-            </ModalCard>
-        </Dialog>
-    );
-}
 
 

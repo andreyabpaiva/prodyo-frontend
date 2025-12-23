@@ -26,7 +26,7 @@ export default function Layout({
     });
 
     // Only show sidebar on specific routes
-    const showSidebar = pathname?.includes('/indicators') || pathname?.endsWith(projectId);
+    const showSidebar = pathname?.includes('/indicators')  || pathname.includes('create-task') || pathname?.endsWith(projectId);
 
     return (
         <>
