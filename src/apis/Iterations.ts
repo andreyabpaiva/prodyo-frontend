@@ -11,11 +11,13 @@
  */
 
 import {
+  AnalysisListParams,
   HandlersCreateIterationRequest,
   IterationsDeleteParams,
   IterationsDetailParams,
   IterationsListParams,
   ModelsIteration,
+  ModelsIterationAnalysisResponse,
 } from "./data-contracts";
 import { ContentType, HttpClient, RequestParams } from "./http-client";
 
@@ -114,6 +116,31 @@ export class Iterations<
       method: "DELETE",
       secure: true,
       type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * @description Get detailed analysis of iteration indicators with data points for graphing
+   *
+   * @tags iterations
+   * @name AnalysisList
+   * @summary Get iteration indicator analysis
+   * @request GET:/iterations/{id}/analysis
+   * @secure
+   * @response `200` `ModelsIterationAnalysisResponse` Iteration analysis with indicator data points
+   * @response `400` `string` Invalid iteration ID
+   * @response `404` `string` Iteration not found
+   * @response `500` `string` Failed to retrieve analysis
+   */
+  analysisList = (
+    { id, ...query }: AnalysisListParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<ModelsIterationAnalysisResponse, string>({
+      path: `/iterations/${id}/analysis`,
+      method: "GET",
+      secure: true,
+      type: ContentType.Json,
+      format: "json",
       ...params,
     });
 }

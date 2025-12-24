@@ -42,5 +42,9 @@ export const iterationService = {
     const response = await iterationsApi.iterationsDelete(params);
     return response.data;
   },
+  analysis: async (iterationId: string) => {
+    const response = await iterationsApi.analysisList({ id: iterationId });
+    return response.data;
+  }
 };
 

@@ -78,7 +78,6 @@ export interface HandlersCreateIterationRequest {
 export interface HandlersCreateProjectRequest {
   color?: string;
   description?: string;
-  /** Optional: custom indicator ranges */
   indicator_ranges?: HandlersIndicatorRangeRequest[];
   member_ids?: string[];
   name: string;
@@ -100,7 +99,6 @@ export interface HandlersCreateUserRequest {
 }
 
 export interface HandlersIndicatorRangeRequest {
-  /** SpeedPerIteration, ReworkPerIteration, InstabilityIndex */
   indicator_type?: string;
   range?: HandlersProductivityRangeRequest;
 }
@@ -189,6 +187,12 @@ export interface ModelsAction {
   updated_at?: string;
 }
 
+export interface ModelsAxisDefinition {
+  label?: string;
+  /** e.g., "TASK_SEQUENCE" */
+  type?: string;
+}
+
 export interface ModelsBug {
   assignee?: ModelsUser;
   created_at?: string;
@@ -208,6 +212,12 @@ export interface ModelsCause {
   metric?: ModelsMetricEnum;
   productivity_level?: ModelsProductivityEnum;
   updated_at?: string;
+}
+
+export interface ModelsDataPoint {
+  status?: ModelsProductivityEnum;
+  x?: number;
+  y?: number;
 }
 
 export interface ModelsImprov {
@@ -244,6 +254,13 @@ export interface ModelsIndicator {
   updated_at?: string;
 }
 
+export interface ModelsIndicatorAnalysisData {
+  indicatorType?: string;
+  points?: ModelsDataPoint[];
+  xAxis?: ModelsAxisDefinition;
+  yAxis?: ModelsAxisDefinition;
+}
+
 export interface ModelsIndicatorMetricValue {
   indicator_type?: ModelsIndicatorEnum;
   productivity_level?: ModelsProductivityEnum;
@@ -269,6 +286,11 @@ export interface ModelsIteration {
   start_at?: string;
   tasks?: ModelsTask[];
   updated_at?: string;
+}
+
+export interface ModelsIterationAnalysisResponse {
+  analysis?: Record<string, ModelsIndicatorAnalysisData>;
+  iterationId?: string;
 }
 
 export interface ModelsProductivityRange {
@@ -399,6 +421,14 @@ export interface IterationsDetailParams {
 }
 
 export interface IterationsDeleteParams {
+  /**
+   * Iteration ID
+   * @format uuid
+   */
+  id: string;
+}
+
+export interface AnalysisListParams {
   /**
    * Iteration ID
    * @format uuid

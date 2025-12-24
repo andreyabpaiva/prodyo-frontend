@@ -1,35 +1,36 @@
-import { Indicator, ProductivityLevel } from "@/types/domain";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ActionDialog, CauseActionDialog, CauseDialog } from "@/components/dashboard/modals";
+import { CauseActionDialog, CauseDialog } from "@/components/dashboard/modals";
+import { ModelsIndicatorAnalysisData, ModelsProductivityEnum } from "@/apis/data-contracts";
+import { ProductivityLevel } from "@/types/domain";
+
+function convertProductivityLevel(level: ModelsProductivityEnum | undefined): ProductivityLevel {
+    if (level === ModelsProductivityEnum.ProductivityCritical) return "CRITICAL";
+    if (level === ModelsProductivityEnum.ProductivityAlert) return "ALERT";
+    return "OK";
+}
 
 const metricCopy = {
-    WORK_VELOCITY: {
+    SpeedPerIteration: {
         title: "VELOCIDADE",
-        yLabel: "TEMP",
-        xLabel: "TAM",
         color: "#83B3FF",
     },
-    REWORK_INDEX: {
+    ReworkPerIteration: {
         title: "ÍNDICE DE RETRABALHO",
-        yLabel: "BUGS",
-        xLabel: "TAR",
         color: "#FF6B6B",
     },
-    INSTABILITY_INDEX: {
+    InstabilityIndex: {
         title: "ÍNDICE DE INSTABILIDADE",
-        yLabel: "MEL",
-        xLabel: "TAR",
         color: "#B9FF94",
     },
 };
 
-function StatusBadge({ level }: { level: ProductivityLevel }) {
-    const text = level === "CRITICAL" ? "CRÍTICO" : level === "ALERT" ? "ALERTA" : "OK";
+function StatusBadge({ level }: { level: ModelsProductivityEnum | undefined }) {
+    const text = level === ModelsProductivityEnum.ProductivityCritical ? "CRÍTICO" : level === ModelsProductivityEnum.ProductivityAlert ? "ALERTA" : "OK";
     const tone =
-        level === "CRITICAL" ? "bg-[var(--critic)] text-[var(--primary)]" : level === "ALERT" ? "bg-[var(--alert)] text-[var(--dark)]" : "bg-[var(--ok)] text-[var(--dark)]";
+        level === ModelsProductivityEnum.ProductivityCritical ? "bg-[var(--critic)] text-[var(--dark)] border-[var(--dark)]" : level === ModelsProductivityEnum.ProductivityAlert ? "bg-[var(--alert)] text-[var(--dark)]" : "bg-[var(--ok)] text-[var(--dark)]";
     return (
-        <Badge className={`rounded-full border-[3px] border-[--dark] px-6 py-1 text-sm font-bold ${tone}`}>
+        <Badge className={`rounded-full border-[3px] px-6 py-1 text-sm font-bold ${tone}`}>
             {text}
         </Badge>
     );
@@ -51,29 +52,31 @@ function LineChart({ values, color }: { values: number[]; color: string }) {
     );
 }
 
-function IndicatorPanel({ indicator }: { indicator: Indicator }) {
-    const copy = metricCopy[indicator.metric];
+function IndicatorPanel({ analysisData }: { analysisData: ModelsIndicatorAnalysisData }) {
+    const copy = metricCopy[analysisData.indicatorType as keyof typeof metricCopy];
+
+    const yValues = analysisData.points?.map(point => point.y || 0) || [];
+    const xLabels = analysisData.points?.map(point => point.x?.toString() || "") || [];
+    const latestStatus = analysisData.points?.[analysisData.points.length - 1]?.status;
+
     return (
         <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2 justify-end">
 
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <CauseDialog
-                        level="ALERT"
-                        metricLabel="ÍNDICE DE RETRABALHO"
+                        level={convertProductivityLevel(latestStatus)}
+                        metricLabel={copy.title}
                         trigger={
                             <Button variant={"default"} size={"sm"}>
                                 + Adicionar causa
                             </Button>
                         }
                     />
-                    {/* <Badge className="rounded-full border-[3px] border-[--dark] bg-[--alert] px-5 py-1 text-sm font-bold text-[--dark]">
-                    ALERTA
-                </Badge> */}
                 </div>
                 <div className="flex flex-wrap items-center gap-4">
                     <CauseActionDialog
-                        metricLabel="ÍNDICE DE INSTABILIDADE"
+                        metricLabel={copy.title}
                         trigger={
                             <Button variant={"default"} size={"sm"}>
                                 + Adicionar ação
@@ -81,21 +84,19 @@ function IndicatorPanel({ indicator }: { indicator: Indicator }) {
                         }
                     />
                 </div>
-                <StatusBadge level={indicator.productivityLevel} />
+                <StatusBadge level={latestStatus} />
             </div>
             <div className="flex flex-col gap-4 rounded-[32px] border-[3px] border-[--dark] bg-[var(--primary)] px-8 py-6">
                 <div className="flex items-center justify-between">
                     <div>
-                        {/* <p className="text-sm font-semibold uppercase text-[--divider]">{copy.yLabel}</p> */}
                         <p className="text-md font-bold">{copy.title}</p>
                     </div>
-
                 </div>
                 <div>
-                    <LineChart values={indicator.valueSeries} color={copy.color} />
+                    <LineChart values={yValues} color={copy.color} />
                     <div className="flex justify-between text-xs font-semibold uppercase tracking-[0.3em] text-[--divider]">
-                        <span>{copy.xLabel}</span>
-                        <span>{indicator.labels.join("   ")}</span>
+                        <span>{analysisData.xAxis?.label || ""}</span>
+                        <span>{xLabels.join("   ")}</span>
                     </div>
                 </div>
             </div>
@@ -103,20 +104,24 @@ function IndicatorPanel({ indicator }: { indicator: Indicator }) {
     );
 }
 
-export function IndicatorBoard({ indicators }: { indicators: Indicator[] }) {
-    const velocity = indicators.find((indicator) => indicator.metric === "WORK_VELOCITY");
-    const rework = indicators.find((indicator) => indicator.metric === "REWORK_INDEX");
-    const instability = indicators.find((indicator) => indicator.metric === "INSTABILITY_INDEX");
+export function IndicatorBoard({ analysisData }: { analysisData: Record<string, ModelsIndicatorAnalysisData> | undefined }) {
+    if (!analysisData) {
+        return null;
+    }
+
+    const velocity = analysisData["SpeedPerIteration"];
+    const rework = analysisData["ReworkPerIteration"];
+    const instability = analysisData["InstabilityIndex"];
 
     return (
         <section className="space-y-5">
 
             <div className="grid gap-6 lg:grid-cols-2">
-                {velocity && <IndicatorPanel indicator={velocity} />}
-                {rework && <IndicatorPanel indicator={rework} />}
+                {velocity && <IndicatorPanel analysisData={velocity} />}
+                {rework && <IndicatorPanel analysisData={rework} />}
             </div>
 
-            {instability && <IndicatorPanel indicator={instability} />}
+            {instability && <IndicatorPanel analysisData={instability} />}
 
         </section>
     );

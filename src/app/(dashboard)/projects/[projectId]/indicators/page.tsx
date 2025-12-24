@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { setActiveGraphsId } from "@/store/iterationSlice";
 import {
-    createIndicatorsFromApiIndicator,
     mapApiCauseToDomain,
     mapApiActionToDomain,
 } from "@/lib/mappers/indicator-mapper";
@@ -51,12 +50,22 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
         }
     }, [iterationParam, iterations, activeGraphsId, dispatch]);
 
-    // Fetch indicators for the active iteration
     const {
-        data: indicator,
-        isLoading: isLoadingIndicator,
-        error: indicatorError
+        data: analysisResponse,
+        isLoading: isLoadingAnalysis,
+        error: analysisError
     } = useQuery({
+        queryKey: ["analysis", activeGraphsId],
+        queryFn: () => {
+            if (!activeGraphsId) {
+                throw new Error("No active iteration selected");
+            }
+            return iterationService.analysis(activeGraphsId);
+        },
+        enabled: !!activeGraphsId,
+    });
+
+    const { data: indicator } = useQuery({
         queryKey: ["indicators", activeGraphsId],
         queryFn: () => {
             if (!activeGraphsId) {
@@ -67,10 +76,8 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
         enabled: !!activeGraphsId,
     });
 
-    // Find current iteration details
     const currentIteration = iterations?.find(i => i.id === activeGraphsId);
 
-    // Get causes and actions for the analysis dialog
     const indicatorCauses = useMemo(() =>
         indicator?.causes?.map(mapApiCauseToDomain) || [],
         [indicator]
@@ -80,7 +87,6 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
         [indicator]
     );
 
-    // Loading state
     if (isLoadingIterations) {
         return (
             <main className="ml-50 relative min-h-screen bg-[--dark] px-12 py-5 text-[--primary]">
@@ -136,28 +142,28 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
                 )}
             </header>
 
-            {isLoadingIndicator && (
+            {isLoadingAnalysis && (
                 <div className="flex items-center justify-center h-64">
-                    <p className="text-lg">Carregando indicadores...</p>
+                    <p className="text-lg">Carregando análise...</p>
                 </div>
             )}
 
-            {indicatorError && (
+            {analysisError && (
                 <div className="flex flex-col items-center justify-center h-64 gap-4">
-                    <p className="text-lg text-red-500">Erro ao carregar indicadores</p>
-                    <p className="text-sm text-[--divider]">{indicatorError.message}</p>
+                    <p className="text-lg text-red-500">Erro ao carregar análise</p>
+                    <p className="text-sm text-[--divider]">{analysisError.message}</p>
                 </div>
             )}
 
-            {!isLoadingIndicator && !indicatorError && indicator && (
+            {!isLoadingAnalysis && !analysisError && analysisResponse && (
                 <IndicatorBoard
-                    indicators={createIndicatorsFromApiIndicator(indicator)}
+                    analysisData={analysisResponse.analysis}
                 />
             )}
 
-            {!isLoadingIndicator && !indicatorError && !indicator && (
+            {!isLoadingAnalysis && !analysisError && !analysisResponse && (
                 <div className="flex items-center justify-center h-64">
-                    <p className="text-lg text-[--divider]">Nenhum indicador encontrado para esta iteração</p>
+                    <p className="text-lg text-[--divider]">Nenhuma análise encontrada para esta iteração</p>
                 </div>
             )}
         </main>
