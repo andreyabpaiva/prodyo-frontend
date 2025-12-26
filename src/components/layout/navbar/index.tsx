@@ -30,7 +30,7 @@ export default function Navbar() {
             </nav> */}
 
             <Button
-                className="font-bold rounded-full border-[3px] border-[var(--dark)] text-sm"
+                className="font-bold rounded-full border-[3px] outline:none border-[var(--dark)] text-sm"
                 variant={"outline"}
                 onClick={() => router.push("/create-project")}
             >
