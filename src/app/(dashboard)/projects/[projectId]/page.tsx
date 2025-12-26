@@ -2,12 +2,14 @@
 
 import { use, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { IterationBoard } from "@/components/dashboard/iteration-board";
 import { projectService } from "@/services/project";
 import { iterationService } from "@/services/iteration";
 import { useAppDispatch } from "@/store/hooks";
 import { setProjectId } from "@/store/projectSlice";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 
 type ProjectDetailProps = {
     params: Promise<{ projectId: string }>;
@@ -15,6 +17,14 @@ type ProjectDetailProps = {
 
 export default function ProjectDetailPage({ params }: ProjectDetailProps) {
     const { projectId } = use(params);
+    const router = useRouter();
+
+    const { data: iterations = [], isLoading: isLoading } = useQuery({
+        queryKey: ["iterations", projectId],
+        queryFn: () => iterationService.list({ project_id: projectId ?? "" }),
+        enabled: !!projectId,
+    });
+
     const dispatch = useAppDispatch();
 
     useEffect(() => {
@@ -23,47 +33,33 @@ export default function ProjectDetailPage({ params }: ProjectDetailProps) {
         }
     }, [projectId, dispatch]);
 
-    const { data: project, isLoading: isLoadingProject, error: projectError } = useQuery({
-        queryKey: ["projectDetail", projectId],
-        queryFn: () => projectService.getDetail({ id: projectId }),
-    });
-
-    const { data: iterations = [], isLoading: isLoadingIterations } = useQuery({
-        queryKey: ["iterations", projectId],
-        queryFn: () => iterationService.list({ project_id: projectId }),
-        enabled: !!projectId,
-    });
-
-    const isLoading = isLoadingProject || isLoadingIterations;
-
     if (isLoading) {
         return (
-            <main className="min-h-screen bg-[--background] text-[--text] flex items-center justify-center">
-                <div className="text-lg font-semibold">Carregando projeto...</div>
+            <main className="min-h-screen bg-[--background] text-[--text] flex items-center justify-center gap-2">
+                <div className="text-lg font-semibold">Carregando iterações</div>
+                <Spinner fontSize={15}/>
             </main>
         );
     }
 
-    if (projectError || !project) {
-        notFound();
-    }
+    if (iterations === null || iterations.length === 0) {
+        return (
+            <div className="fixed inset-0 flex flex-col gap-4 justify-center items-center p-8 text-center text-lg font-semibold bg-[--background]">
+                Nenhuma iteração disponível.
 
-    const tasksByIteration: Record<string, any[]> = {};
-    const iterationsList = iterations || [];
-    iterationsList.forEach((iteration) => {
-        if (iteration.id && iteration.tasks) {
-            tasksByIteration[iteration.id] = iteration.tasks;
-        }
-    });
+                <Button
+                    onClick={() =>
+                        router.push(`/projects/${projectId}/create-iteration`)
+                    }>
+                    Criar iteração
+                </Button>
+            </div>
+        );
+    }
 
     return (
         <main className="min-h-screen bg-[--background] text-[--text]">
-            <IterationBoard
-                projectId={project.id || projectId}
-                project={project}
-                iterations={iterationsList}
-                tasksByIteration={tasksByIteration}
-            />
+            <IterationBoard iterations={iterations} />
         </main>
     );
 }

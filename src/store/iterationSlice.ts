@@ -2,13 +2,13 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface IterationState {
     iterationId: string | null;
-    activeIterationsId: string | null; // Active iteration in "ITERAÇÕES" section
-    activeGraphsId: string | null;     // Active iteration in "GRÁFICOS" section
+    activeIterationId: string | null; 
+    activeGraphsId: string | null;    
 }
 
 const initialState: IterationState = {
     iterationId: null,
-    activeIterationsId: null,
+    activeIterationId: null,
     activeGraphsId: null,
 }
 
@@ -23,7 +23,7 @@ const iterationSlice = createSlice({
             state.iterationId = null;
         },
         setActiveIterationsId: (state, action: PayloadAction<string | null>) => {
-            state.activeIterationsId = action.payload;
+            state.activeIterationId = action.payload;
         },
         setActiveGraphsId: (state, action: PayloadAction<string | null>) => {
             state.activeGraphsId = action.payload;

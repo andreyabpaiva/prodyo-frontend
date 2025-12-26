@@ -21,7 +21,7 @@ export function IterationSidebar({ iterations, projectId }: IterationSidebarProp
     const dispatch = useDispatch();
     const router = useRouter();
     const userName = useSelector((state: RootState) => state.auth.user?.name);
-    const activeIterationsId = useSelector((state: RootState) => state.iteration.activeIterationsId);
+    const activeIterationsId = useSelector((state: RootState) => state.iteration.activeIterationId);
     const activeGraphsId = useSelector((state: RootState) => state.iteration.activeGraphsId);
 
     return (

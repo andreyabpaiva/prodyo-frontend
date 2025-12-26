@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, Plus, Trash2, Upload, UserRound } from "lucide-react";
+import { ChevronDown, ChevronUp, MoveDown, Plus, Trash2, Upload, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ModelsStatusEnum, ModelsTask } from "@/apis/data-contracts";
 import { useDispatch } from "react-redux";
@@ -12,19 +12,13 @@ import { bugService } from "@/services/bug";
 import { improvementService } from "@/services/improvement";
 import { taskService } from "@/services/task";
 import { userService } from "@/services/user";
+import { useAppSelector } from "@/store/hooks";
+import { RootState } from "@/store/store";
+import { Input } from "../ui/input";
 
 type IterationTaskListProps = {
     tasks: ModelsTask[] | null;
-    iterationLabel: string;
-    projectId: string;
     iterationId?: string;
-    iterationDescription?: string;
-};
-
-type SearchState = {
-    name: string;
-    status: string;
-    points: string;
 };
 
 const statusLabels: Record<ModelsStatusEnum, string> = {
@@ -39,92 +33,44 @@ const statusTone: Record<ModelsStatusEnum, string> = {
     [ModelsStatusEnum.StatusCompleted]: "bg-[var(--ok)] text-[var(--text)]",
 };
 
-export function IterationTaskList({ tasks, iterationLabel, projectId, iterationId, iterationDescription }: IterationTaskListProps) {
+export function IterationTaskList({ tasks, iterationId }: IterationTaskListProps) {
     const [expandedTaskId, setExpandedTaskId] = useState<string | null>(tasks?.[0]?.id ?? null);
-    const [search, setSearch] = useState<SearchState>({ name: "", status: "", points: "" });
+    const projectId = useAppSelector((state: RootState) => state.project.projectId);
     const router = useRouter();
-    const dispatch = useDispatch();
-
-    const filteredTasks = useMemo(() => {
-        if (!tasks) return [];
-        return tasks.filter((task) => {
-            const nameMatch = task.name
-                ? task.name.toLowerCase().includes(search.name.toLowerCase())
-                : true;
-            const statusLabel = task.status && statusLabels[task.status as ModelsStatusEnum]
-                ? statusLabels[task.status as ModelsStatusEnum]
-                : "";
-            const statusMatch = statusLabel.toLowerCase().includes(search.status.toLowerCase());
-            const pointsMatch = search.points
-                ? String(task.points || "").includes(search.points)
-                : true;
-            return nameMatch && statusMatch && pointsMatch;
-        });
-    }, [tasks, search]);
 
     return (
-        <section className="flex-1 px-4">
-            <header className="mb-6">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <h1 className="text-2xl font-bold">{iterationLabel}</h1>
-                        <p className="text-sm text-[var(--disabled)]">{iterationDescription}</p>
-                        {/* <Badge className="rounded-full border-2 border-[--dark] bg-[--primary] h-8 w-8 text-sm font-bold">1</Badge> */}
+        <section>
+            <header className="my-5">
+                <div className="flex-col justify-start">
+                    <div className="flex gap-1">
+                        <MoveDown color="var(--divider)" className="w-4 h-4 items-center justify-center" />
+                        <p className="text-xs text-[var(--divider)]">Crie uma nova <u>tarefa</u> aqui</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Button variant="outline" size="icon" onClick={() => router.push(`/projects/${projectId}/delete-iteration/${iterationId}`)}>
-                            <Trash2 strokeWidth={2.5} size={18} />
-                        </Button>
+                    <div className="flex mt-3">
                         <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => router.push(`/projects/${projectId}/create-iteration`)}
+                            variant="default"
+                            onClick={() => router.push(`/projects/${projectId}/create-task`)}
                         >
-                            <Plus strokeWidth={2.5} size={18} />
+                            <Plus strokeWidth={2.5} size={16} />
+                            Adicionar tarefa
                         </Button>
                     </div>
-                </div>
-                <div className="mt-4 flex items-end gap-4">
-                    <div className="grid flex-1 gap-1 md:grid-cols-4">
-                        {["Nome", "Status", "Pontos"].map((label, index) => (
-                            <input
-                                key={label}
-                                placeholder={label}
-                                value={Object.values(search)[index]}
-                                onChange={(event) => {
-                                    const entries: Array<keyof SearchState> = ["name", "status", "points"];
-                                    setSearch((prev) => ({ ...prev, [entries[index]]: event.target.value }));
-                                }}
-                                className="rounded-[16px] border-[3px] border-[var(--dark)] bg-[var(--background)] px-4 py-2 text-sm font-semibold text-[var(--disabled)] outline-none"
-                            />
-                        ))}
-                    </div>
-
-                </div>
-                <div className="flex items-center justify-end mt-3">
-                    <Button
-                        variant="default"
-                        onClick={() => router.push(`/projects/${projectId}/create-task`)}
-                    >
-                        <Plus strokeWidth={2.5} size={16} />
-                        Adicionar tarefa
-                    </Button>
                 </div>
             </header>
 
             <div className="space-y-4">
-                {filteredTasks.map((task) => (
+                {tasks ? tasks.map((task) => (
                     <TaskItem
                         key={task.id}
                         task={task}
                         isExpanded={expandedTaskId === task.id}
-                        projectId={projectId}
+                        projectId={projectId ?? ""}
                         iterationId={iterationId}
                         onToggleExpand={() => {
                             setExpandedTaskId(expandedTaskId === task.id ? null : task.id ?? null);
                         }}
                     />
-                ))}
+                )) : null}
             </div>
         </section>
     );
