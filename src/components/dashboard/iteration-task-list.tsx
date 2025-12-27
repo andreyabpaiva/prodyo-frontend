@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, MoveDown, Plus, Trash2, Upload, UserRound } from "lucide-react";
+import { ChevronDown, ChevronUp, CirclePause, CirclePlay, MoveDown, Plus, Trash2, Upload, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ModelsStatusEnum, ModelsTask } from "@/apis/data-contracts";
 import { useDispatch } from "react-redux";
@@ -15,6 +15,7 @@ import { userService } from "@/services/user";
 import { useAppSelector } from "@/store/hooks";
 import { RootState } from "@/store/store";
 import { Input } from "../ui/input";
+import { TaskExpansionProvider, useTaskExpansion } from "@/contexts/task-expansion-context";
 
 type IterationTaskListProps = {
     tasks: ModelsTask[] | null;
@@ -34,65 +35,62 @@ const statusTone: Record<ModelsStatusEnum, string> = {
 };
 
 export function IterationTaskList({ tasks, iterationId }: IterationTaskListProps) {
-    const [expandedTaskId, setExpandedTaskId] = useState<string | null>(tasks?.[0]?.id ?? null);
     const projectId = useAppSelector((state: RootState) => state.project.projectId);
     const router = useRouter();
 
     return (
-        <section>
-            <header className="my-5">
-                <div className="flex-col justify-start">
-                    <div className="flex gap-1">
-                        <MoveDown color="var(--divider)" className="w-4 h-4 items-center justify-center" />
-                        <p className="text-xs text-[var(--divider)]">Crie uma nova <u>tarefa</u> aqui</p>
+        <TaskExpansionProvider>
+            <section>
+                <header className="my-5">
+                    <div className="flex-col justify-start">
+                        <div className="flex gap-1">
+                            <MoveDown color="var(--divider)" className="w-4 h-4 items-center justify-center" />
+                            <p className="text-xs text-[var(--divider)]">Crie uma nova <u>tarefa</u> aqui</p>
+                        </div>
+                        <div className="flex mt-3">
+                            <Button
+                                variant="default"
+                                onClick={() => router.push(`/projects/${projectId}/create-task`)}
+                            >
+                                <Plus strokeWidth={2.5} size={16} />
+                                Adicionar tarefa
+                            </Button>
+                        </div>
                     </div>
-                    <div className="flex mt-3">
-                        <Button
-                            variant="default"
-                            onClick={() => router.push(`/projects/${projectId}/create-task`)}
-                        >
-                            <Plus strokeWidth={2.5} size={16} />
-                            Adicionar tarefa
-                        </Button>
-                    </div>
-                </div>
-            </header>
+                </header>
 
-            <div className="space-y-4">
-                {tasks ? tasks.map((task) => (
-                    <TaskItem
-                        key={task.id}
-                        task={task}
-                        isExpanded={expandedTaskId === task.id}
-                        projectId={projectId ?? ""}
-                        iterationId={iterationId}
-                        onToggleExpand={() => {
-                            setExpandedTaskId(expandedTaskId === task.id ? null : task.id ?? null);
-                        }}
-                    />
-                )) : null}
-            </div>
-        </section>
+                <div className="space-y-4">
+                    {tasks ? tasks.map((task) => (
+                        <TaskItem
+                            key={task.id}
+                            task={task}
+                            projectId={projectId ?? ""}
+                            iterationId={iterationId}
+                        />
+                    )) : null}
+                </div>
+            </section>
+        </TaskExpansionProvider>
     );
 }
 
 function TaskItem({
     task,
-    isExpanded,
     projectId,
     iterationId,
-    onToggleExpand
 }: {
     task: ModelsTask;
-    isExpanded: boolean;
     projectId: string;
     iterationId?: string;
-    onToggleExpand: () => void;
 }) {
     const router = useRouter();
     const queryClient = useQueryClient();
     const [isAssigneeOpen, setIsAssigneeOpen] = useState(false);
     const [isStatusOpen, setIsStatusOpen] = useState(false);
+    const [pointsValue, setPointsValue] = useState(task.points?.toString() ?? "0");
+    const [isTimerRunning, setIsTimerRunning] = useState(false);
+    const [elapsedSeconds, setElapsedSeconds] = useState(task.timer ? Number(task.timer) : 0);
+    const { expandedTaskId, toggleTask } = useTaskExpansion();
 
     const { data: bugs = [] } = useQuery({
         queryKey: ["bugs", task.id],
@@ -102,7 +100,7 @@ function TaskItem({
             }
             return bugService.list({ task_id: task.id });
         },
-        enabled: !!task.id && isExpanded,
+        enabled: !!task.id && expandedTaskId === task.id,
     });
 
     const { data: improvements = [] } = useQuery({
@@ -113,7 +111,7 @@ function TaskItem({
             }
             return improvementService.list({ task_id: task.id });
         },
-        enabled: !!task.id && isExpanded,
+        enabled: !!task.id && expandedTaskId === task.id,
     });
 
     const { data: usersData, isLoading: isLoadingUsers } = useQuery({
@@ -134,7 +132,7 @@ function TaskItem({
     const users = usersData?.data || usersData?.users || (Array.isArray(usersData) ? usersData : []);
 
     const updateTaskMutation = useMutation({
-        mutationFn: async ({ assigneeId, status }: { assigneeId?: string; status?: string }) => {
+        mutationFn: async ({ assigneeId, status, points, timer }: { assigneeId?: string; status?: string, points?: number, timer?: string }) => {
             if (!task.id) {
                 throw new Error("Task ID is required");
             }
@@ -142,6 +140,8 @@ function TaskItem({
                 task.id, {
                 ...(assigneeId !== undefined && { assignee_id: assigneeId || undefined }),
                 ...(status !== undefined && { status }),
+                ...(points !== undefined && { points }),
+                ...(timer !== undefined && { timer }),
             });
         },
         onSuccess: async () => {
@@ -157,22 +157,81 @@ function TaskItem({
         },
     });
 
+    useEffect(() => {
+        let interval: NodeJS.Timeout | null = null;
+
+        if (isTimerRunning) {
+            interval = setInterval(() => {
+                setElapsedSeconds((prev) => prev + 1);
+            }, 1000);
+        }
+
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [isTimerRunning]);
+
+    const formatTime = (seconds: number) => {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    };
+
     const handleAssigneeSelect = (userId: string) => {
-        updateTaskMutation.mutate({ assigneeId: userId || undefined });
+        updateTaskMutation.mutate({ assigneeId: userId });
     };
 
     const handleStatusSelect = (status: ModelsStatusEnum) => {
         updateTaskMutation.mutate({ status });
     };
 
+    const handlePointsChange = (points: number) => {
+        updateTaskMutation.mutate({ points });
+    };
+
+    const toggleTimer = () => {
+        if (isTimerRunning) {
+            updateTaskMutation.mutate({ timer: elapsedSeconds.toString() });
+        }
+        setIsTimerRunning(!isTimerRunning);
+    };
+
     return (
         <div className="rounded-[18px] border-[3px] border-[var(--dark)] bg-[var(--primary)] px-4 py-3 shadow-[0_4px_0_rgba(0,0,0,0.15)]">
             <div className="flex flex-wrap items-center gap-3">
                 <div className="flex flex-1 flex-col">
-                    <span className="text-sm text-[var(--divider)]">{(task.timer ? new Date(task.timer).toLocaleTimeString() : "")}</span>
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm text-[var(--divider)]">
+                            {formatTime(elapsedSeconds)}
+                        </span>
+                        <button onClick={toggleTimer}>
+                            {isTimerRunning ? (
+                                <CirclePause size={18} className="text-[var(--divider)] cursor-pointer" />
+                            ) : (
+                                <CirclePlay size={18} className="text-[var(--divider)] cursor-pointer" />
+                            )}
+                        </button>
+                    </div>
                     <div className="flex items-center gap-3">
                         <p className="text-lg font-semibold">{task.name}</p>
-                        <Badge className="rounded-full border-[2px] bg-[var(--dark)] h-8 w-8 text-xs font-bold text-[var(--primary)]">{task.points}</Badge>
+                        <div className="flex items-center">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--dark)] text-sm font-bold text-[var(--primary)]">
+                                <input
+                                    type="text"
+                                    value={pointsValue}
+                                    inputMode="numeric"
+                                    onChange={(e) => setPointsValue(e.target.value.replace(/\D/g, ''))}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handlePointsChange(Number(pointsValue));
+                                            e.currentTarget.blur();
+                                        }
+                                    }}
+                                    className="w-6 bg-transparent text-center outline-none"
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -235,10 +294,10 @@ function TaskItem({
                 <Button
                     variant="outline"
                     size="icon"
-                    onClick={onToggleExpand}
+                    onClick={() => toggleTask(task.id ?? "")}
                     className="rounded-full border-[2px] border-[var(--dark)]"
                 >
-                    {isExpanded ? (
+                    {expandedTaskId === task.id ? (
                         <ChevronUp strokeWidth={2.5} size={18} />
                     ) : (
                         <ChevronDown strokeWidth={2.5} size={18} />
@@ -280,7 +339,7 @@ function TaskItem({
             </div>
 
             <div
-                className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? "mt-4 max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
+                className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedTaskId === task.id ? "mt-4 max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
                     }`}
             >
                 <div className="space-y-4">
@@ -335,7 +394,7 @@ function TaskItem({
                             </button>
                         </div>
                         {bugs && bugs.length > 0 ? (
-                            <div className="flex flex-wrap gap-3">
+                            <div className="flex flex-wrap gap-3 pb-1">
                                 {bugs.map((bug) => (
                                     <div
                                         key={bug.id}

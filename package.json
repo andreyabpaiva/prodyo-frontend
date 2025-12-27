@@ -25,6 +25,7 @@
     "fetch": "^1.1.0",
     "lucide-react": "^0.545.0",
     "next": "15.5.4",
+    "next-themes": "^0.4.6",
     "pnpm": "^10.18.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -32,6 +33,7 @@
     "react-redux": "^9.1.2",
     "react-simple-typewriter": "^4.0.4",
     "redux": "^5.0.1",
+    "sonner": "^2.0.7",
     "swagger-typescript-api": "^13.2.15",
     "tailwind-merge": "^3.3.1",
     "zod": "^4.1.12"

@@ -189,7 +189,6 @@ export interface ModelsAction {
 
 export interface ModelsAxisDefinition {
   label?: string;
-  /** e.g., "TASK_SEQUENCE" */
   type?: string;
 }
 
@@ -327,7 +326,8 @@ export interface ModelsTask {
   status?: ModelsStatusEnum;
   /** Sub-tasks */
   tasks?: ModelsTask[];
-  timer?: string;
+  /** Duration in seconds */
+  timer?: number;
   updated_at?: string;
 }
 

@@ -20,6 +20,7 @@ import { authService } from "@/services/auth";
 import { useAppDispatch } from "@/store/hooks";
 import { setCredentials } from "@/store/authSlice";
 import { Eye, EyeOff } from "lucide-react";
+import { toast } from "sonner";
 
 type AuthField = {
   id: keyof LoginFormValues;
@@ -72,7 +73,7 @@ export function LoginForm() {
         router.push("/projects");
       }
     } catch (error) {
-      console.error("Login error:", error);
+      toast.error("Falha ao acessar. Verifique suas credenciais.");
       throw error;
     }
   };
