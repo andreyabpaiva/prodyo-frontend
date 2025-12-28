@@ -5,16 +5,15 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useState, useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { UserSelect } from "../utils/UserSelect";
 import { improvementService } from "@/services/improvement";
 import type { HandlersCreateImprovRequest } from "@/apis/data-contracts";
+import { UserSelect } from "@/components/utils/UserSelect";
 
 type CreateImprovementModalProps = {
-    projectId: string;
     taskId: string;
 };
 
-export function CreateImprovementModal({ projectId, taskId }: CreateImprovementModalProps) {
+export function CreateImprovementForm({ taskId }: CreateImprovementModalProps) {
     const router = useRouter();
     const queryClient = useQueryClient();
     const [name, setName] = useState("");
@@ -84,16 +83,7 @@ export function CreateImprovementModal({ projectId, taskId }: CreateImprovementM
                 >
                     <X size={24} strokeWidth={2.5} />
                 </button>
-
-                {/* <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[var(--divider)] mb-6">
-                    cadastro de melhoria
-                </p> */}
                 <div className="flex items-center">
-                    {/* <button className="flex items-center gap-2  py-2 text-sm font-semibold">
-                        <UserRound size={16} />
-                        Andreya
-                        <ChevronDown size={16} />
-                    </button> */}
                     <UserSelect
                         value={assigneeId}
                         onChange={(value) => setAssigneeId(value)}

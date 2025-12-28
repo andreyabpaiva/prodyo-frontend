@@ -3,13 +3,13 @@
 import { use, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { notFound, useRouter } from "next/navigation";
-import { IterationBoard } from "@/components/dashboard/iteration-board";
 import { projectService } from "@/services/project";
 import { iterationService } from "@/services/iteration";
 import { useAppDispatch } from "@/store/hooks";
 import { setProjectId } from "@/store/projectSlice";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { IterationBoard } from "@/components/dashboard/board/Iteration";
 
 type ProjectDetailProps = {
     params: Promise<{ projectId: string }>;

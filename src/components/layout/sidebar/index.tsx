@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store/store";
 import { setActiveIterationsId, setActiveGraphsId, setIterationNumber } from "@/store/iterationSlice";
 import { useRouter, usePathname } from "next/navigation";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 type IterationSidebarProps = {
     iterations: ModelsIteration[];

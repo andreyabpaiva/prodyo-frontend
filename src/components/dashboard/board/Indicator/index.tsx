@@ -2,8 +2,8 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CauseActionDialog, CauseDialog } from "@/components/dashboard/modals";
-import { ModelsIndicatorAnalysisData, ModelsProductivityEnum } from "@/apis/data-contracts";
+import { CauseDialog } from "@/components/dashboard/modals";
+import { ModelsIndicatorAnalysisData, ModelsProductivityEnum, ModelsAction, ModelsMetricEnum } from "@/apis/data-contracts";
 import { ProductivityLevel } from "@/types/domain";
 import { Line } from "react-chartjs-2";
 import {
@@ -17,6 +17,10 @@ import {
     Legend,
     ChartOptions,
 } from "chart.js";
+import { useRouter } from "next/navigation";
+import { RootState } from "@/store/store";
+import { useSelector, useDispatch } from "react-redux";
+import { setCriticalMetricLabel } from "@/store/iterationSlice";
 
 // Register Chart.js components
 ChartJS.register(
@@ -134,12 +138,34 @@ function LineChart({ values, color, labels }: { values: number[]; color: string;
     );
 }
 
-function IndicatorPanel({ analysisData }: { analysisData: ModelsIndicatorAnalysisData }) {
+function IndicatorPanel({ analysisData, actions }: { analysisData: ModelsIndicatorAnalysisData; actions?: ModelsAction[] }) {
     const copy = metricCopy[analysisData.indicatorType as keyof typeof metricCopy];
+    const projectId = useSelector((state: RootState) => state.project.projectId);
+    const dispatch = useDispatch();
+    const router = useRouter();
 
     const yValues = analysisData.points?.map(point => point.y || 0) || [];
     const xLabels = analysisData.points?.map(point => point.x?.toString() || "") || [];
     const latestStatus = analysisData.points?.[analysisData.points.length - 1]?.status;
+
+    // Map indicator type to metric enum for comparison
+    const metricTypeMap: Record<string, ModelsMetricEnum> = {
+        "SpeedPerIteration": ModelsMetricEnum.MetricWorkVelocity,
+        "ReworkPerIteration": ModelsMetricEnum.MetricReworkIndex,
+        "InstabilityIndex": ModelsMetricEnum.MetricInstabilityIndex,
+    };
+
+    const currentMetric = metricTypeMap[analysisData.indicatorType as string];
+
+    // Check if there's already an action for this metric
+    const hasExistingAction = actions?.some(action =>
+        action.cause?.metric === currentMetric
+    );
+
+    const handleAddAction = () => {
+        dispatch(setCriticalMetricLabel(copy.title));
+        router.push(`/projects/${projectId}/create-action`);
+    };
 
     return (
         <div className="flex flex-col gap-4">
@@ -161,15 +187,12 @@ function IndicatorPanel({ analysisData }: { analysisData: ModelsIndicatorAnalysi
                 </div>
                 <div className="flex flex-wrap items-center gap-4">
                     {
-                        latestStatus && latestStatus === ModelsProductivityEnum.ProductivityCritical && (
-                            <CauseActionDialog
-                                metricLabel={copy.title}
-                                trigger={
-                                    <Button variant={"default"} size={"sm"}>
-                                        + Adicionar ação
-                                    </Button>
-                                }
-                            />)
+                        latestStatus && latestStatus === ModelsProductivityEnum.ProductivityCritical && !hasExistingAction && (
+                            <Button variant={"default"} size={"sm"} onClick={handleAddAction}>
+                                + Adicionar ação
+                            </Button>
+
+                        )
                     }
                 </div>
                 <StatusBadge level={latestStatus} />
@@ -193,7 +216,7 @@ function IndicatorPanel({ analysisData }: { analysisData: ModelsIndicatorAnalysi
     );
 }
 
-export function IndicatorBoard({ analysisData }: { analysisData: Record<string, ModelsIndicatorAnalysisData> | undefined }) {
+export function IndicatorBoard({ analysisData, actions }: { analysisData: Record<string, ModelsIndicatorAnalysisData> | undefined; actions?: ModelsAction[] }) {
     if (!analysisData) {
         return null;
     }
@@ -206,11 +229,11 @@ export function IndicatorBoard({ analysisData }: { analysisData: Record<string, 
         <section className="space-y-5">
 
             <div className="grid gap-6 lg:grid-cols-2">
-                {velocity && <IndicatorPanel analysisData={velocity} />}
-                {rework && <IndicatorPanel analysisData={rework} />}
+                {velocity && <IndicatorPanel analysisData={velocity} actions={actions} />}
+                {rework && <IndicatorPanel analysisData={rework} actions={actions} />}
             </div>
 
-            {instability && <IndicatorPanel analysisData={instability} />}
+            {instability && <IndicatorPanel analysisData={instability} actions={actions} />}
 
         </section>
     );

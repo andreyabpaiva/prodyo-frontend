@@ -1,4 +1,4 @@
-import { CreateTaskModal } from "@/components/dashboard/create-task-modal";
+import CreateTaskForm from "@/components/forms/task";
 
 type CreateTaskPageProps = {
     params: Promise<{ projectId: string }>;
@@ -7,10 +7,6 @@ type CreateTaskPageProps = {
 export default async function CreateTaskPage({ params }: CreateTaskPageProps) {
     const { projectId } = await params;
 
-    return (
-        <CreateTaskModal 
-            projectId={projectId} 
-        />
-    );
+    return <CreateTaskForm projectId={projectId} />;
 }
 

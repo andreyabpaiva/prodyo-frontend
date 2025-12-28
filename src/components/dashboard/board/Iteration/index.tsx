@@ -2,9 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { IterationTaskList } from "./iteration-task-list";
 import type { ModelsProject, ModelsIteration } from "@/apis/data-contracts";
-import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { taskService } from "@/services/task";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -12,9 +10,11 @@ import { setActiveIterationsId } from "@/store/iterationSlice";
 import { projectService } from "@/services/project";
 import { iterationService } from "@/services/iteration";
 import { Plus, Trash2 } from "lucide-react";
-import { Spinner } from "../ui/spinner";
-import { Input } from "../ui/input";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { Spinner } from "@/components/ui/spinner";
+import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { IterationTaskList } from "../../list/IterationList";
 
 export function IterationBoard({ iterations }: { iterations: ModelsIteration[] }) {
     const dispatch = useAppDispatch();

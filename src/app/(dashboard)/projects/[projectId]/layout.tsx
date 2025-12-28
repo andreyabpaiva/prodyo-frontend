@@ -1,10 +1,10 @@
 "use client";
 
 import { ReactNode, use } from "react";
-import { IterationSidebar } from "@/components/dashboard/iteration-sidebar";
 import { useQuery } from "@tanstack/react-query";
 import { iterationService } from "@/services/iteration";
 import { usePathname } from "next/navigation";
+import { IterationSidebar } from "@/components/layout/sidebar";
 
 export default function Layout({
     children,
@@ -25,7 +25,7 @@ export default function Layout({
         enabled: !!projectId,
     });
 
-    const showSidebar = pathname?.includes('/indicators')  || pathname.includes('create-task') || pathname?.endsWith(projectId);
+    const showSidebar = pathname?.includes('/projects')  || pathname.includes('indicators') || pathname?.endsWith(projectId);
 
     return (
         <>

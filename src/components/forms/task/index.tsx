@@ -36,7 +36,7 @@ const statusLabels: Record<TaskStatus, string> = {
     COMPLETED: "FINALIZADO",
 };
 
-export function CreateTaskModal({ projectId }: CreateTaskModalProps) {
+export default function CreateTaskForm({ projectId }: CreateTaskModalProps) {
     const router = useRouter();
     const queryClient = useQueryClient();
     const activeIterationId = useAppSelector((state) => state.iteration.activeIterationId);
@@ -99,10 +99,6 @@ export function CreateTaskModal({ projectId }: CreateTaskModalProps) {
                 >
                     <X size={24} strokeWidth={2.5} />
                 </button>
-
-                {/* <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[var(--divider)] mb-6">
-                    cadastro de tarefa
-                </p> */}
 
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <div className="flex items-center gap-3">

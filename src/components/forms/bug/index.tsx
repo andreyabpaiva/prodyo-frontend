@@ -6,15 +6,14 @@ import { useRouter } from "next/navigation";
 import { useState, useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { bugService } from "@/services/bug";
-import { UserSelect } from "../utils/UserSelect";
 import type { HandlersCreateBugRequest } from "@/apis/data-contracts";
+import { UserSelect } from "@/components/utils/UserSelect";
 
 type CreateBugModalProps = {
-    projectId: string;
     taskId: string;
 };
 
-export function CreateBugModal({ projectId, taskId }: CreateBugModalProps) {
+export default function CreateBugForm({ taskId }: CreateBugModalProps) {
     const router = useRouter();
     const queryClient = useQueryClient();
     const [description, setDescription] = useState("");

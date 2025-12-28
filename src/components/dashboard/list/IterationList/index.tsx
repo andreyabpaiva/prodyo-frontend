@@ -14,10 +14,9 @@ import { taskService } from "@/services/task";
 import { userService } from "@/services/user";
 import { useAppSelector } from "@/store/hooks";
 import { RootState } from "@/store/store";
-import { Input } from "../ui/input";
 import { TaskExpansionProvider, useTaskExpansion } from "@/contexts/task-expansion-context";
-import { Tooltip, TooltipContent } from "../ui/tooltip";
 import { TooltipTrigger } from "@radix-ui/react-tooltip";
+import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
 
 type IterationTaskListProps = {
     tasks: ModelsTask[] | null;

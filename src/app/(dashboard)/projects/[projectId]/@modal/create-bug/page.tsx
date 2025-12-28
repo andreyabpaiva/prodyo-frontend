@@ -1,19 +1,12 @@
-import { CreateBugModal } from "@/components/dashboard/create-bug-modal";
+import CreateBugForm from "@/components/forms/bug";
 
 type CreateBugPageProps = {
-    params: Promise<{ projectId: string }>;
     searchParams: Promise<{ taskId?: string }>;
 };
 
-export default async function CreateBugPage({ params, searchParams }: CreateBugPageProps) {
-    const { projectId } = await params;
+export default async function CreateBugPage({ searchParams }: CreateBugPageProps) {
     const { taskId } = await searchParams;
 
-    return (
-        <CreateBugModal 
-            projectId={projectId}
-            taskId={taskId || ""}
-        />
-    );
+    return  <CreateBugForm taskId={taskId || ""} />;
 }
 

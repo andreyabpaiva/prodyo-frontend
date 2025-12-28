@@ -11,7 +11,7 @@ type DeleteIterationModalProps = {
     iterationId: string;
 };
 
-export function DeleteIterationModal({ projectId, iterationId }: DeleteIterationModalProps) {
+export default function DeleteIterationForm({ projectId, iterationId }: DeleteIterationModalProps) {
     const router = useRouter();
     const queryClient = useQueryClient();
 

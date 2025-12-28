@@ -1,4 +1,4 @@
-import { CreateIterationModal } from "@/components/dashboard/create-iteration-modal";
+import IterationForm from "@/components/forms/iteration/create";;
 
 type CreateIterationPageProps = {
     params: Promise<{ projectId: string }>;
@@ -7,10 +7,6 @@ type CreateIterationPageProps = {
 export default async function CreateIterationPage({ params }: CreateIterationPageProps) {
     const { projectId } = await params;
 
-    return (
-        <CreateIterationModal 
-            projectId={projectId} 
-        />
-    );
+    return <IterationForm projectId={projectId} />;
 }
 

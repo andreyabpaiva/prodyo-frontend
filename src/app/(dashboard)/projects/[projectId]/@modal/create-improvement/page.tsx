@@ -1,19 +1,12 @@
-import { CreateImprovementModal } from "@/components/dashboard/create-improvement-modal";
+import { CreateImprovementForm } from "@/components/forms/improv";
 
 type CreateImprovementPageProps = {
-    params: Promise<{ projectId: string }>;
     searchParams: Promise<{ taskId?: string }>;
 };
 
-export default async function CreateImprovementPage({ params, searchParams }: CreateImprovementPageProps) {
-    const { projectId } = await params;
+export default async function CreateImprovementPage({ searchParams }: CreateImprovementPageProps) {
     const { taskId } = await searchParams;
 
-    return (
-        <CreateImprovementModal 
-            projectId={projectId}
-            taskId={taskId || ""}
-        />
-    );
+    return <CreateImprovementForm taskId={taskId || ""} />;
 }
 

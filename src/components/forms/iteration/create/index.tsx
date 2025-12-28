@@ -1,13 +1,12 @@
 "use client";
-
-import { X } from "lucide-react";
+import { HandlersCreateIterationRequest } from "@/apis/data-contracts";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { iterationService } from "@/services/iteration";
-import type { HandlersCreateIterationRequest } from "@/apis/data-contracts";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+import { useForm } from "react-hook-form";
 
 type CreateIterationModalProps = {
     projectId: string;
@@ -60,9 +59,13 @@ const formatDateInput = (value: string): string => {
     return formatted;
 };
 
-export function CreateIterationModal({ projectId, iterationNumber: propIterationNumber }: CreateIterationModalProps) {
+export default function IterationForm({ projectId, iterationNumber: propIterationNumber }: CreateIterationModalProps) {
     const router = useRouter();
     const queryClient = useQueryClient();
+
+    const handleClose = () => {
+        router.back();
+    };
 
     const { data: iterations = [] } = useQuery({
         queryKey: ["iterations", projectId],
@@ -112,10 +115,6 @@ export function CreateIterationModal({ projectId, iterationNumber: propIteration
         },
     });
 
-    const handleClose = () => {
-        router.back();
-    };
-
     const onSubmit = (data: IterationFormValues) => {
         mutation.mutate(data);
     };
@@ -134,7 +133,6 @@ export function CreateIterationModal({ projectId, iterationNumber: propIteration
                 >
                     <X size={24} strokeWidth={2.5} />
                 </button>
-
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <div className="flex items-center gap-4 mb-8">
                         <h1 className="text-3xl font-bold">Iteração {iterationNumber}</h1>
@@ -193,6 +191,5 @@ export function CreateIterationModal({ projectId, iterationNumber: propIteration
                 </form>
             </div>
         </div>
-    );
+    )
 }
-

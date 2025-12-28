@@ -1,15 +1,19 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface IterationState {
-    activeIterationId: string | null; 
+    activeIterationId: string | null;
     iterationNumber: number | null;
-    activeGraphsId: string | null;    
+    activeGraphsId: string | null;
+    criticalMetricLabel: string | null;
+    activeIndicatorId: string | null;
 }
 
 const initialState: IterationState = {
     activeIterationId: null,
     iterationNumber: null,
     activeGraphsId: null,
+    criticalMetricLabel: null,
+    activeIndicatorId: null,
 }
 
 const iterationSlice = createSlice({
@@ -27,9 +31,15 @@ const iterationSlice = createSlice({
         },
         setIterationNumber: (state, action: PayloadAction<number | null>) => {
             state.iterationNumber = action.payload;
+        },
+        setCriticalMetricLabel: (state, action: PayloadAction<string | null>) => {
+            state.criticalMetricLabel = action.payload;
+        },
+        setActiveIndicatorId: (state, action: PayloadAction<string | null>) => {
+            state.activeIndicatorId = action.payload;
         }
     },
 })
 
-export const { clearActiveIterationId, setActiveIterationsId, setActiveGraphsId, setIterationNumber } = iterationSlice.actions;
+export const { clearActiveIterationId, setActiveIterationsId, setActiveGraphsId, setIterationNumber, setCriticalMetricLabel, setActiveIndicatorId } = iterationSlice.actions;
 export default iterationSlice.reducer;

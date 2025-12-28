@@ -1,6 +1,6 @@
 "use client";
 
-import { IndicatorBoard } from "@/components/dashboard/indicator-board";
+import { IndicatorBoard } from "@/components/dashboard/board/Indicator";
 import { Button } from "@/components/ui/button";
 import { IndicatorAnalysisDialog } from "@/components/dashboard/modals";
 import { useQuery } from "@tanstack/react-query";
@@ -10,7 +10,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, use, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { setActiveGraphsId } from "@/store/iterationSlice";
+import { setActiveGraphsId, setActiveIndicatorId } from "@/store/iterationSlice";
 import {
     mapApiCauseToDomain,
     mapApiActionToDomain,
@@ -97,38 +97,11 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
         [indicator]
     );
 
-    // if (isLoadingIterations) {
-    //     return (
-    //         <main className="ml-50 relative min-h-screen bg-[--dark] px-12 py-5 text-[--primary]">
-    //             <div className="flex items-center justify-center h-96">
-    //                 <p className="text-lg">Carregando iterações...</p>
-    //             </div>
-    //         </main>
-    //     );
-    // }
-
-    // Error state
-    // if (iterationsError) {
-    //     return (
-    //         <main className="ml-50 relative min-h-screen bg-[--dark] px-12 py-5 text-[--primary]">
-    //             <div className="flex flex-col items-center justify-center h-96 gap-4">
-    //                 <p className="text-lg text-red-500">Erro ao carregar iterações</p>
-    //                 <p className="text-sm text-[--divider]">{iterationsError.message}</p>
-    //             </div>
-    //         </main>
-    //     );
-    // }
-
-    // No iterations found
-    // if (!iterations || iterations.length === 0) {
-    //     return (
-    //         <main className="ml-50 relative min-h-screen bg-[--dark] px-12 py-5 text-[--primary]">
-    //             <div className="flex items-center justify-center h-96">
-    //                 <p className="text-lg text-[--divider]">Nenhuma iteração encontrada para este projeto</p>
-    //             </div>
-    //         </main>
-    //     );
-    // }
+    useEffect(() => {
+        if (indicator?.id) {
+            dispatch(setActiveIndicatorId(indicator.id));
+        }
+    }, [indicator?.id, dispatch]);
 
     if (!indicator || isLoadingAnalysis || isLoadingIterations) {
         <div className="justify-center items-center p-8 text-center text-lg font-semibold bg-[--background]">
@@ -201,6 +174,7 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
             {!isLoadingAnalysis && !analysisError && analysisResponse && (
                 <IndicatorBoard
                     analysisData={analysisResponse.analysis}
+                    actions={indicator?.actions}
                 />
             )}
         </main>

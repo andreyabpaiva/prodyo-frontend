@@ -8,8 +8,8 @@ import { useAppSelector } from "@/store/hooks";
 import { RootState } from "@/store/store";
 import { useQuery } from "@tanstack/react-query";
 import { projectService } from "@/services/project";
-import { Input } from "../ui/input";
 import { Frown } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 interface ProjectWithIterations extends ModelsProject {
     iterations_count?: number;

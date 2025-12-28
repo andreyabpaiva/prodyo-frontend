@@ -1,12 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { ProjectsGrid } from "@/components/dashboard/projects-grid";
-import { projectService } from "@/services/project";
-import { useAppSelector } from "@/store/hooks";
-import type { RootState } from "@/store/store";
-import { Input } from "@/components/ui/input";
+import { ProjectsGrid } from "@/components/dashboard/grid/ProjectsGrid";
 
 export default function Projects() {
 
