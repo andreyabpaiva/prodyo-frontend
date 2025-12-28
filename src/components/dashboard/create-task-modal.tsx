@@ -39,8 +39,7 @@ const statusLabels: Record<TaskStatus, string> = {
 export function CreateTaskModal({ projectId }: CreateTaskModalProps) {
     const router = useRouter();
     const queryClient = useQueryClient();
-
-    const iterationId = useAppSelector((state) => state.iteration.iterationId);
+    const activeIterationId = useAppSelector((state) => state.iteration.activeIterationId);
 
     const form = useForm<TaskFormValues>({
         defaultValues: {
@@ -58,7 +57,7 @@ export function CreateTaskModal({ projectId }: CreateTaskModalProps) {
             const payload: HandlersCreateTaskRequest = {
                 name: data.name || undefined,
                 description: data.description || undefined,
-                iteration_id: iterationId || undefined,
+                iteration_id: activeIterationId || undefined,
                 assignee_id: data.assigneeId || undefined,
                 status: status,
                 points: data.points || undefined  
@@ -67,8 +66,8 @@ export function CreateTaskModal({ projectId }: CreateTaskModalProps) {
             return await taskService.create(payload);
         },
         onSuccess: async () => {
-            if (iterationId) {
-                await queryClient.refetchQueries({ queryKey: ["tasks", iterationId] });
+            if (activeIterationId) {
+                await queryClient.refetchQueries({ queryKey: ["tasks", activeIterationId] });
             }
             form.reset();
             router.back();
@@ -83,7 +82,6 @@ export function CreateTaskModal({ projectId }: CreateTaskModalProps) {
     };
 
     const onSubmit = (data: TaskFormValues) => {
-        console.log(iterationId)
         mutation.mutate(data);
     };
 

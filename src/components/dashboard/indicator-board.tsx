@@ -1,8 +1,33 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CauseActionDialog, CauseDialog } from "@/components/dashboard/modals";
 import { ModelsIndicatorAnalysisData, ModelsProductivityEnum } from "@/apis/data-contracts";
 import { ProductivityLevel } from "@/types/domain";
+import { Line } from "react-chartjs-2";
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+    ChartOptions,
+} from "chart.js";
+
+// Register Chart.js components
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
 function convertProductivityLevel(level: ModelsProductivityEnum | undefined): ProductivityLevel {
     if (level === ModelsProductivityEnum.ProductivityCritical) return "CRITICAL";
@@ -36,19 +61,76 @@ function StatusBadge({ level }: { level: ModelsProductivityEnum | undefined }) {
     );
 }
 
-function LineChart({ values, color }: { values: number[]; color: string }) {
-    const max = Math.max(...values);
-    const points = values
-        .map((value, index) => {
-            const x = (index / (values.length - 1)) * 100;
-            const y = 100 - (value / max) * 70 - 15;
-            return `${x},${y}`;
-        })
-        .join(" ");
+function LineChart({ values, color, labels }: { values: number[]; color: string; labels: string[] }) {
+    const data = {
+        labels: labels,
+        datasets: [
+            {
+                data: values,
+                borderColor: color,
+                backgroundColor: `${color}33`,
+                borderWidth: 3,
+                tension: 0.4,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: color,
+                pointBorderColor: "#ffffff",
+                pointBorderWidth: 2,
+            },
+        ],
+    };
+
+    const options: ChartOptions<'line'> = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false,
+            },
+            tooltip: {
+                backgroundColor: "rgba(0, 0, 0, 0.8)",
+                padding: 12,
+                titleFont: {
+                    size: 14,
+                    weight: "bold",
+                },
+                bodyFont: {
+                    size: 13,
+                },
+                cornerRadius: 8,
+            },
+        },
+        scales: {
+            x: {
+                grid: {
+                    display: false,
+                },
+                ticks: {
+                    color: "#9ca3af",
+                    font: {
+                        size: 11,
+                        weight: 600,
+                    },
+                },
+            },
+            y: {
+                grid: {
+                    color: "#e5e7eb33",
+                },
+                ticks: {
+                    color: "#9ca3af",
+                    font: {
+                        size: 11,
+                    },
+                },
+            },
+        },
+    };
+
     return (
-        <svg viewBox="0 0 100 100" className="h-40 w-full">
-            <polyline fill="none" stroke={color} strokeWidth={4} points={points} strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <div className="h-40 w-full">
+            <Line data={data} options={options} />
+        </div>
     );
 }
 
@@ -64,25 +146,31 @@ function IndicatorPanel({ analysisData }: { analysisData: ModelsIndicatorAnalysi
             <div className="flex items-center gap-2 justify-end">
 
                 <div className="flex flex-wrap items-center justify-between gap-4">
-                    <CauseDialog
-                        level={convertProductivityLevel(latestStatus)}
-                        metricLabel={copy.title}
-                        trigger={
-                            <Button variant={"default"} size={"sm"}>
-                                + Adicionar causa
-                            </Button>
-                        }
-                    />
+
+                    {latestStatus && latestStatus === ModelsProductivityEnum.ProductivityAlert && (
+                        <CauseDialog
+                            level={convertProductivityLevel(latestStatus)}
+                            metricLabel={copy.title}
+                            trigger={
+                                <Button variant={"default"} size={"sm"}>
+                                    + Adicionar causa
+                                </Button>
+                            }
+                        />
+                    )}
                 </div>
                 <div className="flex flex-wrap items-center gap-4">
-                    <CauseActionDialog
-                        metricLabel={copy.title}
-                        trigger={
-                            <Button variant={"default"} size={"sm"}>
-                                + Adicionar ação
-                            </Button>
-                        }
-                    />
+                    {
+                        latestStatus && latestStatus === ModelsProductivityEnum.ProductivityCritical && (
+                            <CauseActionDialog
+                                metricLabel={copy.title}
+                                trigger={
+                                    <Button variant={"default"} size={"sm"}>
+                                        + Adicionar ação
+                                    </Button>
+                                }
+                            />)
+                    }
                 </div>
                 <StatusBadge level={latestStatus} />
             </div>
@@ -93,11 +181,12 @@ function IndicatorPanel({ analysisData }: { analysisData: ModelsIndicatorAnalysi
                     </div>
                 </div>
                 <div>
-                    <LineChart values={yValues} color={copy.color} />
-                    <div className="flex justify-between text-xs font-semibold uppercase tracking-[0.3em] text-[--divider]">
-                        <span>{analysisData.xAxis?.label || ""}</span>
-                        <span>{xLabels.join("   ")}</span>
-                    </div>
+                    <LineChart values={yValues} color={copy.color} labels={xLabels} />
+                    {analysisData.xAxis?.label && (
+                        <div className="mt-2 text-center text-xs font-semibold uppercase tracking-[0.3em] text-[--divider]">
+                            <span>{analysisData.xAxis.label}</span>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

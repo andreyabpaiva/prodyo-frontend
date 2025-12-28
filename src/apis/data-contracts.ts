@@ -35,9 +35,13 @@ export enum ModelsIndicatorEnum {
 }
 
 export interface HandlersCreateActionRequest {
-  cause_id?: string;
+  assignee_id?: string;
+  cause_description?: string;
   description?: string;
+  end_at?: string;
   indicator_id?: string;
+  metric?: string;
+  start_at?: string;
 }
 
 export interface HandlersCreateBugRequest {
@@ -179,11 +183,14 @@ export interface HandlersUpdateUserRequest {
 }
 
 export interface ModelsAction {
+  assignee?: ModelsUser;
   cause?: ModelsCause;
   created_at?: string;
   description?: string;
+  end_at?: string;
   id?: string;
   indicator_id?: string;
+  start_at?: string;
   updated_at?: string;
 }
 
@@ -326,7 +333,6 @@ export interface ModelsTask {
   status?: ModelsStatusEnum;
   /** Sub-tasks */
   tasks?: ModelsTask[];
-  /** Duration in seconds */
   timer?: number;
   updated_at?: string;
 }

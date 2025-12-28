@@ -14,6 +14,10 @@ import type { ModelsUser } from "@/apis/data-contracts";
 import { Command, CommandGroup, CommandItem, CommandList, CommandEmpty } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { UserSelect } from "../utils/UserSelect";
+import z from "zod";
+import { Form, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { indicatorService } from "@/services/indicator";
 
 const levelClasses: Record<ProductivityLevel, string> = {
     OK: "bg-[var(--ok)] text-[var(--dark)]",
@@ -26,6 +30,17 @@ const statusClasses: Record<TaskStatus, string> = {
     IN_PROGRESS: "bg-[#83B3FF] text-[var(--dark)]",
     COMPLETED: "bg-[var(--ok)] text-[var(--dark)]",
 };
+
+const actionSchema = z.object({
+    assigneeId: z.string().min(1, "Responsável é obrigatório"),
+    startDate: z.string().min(1, "Data de início é obrigatória"),
+    endDate: z.string().min(1, "Data de término é obrigatória"),
+    description: z.string().min(1, "Descrição é obrigatória"),
+    cause_description: z.string().min(1, "Descrição da causa é obrigatória")
+});
+
+type ActionFormValues = z.infer<typeof actionSchema>;
+
 
 function ModalCard({ children, className = "" }: { children: ReactNode; className?: string }) {
     return (
@@ -198,66 +213,103 @@ export function CauseActionDialog({
     metricLabel: string;
     level?: ProductivityLevel;
 }) {
+
+    const form = useForm<ActionFormValues>({
+        resolver: zodResolver(actionSchema),
+        defaultValues: {
+            assigneeId: "",
+            startDate: "",
+            endDate: "",
+            description: "",
+            cause_description: "",
+        },
+    })
+
+    const onSubmit = async (data: ActionFormValues) => {
+        try {
+            await indicatorService.createAction(data);
+        }
+        catch (error) {
+            console.error("Error creating action and cause:", error);
+            throw error;
+        }
+    }
     return (
-        <Dialog>
-            <DialogTrigger asChild>{trigger}</DialogTrigger>
-            <ModalCard className="max-w-2xl space-y-5">
-                <div className="flex items-center justify-between">
-                    {/* <ModalUserSelector /> */}
-                    {/* <Badge className={`${levelClasses[level]} border-3 border-[var(--dark)] rounded-2xl px-3 py-1 text-sm font-bold`}>
-                        {level === "CRITICAL" ? "CRÍTICO" : level === "ALERT" ? "ALERTA" : "OK"}
-                    </Badge> */}
-                    <UserSelect />
-                </div>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+                <Dialog>
+                    <DialogTrigger asChild>{trigger}</DialogTrigger>
+                    <ModalCard className="max-w-2xl space-y-5">
+                        <DialogHeader className="sr-only">
+                            <DialogTitle>Adicionar Causa e Ação</DialogTitle>
+                        </DialogHeader>
+                        <div className="flex items-center justify-between">
+                            <UserSelect
+                                value={form.watch("assigneeId")}
+                                onChange={(value) => form.setValue("assigneeId", value)}
+                            />
+                        </div>
 
-                <section className="space-y-2">
-                    <div className="flex items-center gap-3">
-                        <p className="text-2xl font-bold">Causa</p>
-                        <Badge className={`${levelClasses[level]} border-3 border-[var(--dark)] rounded-2xl px-3 py-1 text-xs font-bold text-[var(--text)]`}>
-                            {level === "CRITICAL" ? "CRÍTICO" : level === "ALERT" ? "ALERTA" : "OK"}
-                        </Badge>
-                        <Badge className="border-[3px] bg-[var(--divider)] rounded-2xl border-[var(--dark)] px-4 py-1 text-xs font-bold">
-                            NÃO INICIADO
-                        </Badge>
-                    </div>
-                    <p className="text-xs font-semibold">
-                        {metricLabel}
-                    </p>
-                    <Textarea
-                        placeholder="Descrição"
-                        className="mt-2 h-24 rounded-2xl border-[3px] border-[var(--dark)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--dark)]"
-                    />
-                </section>
+                        <section className="space-y-2">
+                            <div className="flex items-center gap-3">
+                                <p className="text-2xl font-bold">Causa</p>
+                                <Badge className={`${levelClasses[level]} border-3 border-[var(--dark)] rounded-2xl px-3 py-1 text-xs font-bold text-[var(--text)]`}>
+                                    {level === "CRITICAL" ? "CRÍTICO" : level === "ALERT" ? "ALERTA" : "OK"}
+                                </Badge>
+                                <Badge className="border-[3px] bg-[var(--divider)] rounded-2xl border-[var(--dark)] px-4 py-1 text-xs font-bold">
+                                    NÃO INICIADO
+                                </Badge>
+                            </div>
+                            <p className="text-xs font-semibold">
+                                {metricLabel}
+                            </p>
+                            <Textarea
+                                {...form.register("cause_description")}
+                                placeholder="Descrição"
+                                className="mt-2 h-24 rounded-2xl border-[3px] border-[var(--dark)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--dark)]"
+                            />
+                        </section>
 
-                <section className="space-y-2">
-                    <p className="text-2xl font-bold">Ação</p>
-                    <p className="text-xs font-semibold">
-                        ÍNDICE DE INSTABILIDADE
-                    </p>
-                    <div className="inline-flex gap-2 rounded-full border-2 border-[var(--text)] px-4 py-2 w-auto">
-                        <input
-                            type="text"
-                            placeholder="__/__/__"
-                            onChange={() => {}}
-                            maxLength={8}
-                            className="w-20 bg-transparent text-center font-semibold outline-none"
-                        />
-                        <span className="font-semibold">à</span>
-                        <input
-                            type="text"
-                            placeholder="__/__/__"
-                            onChange={() => {}}
-                            maxLength={8}
-                            className="w-20 bg-transparent text-center font-semibold outline-none"
-                        />
-                    </div>
-                    <Textarea
-                        placeholder="Descrição"
-                        className="mt-2 h-24 rounded-2xl border-[3px] border-[var(--dark)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--dark)]"
-                    />
-                </section>
-            </ModalCard>
-        </Dialog>
+                        <section className="space-y-2">
+                            <p className="text-2xl font-bold">Ação</p>
+                            <p className="text-xs font-semibold">
+                                {metricLabel}
+                            </p>
+                            <div className="inline-flex gap-2 rounded-full border-2 border-[var(--text)] px-4 py-2 w-auto">
+                                <input
+                                    {...form.register("startDate")}
+                                    type="text"
+                                    placeholder="__/__/__"
+                                    onChange={() => { }}
+                                    maxLength={8}
+                                    className="w-20 bg-transparent text-center font-semibold outline-none"
+                                />
+                                <span className="font-semibold">à</span>
+                                <input
+                                    {...form.register("endDate")}
+                                    type="text"
+                                    placeholder="__/__/__"
+                                    onChange={() => { }}
+                                    maxLength={8}
+                                    className="w-20 bg-transparent text-center font-semibold outline-none"
+                                />
+                            </div>
+                            <Textarea
+                                {...form.register("description")}
+                                placeholder="Descrição"
+                                className="mt-2 h-24 rounded-2xl border-[3px] border-[var(--dark)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--dark)]"
+                            />
+                        </section>
+                    </ModalCard>
+                    <Button
+                        type="submit"
+                        className="absolute bottom-6 right-6"
+                    >
+                        Salvar
+                    </Button>
+                </Dialog>
+            </form>
+        </Form>
     );
 }
 
@@ -275,7 +327,7 @@ export function IndicatorAnalysisDialog({
     const { data: usersResponse, isLoading: isLoadingUsers } = useQuery({
         queryKey: ["users"],
         queryFn: () => userService.list({ page_size: 100 }),
-        enabled: true,
+        enabled: false,
     });
 
     const users: ModelsUser[] = Array.isArray(usersResponse)

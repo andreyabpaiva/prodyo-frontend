@@ -8,12 +8,13 @@ import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { taskService } from "@/services/task";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setIterationId, setActiveIterationsId } from "@/store/iterationSlice";
+import { setActiveIterationsId } from "@/store/iterationSlice";
 import { projectService } from "@/services/project";
 import { iterationService } from "@/services/iteration";
 import { Plus, Trash2 } from "lucide-react";
 import { Spinner } from "../ui/spinner";
 import { Input } from "../ui/input";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export function IterationBoard({ iterations }: { iterations: ModelsIteration[] }) {
     const dispatch = useAppDispatch();
@@ -28,17 +29,16 @@ export function IterationBoard({ iterations }: { iterations: ModelsIteration[] }
                 const firstIterationId = iterations[0]?.id;
                 if (firstIterationId) {
                     dispatch(setActiveIterationsId(firstIterationId));
-                    dispatch(setIterationId(firstIterationId));
                 }
             }
         }
     }, [iterations, activeIterationId, dispatch]);
 
-    useEffect(() => {
-        if (activeIterationId) {
-            dispatch(setIterationId(activeIterationId));
-        }
-    }, [activeIterationId, dispatch]);
+    // useEffect(() => {
+    //     if (activeIterationId) {
+    //         dispatch(setIterationId(activeIterationId));
+    //     }
+    // }, [activeIterationId, dispatch]);
 
     const activeIteration = useMemo(
         () => iterations.find((iteration) => iteration.id === activeIterationId),
@@ -97,21 +97,34 @@ export function IterationBoard({ iterations }: { iterations: ModelsIteration[] }
                         </div>
 
                     </div>
-                    <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => router.push(`/projects/${projectId}/delete-iteration/${activeIteration.id}`)}
-                        title="Deletar iteração">
-                        <Trash2 strokeWidth={2.5} size={18} />
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="icon"
-                        title="Criar iteração"
-                        onClick={() => router.push(`/projects/${projectId}/create-iteration`)}
-                    >
-                        <Plus strokeWidth={2.5} size={18} />
-                    </Button>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => router.push(`/projects/${projectId}/delete-iteration/${activeIteration.id}`)}
+                            >
+                                <Trash2 strokeWidth={2.5} size={18} />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom">
+                            <p>Deletar iteração</p>
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => router.push(`/projects/${projectId}/create-iteration`)}
+                            >
+                                <Plus strokeWidth={2.5} size={18} />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom">
+                            <p>Criar nova iteração</p>
+                        </TooltipContent>
+                    </Tooltip>
                 </div>
             </div>
             <IterationTaskList

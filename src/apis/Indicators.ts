@@ -85,7 +85,6 @@ export class Indicators<
    * @secure
    * @response `201` `Record<string,any>` Action created successfully
    * @response `400` `string` Invalid request body
-   * @response `404` `string` Cause not found
    * @response `500` `string` Failed to create action
    */
   actionsCreate = (

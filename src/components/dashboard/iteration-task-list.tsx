@@ -16,6 +16,8 @@ import { useAppSelector } from "@/store/hooks";
 import { RootState } from "@/store/store";
 import { Input } from "../ui/input";
 import { TaskExpansionProvider, useTaskExpansion } from "@/contexts/task-expansion-context";
+import { Tooltip, TooltipContent } from "../ui/tooltip";
+import { TooltipTrigger } from "@radix-ui/react-tooltip";
 
 type IterationTaskListProps = {
     tasks: ModelsTask[] | null;
@@ -361,20 +363,23 @@ function TaskItem({
                         {improvements && improvements.length > 0 ? (
                             <div className="flex flex-wrap gap-3">
                                 {improvements.map((improvement) => (
-                                    <div
-                                        key={improvement.id}
-                                        className="cursor-pointer rounded-[16px] border-[2px] border-[var(--dark)] bg-[var(--alert)] px-4 py-1 text-sm font-semibold shadow-[3px_3px_0px_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-0.5 active:translate-y-0 active:shadow-[1px_1px_0px_rgba(0,0,0,0.25)]"
-                                        title={improvement.description ?? ""}
-                                    >
-                                        <span className="mr-3">
-                                            {improvement.description && improvement.description.length > 20
-                                                ? improvement.description.slice(0, 20) + "..."
-                                                : improvement.description ?? ""}
-                                        </span>
-                                        <span className="text-xs font-bold">
-                                            {/* {improvement.loggedAt.split("T")[1]?.slice(0, 8)} */}
-                                        </span>
-                                    </div>
+                                    <Tooltip key={improvement.id}>
+                                        <TooltipTrigger asChild>
+                                            <div
+                                                key={improvement.id}
+                                                className="cursor-pointer rounded-[16px] border-[2px] border-[var(--dark)] bg-[var(--alert)] px-4 py-1 text-sm font-semibold shadow-[3px_3px_0px_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-0.5 active:translate-y-0 active:shadow-[1px_1px_0px_rgba(0,0,0,0.25)]"
+                                            >
+                                                <span className="mr-3">
+                                                    {improvement.description && improvement.description.length > 20
+                                                        ? improvement.description.slice(0, 20) + "..."
+                                                        : improvement.description ?? ""}
+                                                </span>
+                                            </div>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="bottom">
+                                            <p>{improvement.description}</p>
+                                        </TooltipContent>
+                                    </Tooltip>
                                 ))}
                             </div>
                         ) : (
@@ -396,22 +401,23 @@ function TaskItem({
                         {bugs && bugs.length > 0 ? (
                             <div className="flex flex-wrap gap-3 pb-1">
                                 {bugs.map((bug) => (
-                                    <div
-                                        key={bug.id}
-                                        className="cursor-pointer rounded-[16px] border-[2px] border-[var(--dark)] bg-[var(--critic)] px-4 py-1 text-sm font-semibold text-[var(--primary)] shadow-[3px_3px_0px_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-0.5 active:translate-y-0 active:shadow-[1px_1px_0px_rgba(0,0,0,0.25)]"
-                                        title={bug.description ?? ""}
-                                    >
-                                        <span className="mr-3" title={bug.description ?? ""}>
-                                            {bug.description && bug.description.length > 20
-                                                ? bug.description.slice(0, 20) + "..."
-                                                : bug.description ?? ""}
-                                        </span>
-                                        <span className="text-xs font-bold">
-                                            {/* {typeof bug.loggedAt === "string" && bug.loggedAt.includes("T")
-                                                ? bug.loggedAt.split("T")[1]?.slice(0, 8)
-                                                : ""} */}
-                                        </span>
-                                    </div>
+                                    <Tooltip key={bug.id}>
+                                        <TooltipTrigger asChild>
+                                            <div
+                                                key={bug.id}
+                                                className="cursor-pointer rounded-[16px] border-[2px] border-[var(--dark)] bg-[var(--critic)] px-4 py-1 text-sm font-semibold text-[var(--primary)] shadow-[3px_3px_0px_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-0.5 active:translate-y-0 active:shadow-[1px_1px_0px_rgba(0,0,0,0.25)]"
+                                            >
+                                                <span className="mr-3">
+                                                    {bug.description && bug.description.length > 20
+                                                        ? bug.description.slice(0, 20) + "..."
+                                                        : bug.description ?? ""}
+                                                </span>
+                                            </div>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="bottom">
+                                            <p>{bug.description}</p>
+                                        </TooltipContent>
+                                    </Tooltip>
                                 ))}
                             </div>
                         ) : (

@@ -38,11 +38,10 @@ export const indicatorService = {
     return response.data;
   },
   
-  create: (payload: CreateIndicatorPayload) =>
-    apiFetch<Record<string, any>>(INDICATORS_PATH, {
-      method: "POST",
-      body: payload,
-    }),
+  create: async (payload: CreateIndicatorPayload) => {
+    const response = await indicatorsApi.indicatorsCreate(payload);
+    return response.data;
+  },
 
   createAction: (payload: CreateActionPayload) =>
     apiFetch<Record<string, any>>(`${INDICATORS_PATH}/actions`, {
