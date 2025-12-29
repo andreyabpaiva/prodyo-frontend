@@ -4,6 +4,7 @@ import { Projects } from "@/apis/Projects";
 import type {
   HandlersCreateProjectRequest,
   HandlersUpdateProjectRequest,
+  IndicatorRangesListParams,
   MemberDetailParams,
   ProjectsDetailParams,
 } from "@/apis/data-contracts";
@@ -44,6 +45,11 @@ export const projectService = {
 
   create: async (payload: CreateProjectPayload) => {
     const response = await projectsApi.projectsCreate(payload);
+    return response.data;
+  },
+
+  listIndicatorRanges: async (params: IndicatorRangesListParams) => {
+    const response = await projectsApi.indicatorRangesList(params);
     return response.data;
   },
 

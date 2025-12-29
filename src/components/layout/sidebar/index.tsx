@@ -24,13 +24,12 @@ export function IterationSidebar({ iterations, projectId }: IterationSidebarProp
     const router = useRouter();
     const userName = useSelector((state: RootState) => state.auth.user?.name);
 
-    // fix it later
     useEffect(() => {
         if (iterations.length > 0 && iterations[0].id && !activeState) {
             setActiveState({ section: 'iterations', id: iterations[0].id });
             dispatch(setActiveIterationsId(iterations[0].id));
         }
-        
+
     }, [iterations, activeState, dispatch]);
 
     return (

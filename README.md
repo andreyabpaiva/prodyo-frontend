@@ -1,8 +1,8 @@
 # Prodyo Frontend
 
-Sistema de gestão de projetos e produtividade com foco em iterações, tarefas e indicadores de desempenho.
+Sistema de gestão de projetos e produtividade em desenvolvimento de software com foco em iterações, tarefas e indicadores de desempenho.
 
-## 🛠️ Tecnologias
+## Tecnologias
 
 - **[Next.js 15](https://nextjs.org/)** - Framework React com App Router e Turbopack
 - **[React 18](https://react.dev/)** - Biblioteca para interfaces de usuário
@@ -14,7 +14,7 @@ Sistema de gestão de projetos e produtividade com foco em iterações, tarefas 
 - **[React Hook Form](https://react-hook-form.com/)** - Gerenciamento de formulários
 - **[Zod](https://zod.dev/)** - Validação de schemas
 
-## 🚀 Quickstart
+## Quickstart
 
 ### Pré-requisitos
 
@@ -41,7 +41,7 @@ pnpm dev
 
 4. Acesse [http://localhost:3000](http://localhost:3000) no navegador.
 
-## 📦 Scripts Disponíveis
+## Scripts Disponíveis
 
 | Comando | Descrição |
 |---------|-----------|
@@ -51,18 +51,68 @@ pnpm dev
 | `pnpm lint` | Executa o ESLint |
 | `pnpm swagger` | Gera tipos TypeScript a partir da API Swagger |
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
-src/
-├── app/                    # App Router (páginas e rotas)
-│   ├── (access)/           # Grupo de rotas de acesso (login, registro)
-│   └── (dashboard)/        # Grupo de rotas do dashboard
-│       └── projects/       # Páginas de projetos
-├── components/             # Componentes React
-│   ├── dashboard/          # Componentes do dashboard
-│   └── ui/                 # Componentes base (shadcn/ui)
-├── data/                   # Dados mock
-├── lib/                    # Utilitários
-└── types/                  # Tipos TypeScript
+src
+├── apis
+├── app
+│  ├── (access)
+│  │  ├── create-project
+│  │  ├── login
+│  │  ├── register
+│  ├── (dashboard)
+│  │  ├── projects
+│  │  │  ├── [projectId]
+│  │  │  │  ├── @modal
+│  │  │  │  │  ├── create-bug
+│  │  │  │  │  ├── create-improvement
+│  │  │  │  │  ├── create-iteration
+│  │  │  │  │  ├── create-task
+│  │  │  │  │  ├── delete-iteration
+│  │  │  │  │  │  └── [iterationId]
+│  │  │  │  ├── indicators
+│  │  │  │  │  ├── @modal
+│  │  │  │  │  │  ├── create-action
+├── components
+│  ├── dashboard
+│  │  ├── board
+│  │  │  ├── Indicator
+│  │  │  └── Iteration
+│  │  ├── grid
+│  │  │  └── ProjectsGrid
+│  │  ├── list
+│  │  │  └── IterationList
+│  │  ├── modal
+│  │  │  └── CreateAction
+│  ├── forms
+│  │  ├── access
+│  │  │  ├── resolvers
+│  │  │  ├── login-form.tsx
+│  │  │  └── register-form.tsx
+│  │  ├── bug
+│  │  ├── improv
+│  │  ├── iteration
+│  │  │  ├── create
+│  │  │  └── delete
+│  │  ├── project
+│  │  └── task
+│  ├── layout
+│  │  ├── navbar
+│  │  └── sidebar
+│  ├── ui
+│  └── utils
+│     ├── ColorSelector
+│     ├── IndicatorRange
+│     ├── MemberSelect
+│     ├── TypeWriter
+│     └── UserSelect
+├── contexts
+├── lib
+│  ├── mappers
+│  ├── query-client.tsx
+│  └── utils.ts
+├── services
+├── store
+├── types
 ```

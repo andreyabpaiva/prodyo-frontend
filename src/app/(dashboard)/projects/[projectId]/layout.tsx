@@ -18,7 +18,6 @@ export default function Layout({
     const { projectId } = use(params);
     const pathname = usePathname();
 
-    // Fetch iterations for the project
     const { data: iterations } = useQuery({
         queryKey: ["iterations", projectId],
         queryFn: () => iterationService.list({ project_id: projectId }),

@@ -3,7 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CauseDialog } from "@/components/dashboard/modals";
-import { ModelsIndicatorAnalysisData, ModelsProductivityEnum, ModelsAction, ModelsMetricEnum } from "@/apis/data-contracts";
+import { ModelsIndicatorAnalysisData, ModelsProductivityEnum } from "@/apis/data-contracts";
 import { ProductivityLevel } from "@/types/domain";
 import { Line } from "react-chartjs-2";
 import {
@@ -22,7 +22,6 @@ import { RootState } from "@/store/store";
 import { useSelector, useDispatch } from "react-redux";
 import { setCriticalMetricLabel } from "@/store/iterationSlice";
 
-// Register Chart.js components
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -55,9 +54,17 @@ const metricCopy = {
 };
 
 function StatusBadge({ level }: { level: ModelsProductivityEnum | undefined }) {
-    const text = level === ModelsProductivityEnum.ProductivityCritical ? "CRÍTICO" : level === ModelsProductivityEnum.ProductivityAlert ? "ALERTA" : "OK";
+    const text = level === ModelsProductivityEnum.ProductivityCritical ? "CRÍTICO" :
+        level === ModelsProductivityEnum.ProductivityAlert ? "ALERTA" :
+            level === ModelsProductivityEnum.ProductivityOk ? "OK" : "INDEFINIDO";
     const tone =
-        level === ModelsProductivityEnum.ProductivityCritical ? "bg-[var(--critic)] text-[var(--dark)] border-[var(--dark)]" : level === ModelsProductivityEnum.ProductivityAlert ? "bg-[var(--alert)] text-[var(--dark)]" : "bg-[var(--ok)] text-[var(--dark)]";
+        level ===
+            ModelsProductivityEnum.ProductivityCritical ? "bg-[var(--critic)] text-[var(--dark)] border-[var(--dark)]" :
+            level ===
+                ModelsProductivityEnum.ProductivityAlert ? "bg-[var(--alert)] text-[var(--dark)] border-[var(--dark)]" :
+                level === ModelsProductivityEnum.ProductivityOk ?
+                    "bg-[var(--ok)] text-[var(--dark)] border-[var(--dark)]"
+                    : "bg-[var(--divider)] text-[var(--dark)] border-[var(--dark)]";
     return (
         <Badge className={`rounded-full border-[3px] px-6 py-1 text-sm font-bold ${tone}`}>
             {text}
@@ -138,7 +145,7 @@ function LineChart({ values, color, labels }: { values: number[]; color: string;
     );
 }
 
-function IndicatorPanel({ analysisData, actions }: { analysisData: ModelsIndicatorAnalysisData; actions?: ModelsAction[] }) {
+function IndicatorPanel({ analysisData }: { analysisData: ModelsIndicatorAnalysisData }) {
     const copy = metricCopy[analysisData.indicatorType as keyof typeof metricCopy];
     const projectId = useSelector((state: RootState) => state.project.projectId);
     const dispatch = useDispatch();
@@ -148,65 +155,51 @@ function IndicatorPanel({ analysisData, actions }: { analysisData: ModelsIndicat
     const xLabels = analysisData.points?.map(point => point.x?.toString() || "") || [];
     const latestStatus = analysisData.points?.[analysisData.points.length - 1]?.status;
 
-    // Map indicator type to metric enum for comparison
-    const metricTypeMap: Record<string, ModelsMetricEnum> = {
-        "SpeedPerIteration": ModelsMetricEnum.MetricWorkVelocity,
-        "ReworkPerIteration": ModelsMetricEnum.MetricReworkIndex,
-        "InstabilityIndex": ModelsMetricEnum.MetricInstabilityIndex,
-    };
-
-    const currentMetric = metricTypeMap[analysisData.indicatorType as string];
-
-    // Check if there's already an action for this metric
-    const hasExistingAction = actions?.some(action =>
-        action.cause?.metric === currentMetric
-    );
-
     const handleAddAction = () => {
         dispatch(setCriticalMetricLabel(copy.title));
-        router.push(`/projects/${projectId}/create-action`);
+        router.push(`/projects/${projectId}/indicators/create-action`);
     };
 
     return (
         <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2 justify-end">
 
-                <div className="flex flex-wrap items-center justify-between gap-4">
-
-                    {latestStatus && latestStatus === ModelsProductivityEnum.ProductivityAlert && (
-                        <CauseDialog
-                            level={convertProductivityLevel(latestStatus)}
-                            metricLabel={copy.title}
-                            trigger={
-                                <Button variant={"default"} size={"sm"}>
-                                    + Adicionar causa
-                                </Button>
-                            }
-                        />
-                    )}
-                </div>
-                <div className="flex flex-wrap items-center gap-4">
-                    {
-                        latestStatus && latestStatus === ModelsProductivityEnum.ProductivityCritical && !hasExistingAction && (
-                            <Button variant={"default"} size={"sm"} onClick={handleAddAction}>
-                                + Adicionar ação
-                            </Button>
-
-                        )
-                    }
-                </div>
-                <StatusBadge level={latestStatus} />
-            </div>
-            <div className="flex flex-col gap-4 rounded-[32px] border-[3px] border-[--dark] bg-[var(--primary)] px-8 py-6">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center w-full justify-between gap-4">
                     <div>
                         <p className="text-md font-bold">{copy.title}</p>
                     </div>
+                    <div className="flex items-center gap-4">
+
+                        {latestStatus && latestStatus === ModelsProductivityEnum.ProductivityAlert ? (
+                            <CauseDialog
+                                level={convertProductivityLevel(latestStatus)}
+                                metricLabel={copy.title}
+                                trigger={
+                                    <Button variant={"default"} size={"sm"}>
+                                        + Adicionar causa
+                                    </Button>
+                                }
+                            />
+                        ) : latestStatus === ModelsProductivityEnum.ProductivityCritical ? (
+                            <Button variant={"default"} size={"sm"} onClick={handleAddAction}>
+                                + Adicionar ação
+                            </Button>
+                        ) : null}
+                        <StatusBadge level={latestStatus} />
+                    </div>
                 </div>
+
+            </div>
+            <div className="flex flex-col gap-4 rounded-[32px] border-[3px] border-[--dark] bg-[var(--primary)] px-8 py-6">
+                {analysisData.yAxis?.label && (
+                    <div className="flex items-center justify-between">
+                        <p className="text-sm font-bold uppercase text-[var(--divider)]">{analysisData.yAxis.label}</p>
+                    </div>
+                )}
                 <div>
                     <LineChart values={yValues} color={copy.color} labels={xLabels} />
                     {analysisData.xAxis?.label && (
-                        <div className="mt-2 text-center text-xs font-semibold uppercase tracking-[0.3em] text-[--divider]">
+                        <div className="mt-2 text-center text-sm font-bold uppercase text-[var(--divider)]">
                             <span>{analysisData.xAxis.label}</span>
                         </div>
                     )}
@@ -216,7 +209,7 @@ function IndicatorPanel({ analysisData, actions }: { analysisData: ModelsIndicat
     );
 }
 
-export function IndicatorBoard({ analysisData, actions }: { analysisData: Record<string, ModelsIndicatorAnalysisData> | undefined; actions?: ModelsAction[] }) {
+export function IndicatorBoard({ analysisData }: { analysisData: Record<string, ModelsIndicatorAnalysisData> | undefined }) {
     if (!analysisData) {
         return null;
     }
@@ -227,14 +220,11 @@ export function IndicatorBoard({ analysisData, actions }: { analysisData: Record
 
     return (
         <section className="space-y-5">
-
             <div className="grid gap-6 lg:grid-cols-2">
-                {velocity && <IndicatorPanel analysisData={velocity} actions={actions} />}
-                {rework && <IndicatorPanel analysisData={rework} actions={actions} />}
+                {velocity && <IndicatorPanel analysisData={velocity} />}
+                {rework && <IndicatorPanel analysisData={rework} />}
             </div>
-
-            {instability && <IndicatorPanel analysisData={instability} actions={actions} />}
-
+            {instability && <IndicatorPanel analysisData={instability} />}
         </section>
     );
 }

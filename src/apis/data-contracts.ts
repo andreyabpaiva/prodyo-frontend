@@ -39,7 +39,7 @@ export interface HandlersCreateActionRequest {
   cause_description?: string;
   description?: string;
   end_at?: string;
-  indicator_id?: string;
+  indicator_range_id?: string;
   metric?: string;
   start_at?: string;
 }
@@ -54,7 +54,7 @@ export interface HandlersCreateBugRequest {
 
 export interface HandlersCreateCauseRequest {
   description?: string;
-  indicator_id?: string;
+  indicator_range_id?: string;
   metric?: string;
   productivity_level?: string;
 }
@@ -189,7 +189,7 @@ export interface ModelsAction {
   description?: string;
   end_at?: string;
   id?: string;
-  indicator_id?: string;
+  indicator_range_id?: string;
   start_at?: string;
   updated_at?: string;
 }
@@ -214,7 +214,7 @@ export interface ModelsCause {
   created_at?: string;
   description?: string;
   id?: string;
-  indicator_id?: string;
+  indicator_range_id?: string;
   metric?: ModelsMetricEnum;
   productivity_level?: ModelsProductivityEnum;
   updated_at?: string;

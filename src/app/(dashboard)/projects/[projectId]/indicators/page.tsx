@@ -1,20 +1,13 @@
 "use client";
 
 import { IndicatorBoard } from "@/components/dashboard/board/Indicator";
-import { Button } from "@/components/ui/button";
-import { IndicatorAnalysisDialog } from "@/components/dashboard/modals";
 import { useQuery } from "@tanstack/react-query";
 import { iterationService } from "@/services/iteration";
-import { indicatorService } from "@/services/indicator";
 import { useSearchParams } from "next/navigation";
-import { useEffect, use, useMemo } from "react";
+import { useEffect, use } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { setActiveGraphsId, setActiveIndicatorId } from "@/store/iterationSlice";
-import {
-    mapApiCauseToDomain,
-    mapApiActionToDomain,
-} from "@/lib/mappers/indicator-mapper";
+import { setActiveGraphsId } from "@/store/iterationSlice";
 import { Spinner } from "@/components/ui/spinner";
 import { Frown } from "lucide-react";
 
@@ -71,43 +64,17 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
         retry: false
     });
 
-    const { data: indicator } = useQuery({
-        queryKey: ["indicators", activeGraphsId],
-        queryFn: () => {
-            if (!activeGraphsId) {
-                throw new Error("No active iteration selected");
-            }
-            return indicatorService.list({ iteration_id: activeGraphsId });
-        },
-        enabled: !!activeGraphsId,
-        refetchOnWindowFocus: false,
-        refetchOnReconnect: false,
-        staleTime: 5 * 60 * 1000,
-        retry: false,
-    });
-
     const currentIteration = iterations?.find(i => i.id === activeGraphsId);
 
-    const indicatorCauses = useMemo(() =>
-        indicator?.causes?.map(mapApiCauseToDomain) || [],
-        [indicator]
-    );
-    const indicatorActions = useMemo(() =>
-        indicator?.actions?.map(mapApiActionToDomain) || [],
-        [indicator]
-    );
-
-    useEffect(() => {
-        if (indicator?.id) {
-            dispatch(setActiveIndicatorId(indicator.id));
-        }
-    }, [indicator?.id, dispatch]);
-
-    if (!indicator || isLoadingAnalysis || isLoadingIterations) {
-        <div className="justify-center items-center p-8 text-center text-lg font-semibold bg-[--background]">
-            <p>Carregando indicadores</p>
-            <Spinner fontSize={15} />
-        </div>
+    if (isLoadingAnalysis || isLoadingIterations) {
+        return (
+            <div className="flex justify-center items-center min-h-[60vh] p-8 text-center">
+                <div className="flex flex-col gap-2">
+                    <p className="text-lg font-semibold">Carregando indicadores</p>
+                    <Spinner fontSize={15} />
+                </div>
+            </div>
+        );
     }
 
     if (analysisError) {
@@ -128,54 +95,13 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
 
     return (
         <main className="ml-50 relative min-h-screen bg-[--dark] p-8">
-            <header className="mb-8 flex items-center justify-between">
-                {/* <div>
-                    <h1 className="mt-2 text-4xl font-extrabold">Indicadores</h1>
-                    <p className="mt-2 text-md text-[--divider]">
-                        Iteração {currentIteration?.number || "-"}
-                    </p>
-                </div> */}
-                <div className="flex items-center gap-3">
-                    <h1 className="text-2xl font-bold">Indicadores</h1>
-                    <p className="text-sm text-[var(--disabled)]">Iteração {currentIteration?.number || "-"}</p>
-                </div>
-                {indicator && (
-                    <IndicatorAnalysisDialog
-                        trigger={
-                            <Button variant="default">
-                                Visualizar análise do indicador
-                            </Button>
-                        }
-                        causes={indicatorCauses}
-                        actions={indicatorActions}
-                    />
-                )}
+            <header className="mb-8 flex items-center gap-3">
+                <h1 className="text-2xl font-bold">Indicadores</h1>
+                <p className="text-sm text-[var(--disabled)]">Iteração {currentIteration?.number || "-"}</p>
             </header>
 
-            {/* {isLoadingAnalysis && (
-                <div className="flex items-center justify-center h-64">
-                    <p className="text-lg">Carregando análise...</p>
-                </div>
-            )}
-
-            {analysisError && (
-                <div className="flex flex-col items-center justify-center h-64 gap-4">
-                    <p className="text-lg text-red-500">Erro ao carregar análise</p>
-                    <p className="text-sm text-[--divider]">{analysisError.message}</p>
-                </div>
-            )}
-
-            {!isLoadingAnalysis && !analysisError && !analysisResponse && (
-                <div className="flex items-center justify-center h-64">
-                    <p className="text-lg text-[--divider]">Nenhuma análise encontrada para esta iteração</p>
-                </div>
-            )} */}
-
             {!isLoadingAnalysis && !analysisError && analysisResponse && (
-                <IndicatorBoard
-                    analysisData={analysisResponse.analysis}
-                    actions={indicator?.actions}
-                />
+                <IndicatorBoard analysisData={analysisResponse.analysis} />
             )}
         </main>
     );
