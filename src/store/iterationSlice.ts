@@ -5,7 +5,8 @@ interface IterationState {
     iterationNumber: number | null;
     activeGraphsId: string | null;
     criticalMetricLabel: string | null;
-    activeIndicatorId: string | null;
+    alertMetricLabel?: string | null;
+    activeIndicatorRangeId: string | null;
 }
 
 const initialState: IterationState = {
@@ -13,7 +14,8 @@ const initialState: IterationState = {
     iterationNumber: null,
     activeGraphsId: null,
     criticalMetricLabel: null,
-    activeIndicatorId: null,
+    alertMetricLabel: null,
+    activeIndicatorRangeId: null,
 }
 
 const iterationSlice = createSlice({
@@ -35,11 +37,22 @@ const iterationSlice = createSlice({
         setCriticalMetricLabel: (state, action: PayloadAction<string | null>) => {
             state.criticalMetricLabel = action.payload;
         },
-        setActiveIndicatorId: (state, action: PayloadAction<string | null>) => {
-            state.activeIndicatorId = action.payload;
+        setAlertMetricLabel: (state, action: PayloadAction<string | null>) => {
+            state.alertMetricLabel = action.payload;
+        },
+        setActiveIndicatorRangeId: (state, action: PayloadAction<string | null>) => {
+            state.activeIndicatorRangeId = action.payload;
         }
     },
 })
 
-export const { clearActiveIterationId, setActiveIterationsId, setActiveGraphsId, setIterationNumber, setCriticalMetricLabel, setActiveIndicatorId } = iterationSlice.actions;
+export const {
+    clearActiveIterationId,
+    setActiveIterationsId,
+    setActiveGraphsId,
+    setIterationNumber,
+    setCriticalMetricLabel,
+    setAlertMetricLabel,
+    setActiveIndicatorRangeId
+} = iterationSlice.actions;
 export default iterationSlice.reducer;

@@ -20,7 +20,9 @@ import {
 import { useRouter } from "next/navigation";
 import { RootState } from "@/store/store";
 import { useSelector, useDispatch } from "react-redux";
-import { setCriticalMetricLabel } from "@/store/iterationSlice";
+import { setActiveIndicatorRangeId, setAlertMetricLabel, setCriticalMetricLabel } from "@/store/iterationSlice";
+import { useQuery } from "@tanstack/react-query";
+import { projectService } from "@/services/project";
 
 ChartJS.register(
     CategoryScale,
@@ -151,14 +153,38 @@ function IndicatorPanel({ analysisData }: { analysisData: ModelsIndicatorAnalysi
     const dispatch = useDispatch();
     const router = useRouter();
 
+    const { data } = useQuery({
+        queryKey: ["indicatorRanges", projectId, analysisData.indicatorType],
+        queryFn: () => projectService.getIndicatorsIdByProjectId({
+            projectId: projectId ?? '',
+            indicatorType: analysisData.indicatorType ?? ''
+        }),
+        enabled: !!projectId,
+        retry: false,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+        staleTime: 5 * 60 * 1000
+    });
+
+    const handleSetIndicatorRangeId = () => {
+        dispatch(setActiveIndicatorRangeId(data?.id || null));
+    }
+
     const yValues = analysisData.points?.map(point => point.y || 0) || [];
     const xLabels = analysisData.points?.map(point => point.x?.toString() || "") || [];
     const latestStatus = analysisData.points?.[analysisData.points.length - 1]?.status;
 
     const handleAddAction = () => {
         dispatch(setCriticalMetricLabel(copy.title));
+        handleSetIndicatorRangeId();
         router.push(`/projects/${projectId}/indicators/create-action`);
     };
+
+    const handleAddCause = () => {
+        dispatch(setAlertMetricLabel(copy.title));
+        handleSetIndicatorRangeId();
+        router.push(`/projects/${projectId}/indicators/create-cause`);
+    }
 
     return (
         <div className="flex flex-col gap-4">
@@ -171,17 +197,19 @@ function IndicatorPanel({ analysisData }: { analysisData: ModelsIndicatorAnalysi
                     <div className="flex items-center gap-4">
 
                         {latestStatus && latestStatus === ModelsProductivityEnum.ProductivityAlert ? (
-                            <CauseDialog
-                                level={convertProductivityLevel(latestStatus)}
-                                metricLabel={copy.title}
-                                trigger={
-                                    <Button variant={"default"} size={"sm"}>
-                                        + Adicionar causa
-                                    </Button>
-                                }
-                            />
+                            <Button
+                                variant={"default"}
+                                size={"sm"}
+                                onClick={handleAddCause}
+                            >
+                                + Adicionar causa
+                            </Button>
                         ) : latestStatus === ModelsProductivityEnum.ProductivityCritical ? (
-                            <Button variant={"default"} size={"sm"} onClick={handleAddAction}>
+                            <Button
+                                variant={"default"}
+                                size={"sm"}
+                                onClick={handleAddAction}
+                            >
                                 + Adicionar ação
                             </Button>
                         ) : null}

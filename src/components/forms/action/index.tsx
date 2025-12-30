@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { UserSelect } from "@/components/utils/UserSelect";
 import { useRouter } from "next/navigation";
-import { ModelsMetricEnum, ModelsProductivityEnum } from "@/apis/data-contracts";
+import { ModelsMetricEnum } from "@/apis/data-contracts";
 
 const actionSchema = z.object({
     assigneeId: z.string().min(1, "Responsável é obrigatório"),
@@ -60,10 +60,8 @@ const formatDateToISO = (dateStr: string, isEndDate: boolean = false): string | 
         return undefined;
     }
 
-    // Set time to start of day for start date, end of day for end date
     const time = isEndDate ? "23:59:59" : "00:00:00";
 
-    // Brazilian timezone (UTC-3)
     return `${fullYear}-${month.padStart(2, "0")}-${day.padStart(2, "0")}T${time}-03:00`;
 };
 
@@ -76,13 +74,13 @@ const mapMetricLabelToEnum = (label: string): ModelsMetricEnum | undefined => {
     return mapping[label];
 };
 
-export default function CauseActionDialog({
+export default function CauseActionForm({
     metricLabel,
-    indicatorId,
+    indicatorRangeId,
     level = "CRITICAL",
 }: {
     metricLabel: string;
-    indicatorId: string;
+    indicatorRangeId: string;
     level?: ProductivityLevel;
 }) {
 
@@ -112,7 +110,7 @@ export default function CauseActionDialog({
                 metric: mapMetricLabelToEnum(metricLabel),
                 start_at: formatDateToISO(data.startDate, false),
                 end_at: formatDateToISO(data.endDate, true),
-                indicator_id: indicatorId,
+                indicator_range_id: indicatorRangeId,
             };
             await indicatorService.createAction(payload);
             router.back();
@@ -203,7 +201,6 @@ export default function CauseActionDialog({
                             <Button
                                 type="submit"
                                 variant="default"
-
                             >
                                 Criar ação
                             </Button>

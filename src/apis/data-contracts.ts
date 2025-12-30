@@ -499,6 +499,16 @@ export interface ProjectsDeleteParams {
   id: string;
 }
 
+export interface IndicatorRangeIdsDetailParams {
+  /**
+   * Project ID
+   * @format uuid
+   */
+  projectId: string;
+  /** Indicator type (SpeedPerIteration, ReworkPerIteration, InstabilityIndex) */
+  indicatorType: string;
+}
+
 export interface IndicatorRangesListParams {
   /**
    * Project ID

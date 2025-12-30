@@ -13,6 +13,7 @@
 import {
   HandlersCreateProjectRequest,
   HandlersUpdateProjectRequest,
+  IndicatorRangeIdsDetailParams,
   IndicatorRangesDefaultCreateParams,
   IndicatorRangesDetailParams,
   IndicatorRangesListParams,
@@ -171,6 +172,30 @@ export class Projects<
       method: "DELETE",
       secure: true,
       type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * @description Returns the indicator range ID based on project ID and indicator type
+   *
+   * @tags indicators
+   * @name IndicatorRangeIdsDetail
+   * @summary Get indicator range ID by project ID and indicator type
+   * @request GET:/projects/{project_id}/indicator-range-ids/{indicator_type}
+   * @secure
+   * @response `200` `Record<string,any>` Indicator range ID
+   * @response `400` `string` Invalid parameters
+   * @response `404` `string` Indicator range not found
+   */
+  indicatorRangeIdsDetail = (
+    { projectId, indicatorType, ...query }: IndicatorRangeIdsDetailParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<Record<string, any>, string>({
+      path: `/projects/${projectId}/indicator-range-ids/${indicatorType}`,
+      method: "GET",
+      secure: true,
+      type: ContentType.Json,
+      format: "json",
       ...params,
     });
   /**

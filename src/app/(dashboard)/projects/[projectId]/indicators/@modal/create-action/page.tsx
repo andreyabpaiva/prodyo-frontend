@@ -1,12 +1,11 @@
 "use client";
-
-import CauseActionDialog from '@/components/dashboard/modal/CreateAction';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
+import CauseActionForm from '@/components/forms/action';
 
 export default function CreateActionPage() {
     const metricLabel = useSelector((state: RootState) => state.iteration.criticalMetricLabel);
-    const indicatorId = useSelector((state: RootState) => state.iteration.activeIndicatorId);
+    const indicatorId = useSelector((state: RootState) => state.iteration.activeIndicatorRangeId);
 
-    return <CauseActionDialog metricLabel={metricLabel ?? ""} indicatorId={indicatorId ?? ""} />;
+    return <CauseActionForm metricLabel={metricLabel ?? ""} indicatorRangeId={indicatorId ?? ""} />;
 }

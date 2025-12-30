@@ -4,6 +4,7 @@ import { Projects } from "@/apis/Projects";
 import type {
   HandlersCreateProjectRequest,
   HandlersUpdateProjectRequest,
+  IndicatorRangesDetailParams,
   IndicatorRangesListParams,
   MemberDetailParams,
   ProjectsDetailParams,
@@ -69,4 +70,9 @@ export const projectService = {
     const response = await projectsApi.memberDetail(params);
     return response.data;
   },
+
+  getIndicatorsIdByProjectId: async (params: IndicatorRangesDetailParams) => {
+    const response = await projectsApi.indicatorRangesDetail(params);
+    return response.data;
+  }
 };
