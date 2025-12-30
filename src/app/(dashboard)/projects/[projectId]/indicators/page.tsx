@@ -3,13 +3,15 @@
 import { IndicatorBoard } from "@/components/dashboard/board/Indicator";
 import { useQuery } from "@tanstack/react-query";
 import { iterationService } from "@/services/iteration";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, use } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { setActiveGraphsId } from "@/store/iterationSlice";
 import { Spinner } from "@/components/ui/spinner";
 import { Frown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { setProjectId } from "@/store/projectSlice";
 
 type IndicatorsPageProps = {
     params: Promise<{ projectId: string }>;
@@ -19,6 +21,7 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
     const { projectId } = use(params);
     const searchParams = useSearchParams();
     const dispatch = useDispatch();
+    const router = useRouter();
     const iterationParam = searchParams.get("iteration");
     const activeGraphsId = useSelector((state: RootState) => state.iteration.activeGraphsId);
 
@@ -36,6 +39,7 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
     });
 
     useEffect(() => {
+        dispatch(setProjectId(projectId));
         if (iterationParam) {
             dispatch(setActiveGraphsId(iterationParam));
         } else if (iterations && iterations.length > 0 && !activeGraphsId) {
@@ -44,7 +48,7 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
                 dispatch(setActiveGraphsId(firstIterationId));
             }
         }
-    }, [iterationParam, iterations, activeGraphsId, dispatch]);
+    }, [iterationParam, iterations, activeGraphsId, dispatch, projectId]);
 
     const {
         data: analysisResponse,
@@ -68,8 +72,8 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
 
     if (isLoadingAnalysis || isLoadingIterations) {
         return (
-            <div className="flex justify-center items-center min-h-[60vh] p-8 text-center">
-                <div className="flex flex-col gap-2">
+            <div className="fixed inset-0 flex gap-3 justify-center items-center p-8 text-center text-lg font-semibold bg-[--background]">
+                <div className="flex gap-2 items-center">
                     <p className="text-lg font-semibold">Carregando indicadores</p>
                     <Spinner fontSize={15} />
                 </div>
@@ -95,9 +99,14 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
 
     return (
         <main className="ml-50 relative min-h-screen bg-[--dark] p-8">
-            <header className="mb-8 flex items-center gap-3">
-                <h1 className="text-2xl font-bold">Indicadores</h1>
-                <p className="text-sm text-[var(--disabled)]">Iteração {currentIteration?.number || "-"}</p>
+            <header className="mb-8 flex justify-between ">
+                <div className="flex items-center gap-3">
+                    <h1 className="text-2xl font-bold">Indicadores</h1>
+                    <p className="text-sm text-[var(--disabled)]">Iteração {currentIteration?.number || "-"}</p>
+                </div>
+                <Button variant="default" size="sm" onClick={() => router.push(`/projects/${projectId}/indicators/indicator-analysis`)}>
+                    Visualizar análise de indicadores
+                </Button>
             </header>
 
             {!isLoadingAnalysis && !analysisError && analysisResponse && (

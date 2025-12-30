@@ -1,7 +1,7 @@
 import { Iteration } from "@/types/domain";
 import { apiFetch } from "./api-client";
 import { Iterations } from "@/apis/Iterations";
-import type { HandlersCreateIterationRequest, IterationsDeleteParams, IterationsListParams } from "@/apis/data-contracts";
+import type { CausesActionsListParams, HandlersCreateIterationRequest, IterationsDeleteParams, IterationsListParams } from "@/apis/data-contracts";
 
 const ITERATIONS_PATH = "/iterations";
 const API_BASE_URL =
@@ -44,6 +44,10 @@ export const iterationService = {
   },
   analysis: async (iterationId: string) => {
     const response = await iterationsApi.analysisList({ id: iterationId });
+    return response.data;
+  },
+  causeActionList: async (params: CausesActionsListParams) => {
+    const response = await iterationsApi.causesActionsList({ iterationId: params.iterationId });
     return response.data;
   }
 };

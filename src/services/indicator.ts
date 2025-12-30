@@ -5,6 +5,8 @@ import type {
   HandlersCreateActionRequest,
   HandlersCreateCauseRequest,
   IndicatorsListParams,
+  ActionsPartialUpdateParams,
+  HandlersPatchActionRequest,
 } from "@/apis/data-contracts";
 import { Indicators } from "@/apis/Indicators";
 
@@ -31,6 +33,7 @@ const indicatorsApi = new Indicators({
 export type CreateIndicatorPayload = HandlersCreateIndicatorRequest;
 export type CreateActionPayload = HandlersCreateActionRequest;
 export type CreateCausePayload = HandlersCreateCauseRequest;
+export type PatchActionPayload = HandlersPatchActionRequest;
 
 export const indicatorService = {
   list: async (params: IndicatorsListParams) => {
@@ -47,6 +50,10 @@ export const indicatorService = {
   },
   createCause: async (payload: CreateCausePayload) => {
     const response = await indicatorsApi.causesCreate(payload);
+    return response.data;
+  },
+  patchAction: async (params: ActionsPartialUpdateParams, action: PatchActionPayload) => {
+    const response = await indicatorsApi.actionsPartialUpdate(params, action);
     return response.data;
   }
 };

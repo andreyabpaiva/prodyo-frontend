@@ -1,9 +1,9 @@
-import { apiFetch } from "./api-client";
 import type {
   HandlersLoginRequest,
   HandlersLoginResponse,
   HandlersRegisterRequest,
 } from "@/apis/data-contracts";
+import { apiFetch } from "./api-client";
 
 const AUTH_PATH = "/auth";
 

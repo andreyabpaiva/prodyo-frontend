@@ -2,7 +2,6 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CauseDialog } from "@/components/dashboard/modals";
 import { ModelsIndicatorAnalysisData, ModelsProductivityEnum } from "@/apis/data-contracts";
 import { ProductivityLevel } from "@/types/domain";
 import { Line } from "react-chartjs-2";
@@ -33,12 +32,6 @@ ChartJS.register(
     Tooltip,
     Legend
 );
-
-function convertProductivityLevel(level: ModelsProductivityEnum | undefined): ProductivityLevel {
-    if (level === ModelsProductivityEnum.ProductivityCritical) return "CRITICAL";
-    if (level === ModelsProductivityEnum.ProductivityAlert) return "ALERT";
-    return "OK";
-}
 
 const metricCopy = {
     SpeedPerIteration: {

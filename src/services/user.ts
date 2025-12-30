@@ -1,5 +1,4 @@
 import { User } from "@/types/domain";
-import { apiFetch } from "./api-client";
 import { Users } from "@/apis/Users";
 import type {
   HandlersCreateUserRequest,
@@ -36,25 +35,25 @@ export const userService = {
     return response.data;
   },
 
-  getById: (userId: string) => apiFetch<User>(`${USERS_PATH}/${userId}`),
+  // getById: (userId: string) => apiFetch<User>(`${USERS_PATH}/${userId}`),
 
-  create: (payload: CreateUserPayload) =>
-    apiFetch<Record<string, any>>(USERS_PATH, {
-      method: "POST",
-      body: payload,
-    }),
+  // create: (payload: CreateUserPayload) =>
+  //   apiFetch<Record<string, any>>(USERS_PATH, {
+  //     method: "POST",
+  //     body: payload,
+  //   }),
 
-  update: (userId: string, payload: UpdateUserPayload) =>
-    apiFetch<User>(`${USERS_PATH}/${userId}`, {
-      method: "PUT",
-      body: payload,
-    }),
+  // update: (userId: string, payload: UpdateUserPayload) =>
+  //   apiFetch<User>(`${USERS_PATH}/${userId}`, {
+  //     method: "PUT",
+  //     body: payload,
+  //   }),
 
-  delete: (userId: string) =>
-    apiFetch<void>(`${USERS_PATH}/${userId}`, {
-      method: "DELETE",
-      skipJsonParsing: true,
-    }),
+  // delete: (userId: string) =>
+  //   apiFetch<void>(`${USERS_PATH}/${userId}`, {
+  //     method: "DELETE",
+  //     skipJsonParsing: true,
+  //   }),
 
   projectDetail: async (params: ProjectDetailParams) => {
     const response = await usersApi.projectDetail(params);

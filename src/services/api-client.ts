@@ -46,8 +46,8 @@ export async function apiFetch<T>(
     },
     body:
       body && typeof body !== "string" && !(body instanceof FormData)
-        ? JSON.stringify(body)
-        : body,
+        ? (JSON.stringify(body) as BodyInit)
+        : (body as BodyInit | null | undefined),
   });
 
   if (!response.ok) {

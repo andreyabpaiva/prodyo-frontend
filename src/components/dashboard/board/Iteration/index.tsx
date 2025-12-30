@@ -2,13 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import type { ModelsProject, ModelsIteration } from "@/apis/data-contracts";
+import type { ModelsIteration } from "@/apis/data-contracts";
 import { useRouter } from "next/navigation";
 import { taskService } from "@/services/task";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setActiveIterationsId } from "@/store/iterationSlice";
-import { projectService } from "@/services/project";
-import { iterationService } from "@/services/iteration";
 import { Plus, Trash2 } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { Input } from "@/components/ui/input";

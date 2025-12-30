@@ -2,8 +2,7 @@
 
 import { use, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { notFound, useRouter } from "next/navigation";
-import { projectService } from "@/services/project";
+import { useRouter } from "next/navigation";
 import { iterationService } from "@/services/iteration";
 import { useAppDispatch } from "@/store/hooks";
 import { setProjectId } from "@/store/projectSlice";

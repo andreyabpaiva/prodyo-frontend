@@ -42,6 +42,7 @@ export interface HandlersCreateActionRequest {
   indicator_range_id?: string;
   metric?: string;
   start_at?: string;
+  status?: string;
 }
 
 export interface HandlersCreateBugRequest {
@@ -121,6 +122,14 @@ export interface HandlersLoginResponse {
   };
 }
 
+export interface HandlersPatchActionRequest {
+  assignee_id?: string;
+  description?: string;
+  end_at?: string;
+  start_at?: string;
+  status?: string;
+}
+
 export interface HandlersPatchTaskRequest {
   assignee_id?: string;
   description?: string;
@@ -191,6 +200,7 @@ export interface ModelsAction {
   id?: string;
   indicator_range_id?: string;
   start_at?: string;
+  status?: ModelsStatusEnum;
   updated_at?: string;
 }
 
@@ -386,6 +396,14 @@ export interface IndicatorsListParams {
   iteration_id: string;
 }
 
+export interface ActionsPartialUpdateParams {
+  /**
+   * Action ID
+   * @format uuid
+   */
+  id: string;
+}
+
 export interface RangesDeleteParams {
   /**
    * Range ID
@@ -440,6 +458,11 @@ export interface AnalysisListParams {
    * @format uuid
    */
   id: string;
+}
+
+export interface CausesActionsListParams {
+  /** Iteration ID */
+  iterationId: string;
 }
 
 export interface ProjectsListParams {

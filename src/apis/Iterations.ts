@@ -12,6 +12,7 @@
 
 import {
   AnalysisListParams,
+  CausesActionsListParams,
   HandlersCreateIterationRequest,
   IterationsDeleteParams,
   IterationsDetailParams,
@@ -137,6 +138,30 @@ export class Iterations<
   ) =>
     this.request<ModelsIterationAnalysisResponse, string>({
       path: `/iterations/${id}/analysis`,
+      method: "GET",
+      secure: true,
+      type: ContentType.Json,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description Retrieves all causes and actions associated with a specific iteration
+   *
+   * @tags indicators
+   * @name CausesActionsList
+   * @summary Get all causes and actions for an iteration
+   * @request GET:/iterations/{iteration_id}/causes-actions
+   * @secure
+   * @response `200` `Record<string,any>` Causes and actions retrieved successfully
+   * @response `400` `string` Invalid iteration ID
+   * @response `500` `string` Failed to retrieve causes and actions
+   */
+  causesActionsList = (
+    { iterationId, ...query }: CausesActionsListParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<Record<string, any>, string>({
+      path: `/iterations/${iterationId}/causes-actions`,
       method: "GET",
       secure: true,
       type: ContentType.Json,

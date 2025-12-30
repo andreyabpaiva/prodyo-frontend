@@ -11,13 +11,16 @@
  */
 
 import {
+  ActionsPartialUpdateParams,
   HandlersCreateActionRequest,
   HandlersCreateCauseRequest,
   HandlersCreateIndicatorRequest,
+  HandlersPatchActionRequest,
   HandlersSetRangeRequest,
   HandlersUpdateMetricValuesRequest,
   IndicatorsListParams,
   MetricsUpdateParams,
+  ModelsAction,
   ModelsIndicator,
   ModelsIndicatorMetricValue,
   RangesDeleteParams,
@@ -94,6 +97,33 @@ export class Indicators<
     this.request<Record<string, any>, string>({
       path: `/indicators/actions`,
       method: "POST",
+      body: action,
+      secure: true,
+      type: ContentType.Json,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description Partially update an existing action (only provided fields will be updated)
+   *
+   * @tags indicators
+   * @name ActionsPartialUpdate
+   * @summary Partially update action
+   * @request PATCH:/indicators/actions/{id}
+   * @secure
+   * @response `200` `ModelsAction` Updated action
+   * @response `400` `string` Invalid action ID or request body
+   * @response `404` `string` Action not found
+   * @response `500` `string` Failed to update action
+   */
+  actionsPartialUpdate = (
+    { id, ...query }: ActionsPartialUpdateParams,
+    action: HandlersPatchActionRequest,
+    params: RequestParams = {},
+  ) =>
+    this.request<ModelsAction, string>({
+      path: `/indicators/actions/${id}`,
+      method: "PATCH",
       body: action,
       secure: true,
       type: ContentType.Json,

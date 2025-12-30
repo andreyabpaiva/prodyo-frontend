@@ -111,6 +111,7 @@ export default function CauseActionForm({
                 start_at: formatDateToISO(data.startDate, false),
                 end_at: formatDateToISO(data.endDate, true),
                 indicator_range_id: indicatorRangeId,
+                status: "NotStarted"
             };
             await indicatorService.createAction(payload);
             router.back();

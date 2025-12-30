@@ -61,7 +61,7 @@ export function UserSelect({ value, onChange, className = "" }: UserSelectProps)
                 disabled={isLoading}
             >
                 <UserRound size={16} />
-                <span>{selectedUser?.name || (isLoading ? "Carregando..." : "Selecionar usuário")}</span>
+                <span>{selectedUser?.name || (isLoading ? "Carregando..." : "Selecione usuário")}</span>
                 <ChevronDown size={16} />
             </button>
 
