@@ -183,19 +183,19 @@ function IndicatorPanel({ analysisData }: { analysisData: ModelsIndicatorAnalysi
         <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2 justify-end">
 
-                <div className="flex items-center w-full justify-between gap-4">
+                <div className="flex items-center w-full gap-4">
                     <div>
                         <p className="text-md font-bold">{copy.title}</p>
                     </div>
                     <div className="flex items-center gap-4">
-
+                        <StatusBadge level={latestStatus} />
                         {latestStatus && latestStatus === ModelsProductivityEnum.ProductivityAlert ? (
                             <Button
                                 variant={"default"}
                                 size={"sm"}
                                 onClick={handleAddCause}
                             >
-                                + Adicionar causa
+                                Analisar causa
                             </Button>
                         ) : latestStatus === ModelsProductivityEnum.ProductivityCritical ? (
                             <Button
@@ -203,10 +203,9 @@ function IndicatorPanel({ analysisData }: { analysisData: ModelsIndicatorAnalysi
                                 size={"sm"}
                                 onClick={handleAddAction}
                             >
-                                + Adicionar ação
+                                Analisar causa e ação
                             </Button>
                         ) : null}
-                        <StatusBadge level={latestStatus} />
                     </div>
                 </div>
 
