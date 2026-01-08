@@ -4,24 +4,45 @@ import type {
   HandlersRegisterRequest,
 } from "@/apis/data-contracts";
 import { apiFetch } from "./api-client";
+import { Auth } from "@/apis/Auth";
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8081/api/v1";
 
 const AUTH_PATH = "/auth";
+const authApi = new Auth({
+  baseUrl: API_BASE_URL,
+  securityWorker: () => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (token) {
+      return {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+    }
+    return {};
+  },
+
+})
 
 export type LoginPayload = HandlersLoginRequest;
 export type RegisterPayload = HandlersRegisterRequest;
 
-export const authService = {
-  login: (payload: LoginPayload) =>
-    apiFetch<HandlersLoginResponse>(`${AUTH_PATH}/login`, {
-      method: "POST",
-      body: payload,
-    }),
 
-  register: (payload: RegisterPayload) =>
-    apiFetch<Record<string, any>>(`${AUTH_PATH}/register`, {
-      method: "POST",
-      body: payload,
-    }),
+
+export const authService = {
+
+
+  login: async (payload: LoginPayload) => {
+    const response = await authApi.loginCreate(payload);
+    return response.data;
+  },
+
+  register: async (payload: RegisterPayload) => {
+    const response = await authApi.registerCreate(payload);
+    return response.data;
+  },
 
   logout: () =>
     apiFetch<void>(`${AUTH_PATH}/logout`, {
