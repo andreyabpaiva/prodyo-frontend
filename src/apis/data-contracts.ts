@@ -91,6 +91,8 @@ export interface HandlersCreateProjectRequest {
 export interface HandlersCreateTaskRequest {
   assignee_id?: string;
   description?: string;
+  /** Expected time in hours */
+  expected_time?: number;
   iteration_id?: string;
   name?: string;
   points?: number;
@@ -133,6 +135,8 @@ export interface HandlersPatchActionRequest {
 export interface HandlersPatchTaskRequest {
   assignee_id?: string;
   description?: string;
+  /** Expected time in hours */
+  expected_time?: number;
   name?: string;
   points?: number;
   status?: string;
@@ -180,6 +184,8 @@ export interface HandlersUpdateProjectRequest {
 export interface HandlersUpdateTaskRequest {
   assignee_id?: string;
   description?: string;
+  /** Expected time in hours */
+  expected_time?: number;
   name?: string;
   points?: number;
   status?: string;
@@ -335,6 +341,7 @@ export interface ModelsTask {
   bugs?: ModelsBug[];
   created_at?: string;
   description?: string;
+  expected_time?: number;
   id?: string;
   improvements?: ModelsImprov[];
   iteration_id?: string;

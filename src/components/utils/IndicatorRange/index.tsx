@@ -11,46 +11,38 @@ interface IndicatorRangeProps {
     indicatorType: ModelsIndicatorEnum;
 }
 
-const INDICATOR_CONFIG: Record<ModelsIndicatorEnum, { 
-    label: string; 
+const INDICATOR_CONFIG: Record<ModelsIndicatorEnum, {
+    label: string;
     icon: React.ComponentType<{ className?: string }>;
 }> = {
     [ModelsIndicatorEnum.IndicatorSpeedPerIteration]: {
-        label: "Velocidade",
+        label: "Velocidade da Iteração",
         icon: TrendingUp,
     },
     [ModelsIndicatorEnum.IndicatorReworkPerIteration]: {
-        label: "Retrabalho",
+        label: "Ìndice de Retrabalho",
         icon: RefreshCw,
     },
     [ModelsIndicatorEnum.IndicatorInstabilityIndex]: {
-        label: "Instabilidade",
+        label: "Ìndice de Instabilidade",
         icon: Gauge,
     },
 };
 
-const formatRangeValue = (range?: { min?: string; max?: string }): string => {
-    const min = range?.min ?? "";
-    const max = range?.max ?? "";
-    if (!min && !max) return "";
-    if (min && max) return `${min} - ${max}`;
-    if (min && !max) return min;
-    return `- ${max}`;
-};
+const sanitizeNumericInput = (value: string): string => {
 
-const parseRangeValue = (value: string): { min: string; max: string } => {
-    if (value.includes(" - ")) {
-        const parts = value.split(" - ");
-        return { min: parts[0] ?? "", max: parts[1] ?? "" };
-    }
-    if (value.endsWith(" ")) {
-        return { min: value.trim(), max: "" };
-    }
-    return { min: value, max: "" };
-};
+    let sanitized = value.replace(/[^0-9,]/g, "");
 
-const sanitizeRangeInput = (value: string): string => {
-    return value.replace(/[^0-9\s\-\.]/g, "");
+    const parts = sanitized.split(",");
+    if (parts.length > 2) {
+        sanitized = parts[0] + "," + parts.slice(1).join("");
+    }
+
+    if (parts.length === 2 && parts[1].length > 2) {
+        sanitized = parts[0] + "," + parts[1].substring(0, 2);
+    }
+
+    return sanitized;
 };
 
 export function IndicatorRange({ indicatorType }: IndicatorRangeProps) {
@@ -63,90 +55,150 @@ export function IndicatorRange({ indicatorType }: IndicatorRangeProps) {
         <FormField
             control={form.control}
             name={fieldName}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
                 <FormItem>
-                    <div className="bg-[var(--primary)] rounded-xl border-3 border-[var(--text)] p-3">
-                        {/* Header */}
+                    <div className="bg-[var(--primary)] rounded-xl border-3 border-[var(--text)] p-4">
                         <div className="flex items-center gap-2 mb-3">
                             <Icon className="w-4 h-4 text-[var(--text)]" />
                             <span className="text-sm font-semibold text-gray-700">{config.label}</span>
                         </div>
 
-                        <div className="flex flex-col gap-2">
-                            {/* OK */}
+                        <div className="flex flex-col gap-3">
                             <div className="flex items-center gap-2">
                                 <Badge
                                     variant="outline"
-                                    className="bg-[var(--ok)] border-3 border-[var(--text)] font-bold py-0.5 rounded-full text-xs min-w-[4.25rem] justify-center"
+                                    className="bg-[var(--ok)] border-3 border-[var(--text)] font-bold py-0.5 rounded-full text-xs min-w-[9rem] justify-center"
                                 >
                                     OK
                                 </Badge>
-                                <FormControl>
-                                    <Input
-                                        type="text"
-                                        inputMode="decimal"
-                                        placeholder="0 - 10"
-                                        className="rounded-full border-3 bg-[var(--background)] text-center h-7 flex-1 text-sm"
-                                        value={formatRangeValue(field.value?.ok)}
-                                        onChange={(e) => {
-                                            const sanitized = sanitizeRangeInput(e.target.value);
-                                            const parsed = parseRangeValue(sanitized);
-                                            field.onChange({ ...field.value, ok: parsed });
-                                        }}
-                                    />
-                                </FormControl>
+                                <div className="flex mx-5 gap-2">
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            inputMode="decimal"
+                                            placeholder="Min"
+                                            className="rounded-full border-3 bg-[var(--background)] text-center h-7 flex-1 text-sm"
+                                            value={field.value?.ok?.min ?? ""}
+                                            onChange={(e) => {
+                                                const sanitized = sanitizeNumericInput(e.target.value);
+                                                field.onChange({
+                                                    ...field.value,
+                                                    ok: { ...field.value?.ok, min: sanitized }
+                                                });
+                                            }}
+                                        />
+                                    </FormControl>
+                                    -
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            inputMode="decimal"
+                                            placeholder="Max"
+                                            className="rounded-full border-3 bg-[var(--background)] text-center h-7 flex-1 text-sm"
+                                            value={field.value?.ok?.max ?? ""}
+                                            onChange={(e) => {
+                                                const sanitized = sanitizeNumericInput(e.target.value);
+                                                field.onChange({
+                                                    ...field.value,
+                                                    ok: { ...field.value?.ok, max: sanitized }
+                                                });
+                                            }}
+                                        />
+                                    </FormControl>
+                                </div>
                             </div>
 
                             {/* Alert */}
                             <div className="flex items-center gap-2">
                                 <Badge
                                     variant="outline"
-                                    className="bg-[var(--alert)] border-3 border-[var(--text)] font-bold py-0.5 rounded-full text-xs min-w-[3.125rem] justify-center"
+                                    className="bg-[var(--alert)] border-3 border-[var(--text)] font-bold py-0.5 rounded-full text-xs min-w-[9rem] justify-center"
                                 >
                                     ALERTA
                                 </Badge>
-                                <FormControl>
-                                    <Input
-                                        type="text"
-                                        inputMode="decimal"
-                                        placeholder="0 - 10"
-                                        className="rounded-full bg-[var(--background)] border-3 text-center h-7 flex-1 text-sm"
-                                        value={formatRangeValue(field.value?.alert)}
-                                        onChange={(e) => {
-                                            const sanitized = sanitizeRangeInput(e.target.value);
-                                            const parsed = parseRangeValue(sanitized);
-                                            field.onChange({ ...field.value, alert: parsed });
-                                        }}
-                                    />
-                                </FormControl>
+                                <div className="flex mx-5 gap-2">
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            inputMode="decimal"
+                                            placeholder="Min"
+                                            className="rounded-full bg-[var(--background)] border-3 text-center h-7 flex-1 text-sm"
+                                            value={field.value?.alert?.min ?? ""}
+                                            onChange={(e) => {
+                                                const sanitized = sanitizeNumericInput(e.target.value);
+                                                field.onChange({
+                                                    ...field.value,
+                                                    alert: { ...field.value?.alert, min: sanitized }
+                                                });
+                                            }}
+                                        />
+                                    </FormControl>
+                                    -
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            inputMode="decimal"
+                                            placeholder="Max"
+                                            className="rounded-full bg-[var(--background)] border-3 text-center h-7 flex-1 text-sm"
+                                            value={field.value?.alert?.max ?? ""}
+                                            onChange={(e) => {
+                                                const sanitized = sanitizeNumericInput(e.target.value);
+                                                field.onChange({
+                                                    ...field.value,
+                                                    alert: { ...field.value?.alert, max: sanitized }
+                                                });
+                                            }}
+                                        />
+                                    </FormControl>
+                                </div>
                             </div>
 
-                            {/* Critical */}
                             <div className="flex items-center gap-2">
                                 <Badge
                                     variant="outline"
-                                    className="bg-[var(--critic)] border-3 border-[var(--text)] font-bold py-0.5 rounded-full text-xs min-w-[3.125rem] justify-center"
+                                    className="bg-[var(--critic)] border-3 border-[var(--text)] font-bold py-0.5 rounded-full text-xs min-w-[9rem] justify-center"
                                 >
                                     CRÍTICO
                                 </Badge>
-                                <FormControl>
-                                    <Input
-                                        type="text"
-                                        inputMode="decimal"
-                                        placeholder="0 - 10"
-                                        className="rounded-full border-3 bg-[var(--background)] text-center h-7 flex-1 text-sm"
-                                        value={formatRangeValue(field.value?.critical)}
-                                        onChange={(e) => {
-                                            const sanitized = sanitizeRangeInput(e.target.value);
-                                            const parsed = parseRangeValue(sanitized);
-                                            field.onChange({ ...field.value, critical: parsed });
-                                        }}
-                                    />
-                                </FormControl>
+                                <div className="flex mx-5 gap-2">
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            inputMode="decimal"
+                                            placeholder="Min"
+                                            className="rounded-full border-3 bg-[var(--background)] text-center h-7 flex-1 text-sm"
+                                            value={field.value?.critical?.min ?? ""}
+                                            onChange={(e) => {
+                                                const sanitized = sanitizeNumericInput(e.target.value);
+                                                field.onChange({
+                                                    ...field.value,
+                                                    critical: { ...field.value?.critical, min: sanitized }
+                                                });
+                                            }}
+                                        />
+                                    </FormControl>
+                                    -
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            inputMode="decimal"
+                                            placeholder="Max"
+                                            className="rounded-full border-3 bg-[var(--background)] text-center h-7 flex-1 text-sm"
+                                            value={field.value?.critical?.max ?? ""}
+                                            onChange={(e) => {
+                                                const sanitized = sanitizeNumericInput(e.target.value);
+                                                field.onChange({
+                                                    ...field.value,
+                                                    critical: { ...field.value?.critical, max: sanitized }
+                                                });
+                                            }}
+                                        />
+                                    </FormControl>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <FormMessage />
+                    {fieldState.error && <FormMessage />}
                 </FormItem>
             )}
         />

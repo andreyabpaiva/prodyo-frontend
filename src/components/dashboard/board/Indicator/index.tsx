@@ -4,13 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ModelsIndicatorAnalysisData, ModelsProductivityEnum } from "@/apis/data-contracts";
 import { ProductivityLevel } from "@/types/domain";
-import { Line } from "react-chartjs-2";
+import { Line, Bar } from "react-chartjs-2";
 import {
     Chart as ChartJS,
     CategoryScale,
     LinearScale,
     PointElement,
     LineElement,
+    BarElement,
     Title,
     Tooltip,
     Legend,
@@ -28,6 +29,7 @@ ChartJS.register(
     LinearScale,
     PointElement,
     LineElement,
+    BarElement,
     Title,
     Tooltip,
     Legend
@@ -64,6 +66,96 @@ function StatusBadge({ level }: { level: ModelsProductivityEnum | undefined }) {
         <Badge className={`rounded-full border-[3px] px-6 py-1 text-sm font-bold ${tone}`}>
             {text}
         </Badge>
+    );
+}
+
+function BarChart({ values, color, labels, statuses }: { values: number[]; color: string; labels: string[]; statuses?: (string | undefined)[] }) {
+    const getBarColor = (status: string | undefined) => {
+        if (status === "Critical") return "#FF5050";
+        if (status === "Alert") return "#F3FF89";
+        if (status === "Ok") return "#B9FF94";
+        return color;
+    };
+
+    console.log(statuses ? statuses[1] : undefined);
+
+    const data = {
+        labels: labels.map(label => {
+            if (label === "EXPECTED") return "Esperado";
+            if (label === "ACTUAL") return "Real";
+            return label;
+        }),
+        datasets: [
+            {
+                data: values,
+                backgroundColor: labels.map((label, index) =>
+                    label === "EXPECTED" ? "#999999" : (statuses && statuses[index] ? getBarColor(statuses[index]) : color)
+                ),
+                borderColor: "var(--dark)",
+                borderWidth: 2,
+                borderRadius: 8,
+            },
+        ],
+    };
+
+    const options: ChartOptions<'bar'> = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false,
+            },
+            tooltip: {
+                backgroundColor: "rgba(0, 0, 0, 0.8)",
+                padding: 12,
+                titleFont: {
+                    size: 14,
+                    weight: "bold",
+                },
+                bodyFont: {
+                    size: 13,
+                },
+                cornerRadius: 8,
+                callbacks: {
+                    label: function (context) {
+                        const value = context.parsed.y;
+                        return `Velocidade: ${value?.toFixed(2) ?? 0} pontos/hora`;
+                    }
+                }
+            },
+        },
+        scales: {
+            x: {
+                grid: {
+                    display: false,
+                },
+                ticks: {
+                    color: "#9ca3af",
+                    font: {
+                        size: 12,
+                        weight: 600,
+                    },
+                },
+            },
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: "#e5e7eb33",
+                },
+                ticks: {
+                    color: "#9ca3af",
+                    font: {
+                        size: 11,
+                    },
+                },
+            },
+        },
+    };
+
+    return (
+        <div className="h-40 w-full">
+            <Bar data={data} options={options} />
+        </div>
     );
 }
 
@@ -165,7 +257,10 @@ function IndicatorPanel({ analysisData }: { analysisData: ModelsIndicatorAnalysi
 
     const yValues = analysisData.points?.map(point => point.y || 0) || [];
     const xLabels = analysisData.points?.map(point => point.x?.toString() || "") || [];
+    const statuses = analysisData.points?.map(point => point.status) || [];
+
     const latestStatus = analysisData.points?.[analysisData.points.length - 1]?.status;
+    const isSpeedPerIteration = analysisData.indicatorType === "SpeedPerIteration";
 
     const handleAddAction = () => {
         dispatch(setCriticalMetricLabel(copy.title));
@@ -217,7 +312,11 @@ function IndicatorPanel({ analysisData }: { analysisData: ModelsIndicatorAnalysi
                     </div>
                 )}
                 <div>
-                    <LineChart values={yValues} color={copy.color} labels={xLabels} />
+                    {isSpeedPerIteration ? (
+                        <BarChart values={yValues} color={copy.color} labels={xLabels} statuses={statuses} />
+                    ) : (
+                        <LineChart values={yValues} color={copy.color} labels={xLabels} />
+                    )}
                     {analysisData.xAxis?.label && (
                         <div className="mt-2 text-center text-sm font-bold uppercase text-[var(--divider)]">
                             <span>{analysisData.xAxis.label}</span>

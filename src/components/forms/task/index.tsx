@@ -11,6 +11,7 @@ import { UserSelect } from "@/components/utils/UserSelect";
 import { taskService } from "@/services/task";
 import type { HandlersCreateTaskRequest } from "@/apis/data-contracts";
 import { useAppSelector } from "@/store/hooks";
+import { Input } from "@/components/ui/input";
 
 type CreateTaskModalProps = {
     projectId: string;
@@ -22,6 +23,7 @@ type TaskFormValues = {
     description: string;
     points: number;
     assigneeId?: string;
+    expected_time: number;
 };
 
 const statusClasses: Record<TaskStatus, string> = {
@@ -47,6 +49,8 @@ export default function CreateTaskForm({ projectId }: CreateTaskModalProps) {
             description: "",
             points: 0,
             assigneeId: undefined,
+            expected_time: 0
+
         },
     });
 
@@ -60,9 +64,10 @@ export default function CreateTaskForm({ projectId }: CreateTaskModalProps) {
                 iteration_id: activeIterationId || undefined,
                 assignee_id: data.assigneeId || undefined,
                 status: status,
-                points: data.points || undefined  
+                points: data.points || undefined,
+                expected_time: data.expected_time
             };
-            
+
             return await taskService.create(payload);
         },
         onSuccess: async () => {
@@ -111,7 +116,7 @@ export default function CreateTaskForm({ projectId }: CreateTaskModalProps) {
                         />
                     </div>
                     <div className="flex justify-end gap-1">
-                        <p className="text-xs text-[var(--divider)]">selecione a pontuação da tarefa</p>	
+                        <p className="text-xs text-[var(--divider)]">selecione a pontuação da tarefa</p>
                         <MoveDown color="var(--divider)" className="w-4 h-4 items-center justify-center" />
                     </div>
 
@@ -136,6 +141,34 @@ export default function CreateTaskForm({ projectId }: CreateTaskModalProps) {
                                 className="w-6 bg-transparent text-center outline-none"
                             />
                         </div>
+                    </div>
+
+                    <div className="mt-4">
+                        <label className="text-sm font-semibold text-[var(--dark)] mb-2 block">
+                            Tempo Esperado (horas)
+                        </label>
+                        <Input
+                            type="text"
+                            inputMode="decimal"
+                            placeholder="Ex: 2,5"
+                            {...form.register("expected_time", {
+                                valueAsNumber: true,
+                                onChange: (e) => {
+                                    let value = e.target.value.replace(/[^0-9,]/g, "");
+                                    const parts = value.split(",");
+                                    if (parts.length > 2) {
+                                        value = parts[0] + "," + parts.slice(1).join("");
+                                    }
+                                    if (parts.length === 2 && parts[1].length > 2) {
+                                        value = parts[0] + "," + parts[1].substring(0, 2);
+                                    }
+                                    e.target.value = value;
+                                    const numericValue = parseFloat(value.replace(",", "."));
+                                    form.setValue("expected_time", numericValue || 0);
+                                },
+                            })}
+                            className="rounded-full border-3 border-[var(--dark)] bg-[var(--modal)] px-6 py-3 text-sm text-[var(--dark)] outline-none"
+                        />
                     </div>
 
                     <textarea

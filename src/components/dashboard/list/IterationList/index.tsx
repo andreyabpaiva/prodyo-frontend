@@ -89,6 +89,7 @@ function TaskItem({
     const [isAssigneeOpen, setIsAssigneeOpen] = useState(false);
     const [isStatusOpen, setIsStatusOpen] = useState(false);
     const [pointsValue, setPointsValue] = useState(task.points?.toString() ?? "0");
+    const [expectedTimeValue, setExpectedTimeValue] = useState(task.expected_time?.toString().replace(".", ",") ?? "0");
     const [isTimerRunning, setIsTimerRunning] = useState(false);
     const [elapsedSeconds, setElapsedSeconds] = useState(task.timer ? Number(task.timer) : 0);
     const { expandedTaskId, toggleTask } = useTaskExpansion();
@@ -133,7 +134,7 @@ function TaskItem({
     const users = usersData?.data || usersData?.users || (Array.isArray(usersData) ? usersData : []);
 
     const updateTaskMutation = useMutation({
-        mutationFn: async ({ assigneeId, status, points, timer }: { assigneeId?: string; status?: string, points?: number, timer?: string }) => {
+        mutationFn: async ({ assigneeId, status, points, timer, expectedTime }: { assigneeId?: string; status?: string, points?: number, timer?: string, expectedTime?: number }) => {
             if (!task.id) {
                 throw new Error("Task ID is required");
             }
@@ -143,6 +144,7 @@ function TaskItem({
                 ...(status !== undefined && { status }),
                 ...(points !== undefined && { points }),
                 ...(timer !== undefined && { timer }),
+                ...(expectedTime !== undefined && { expected_time: expectedTime }),
             });
         },
         onSuccess: async () => {
@@ -191,6 +193,10 @@ function TaskItem({
         updateTaskMutation.mutate({ points });
     };
 
+    const handleExpectedTimeChange = (expectedTime: number) => {
+        updateTaskMutation.mutate({ expectedTime });
+    };
+
     const toggleTimer = () => {
         if (isTimerRunning) {
             updateTaskMutation.mutate({ timer: elapsedSeconds.toString() });
@@ -202,17 +208,53 @@ function TaskItem({
         <div className="rounded-[18px] border-[3px] border-[var(--dark)] bg-[var(--primary)] px-4 py-3 shadow-[0_4px_0_rgba(0,0,0,0.15)]">
             <div className="flex flex-wrap items-center gap-3">
                 <div className="flex flex-1 flex-col">
-                    <div className="flex items-center gap-2">
-                        <span className="text-sm text-[var(--divider)]">
-                            {formatTime(elapsedSeconds)}
-                        </span>
-                        <button onClick={toggleTimer}>
-                            {isTimerRunning ? (
-                                <CirclePause size={18} className="text-[var(--divider)] cursor-pointer" />
-                            ) : (
-                                <CirclePlay size={18} className="text-[var(--divider)] cursor-pointer" />
-                            )}
-                        </button>
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm text-[var(--divider)]">
+                                {formatTime(elapsedSeconds)}
+                            </span>
+                            <button onClick={toggleTimer}>
+                                {isTimerRunning ? (
+                                    <CirclePause size={18} className="text-[var(--divider)] cursor-pointer" />
+                                ) : (
+                                    <CirclePlay size={18} className="text-[var(--divider)] cursor-pointer" />
+                                )}
+                            </button>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            <span className="text-xs text-[var(--divider)]">Tempo esperado:</span>
+                            <input
+                                type="text"
+                                value={expectedTimeValue}
+                                inputMode="decimal"
+                                onChange={(e) => {
+                                    let value = e.target.value.replace(/[^0-9,]/g, "");
+                                    const parts = value.split(",");
+                                    if (parts.length > 2) {
+                                        value = parts[0] + "," + parts.slice(1).join("");
+                                    }
+                                    if (parts.length === 2 && parts[1].length > 2) {
+                                        value = parts[0] + "," + parts[1].substring(0, 2);
+                                    }
+                                    setExpectedTimeValue(value);
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        const numericValue = parseFloat(expectedTimeValue.replace(",", "."));
+                                        handleExpectedTimeChange(numericValue || 0);
+                                        e.currentTarget.blur();
+                                    }
+                                }}
+                                onBlur={() => {
+                                    const numericValue = parseFloat(expectedTimeValue.replace(",", "."));
+                                    if (numericValue !== task.expected_time) {
+                                        handleExpectedTimeChange(numericValue || 0);
+                                    }
+                                }}
+                                className="w-8 text-xs text-[var(--divider)] bg-transparent border-b border-[var(--divider)] text-center outline-none"
+                            />
+                            <span className="text-xs text-[var(--divider)]">h</span>
+                        </div>
                     </div>
                     <div className="flex items-center gap-3">
                         <p className="text-lg font-semibold">{task.name}</p>
@@ -235,6 +277,8 @@ function TaskItem({
                         </div>
                     </div>
                 </div>
+
+
 
                 <div className="relative">
                     <div
