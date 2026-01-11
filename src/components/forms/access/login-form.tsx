@@ -59,7 +59,6 @@ export function LoginForm() {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       const response = await authService.login(data);
-      console.log(response);
       if (response.token && response.user) {
         dispatch(
           setCredentials({

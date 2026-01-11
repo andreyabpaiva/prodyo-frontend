@@ -106,7 +106,6 @@ export function IndicatorAnalysis() {
     const projectId = useSelector((state: RootState) => state.project.projectId);
     const [openAssigneeId, setOpenAssigneeId] = useState<string | null>(null);
     const [openStatusId, setOpenStatusId] = useState<string | null>(null);
-    console.log(iterationId);
     const { data, isLoading } = useQuery({
         queryKey: ["cause-action-list", iterationId],
         queryFn: async () => {

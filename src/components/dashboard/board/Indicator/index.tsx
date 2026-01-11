@@ -77,8 +77,6 @@ function BarChart({ values, color, labels, statuses }: { values: number[]; color
         return color;
     };
 
-    console.log(statuses ? statuses[1] : undefined);
-
     const data = {
         labels: labels.map(label => {
             if (label === "EXPECTED") return "Esperado";
