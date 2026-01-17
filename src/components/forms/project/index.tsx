@@ -50,6 +50,11 @@ export default function ProjectForm() {
         mode: "onChange"
     });
 
+    const parseDecimal = (value: string | undefined): number => {
+        if (!value) return 0;
+        return parseFloat(value.replace(",", ".")) || 0;
+    };
+
     const mutation = useMutation({
         mutationFn: async (data: ProjectFormValues) => {
             const indicatorRangesArray = data.indicatorRanges
@@ -57,16 +62,16 @@ export default function ProjectForm() {
                     indicator_type: indicatorType,
                     range: {
                         ok: {
-                            min: parseFloat(ranges?.ok?.min || "0") || 0,
-                            max: parseFloat(ranges?.ok?.max || "0") || 0,
+                            min: parseDecimal(ranges?.ok?.min),
+                            max: parseDecimal(ranges?.ok?.max),
                         },
                         alert: {
-                            min: parseFloat(ranges?.alert?.min || "0") || 0,
-                            max: parseFloat(ranges?.alert?.max || "0") || 0,
+                            min: parseDecimal(ranges?.alert?.min),
+                            max: parseDecimal(ranges?.alert?.max),
                         },
                         critical: {
-                            min: parseFloat(ranges?.critical?.min || "0") || 0,
-                            max: parseFloat(ranges?.critical?.max || "0") || 0,
+                            min: parseDecimal(ranges?.critical?.min),
+                            max: parseDecimal(ranges?.critical?.max),
                         },
                     },
                 }))

@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+const parseDecimal = (value: string): number => {
+    return parseFloat(value.replace(",", "."));
+};
+
 const rangeValueSchema = z.object({
     min: z.string().min(1, "Valor mínimo é obrigatório"),
     max: z.string().min(1, "Valor máximo é obrigatório"),
@@ -14,12 +18,12 @@ const indicatorRangeSchema = z.object({
 const speedRangeSchema = indicatorRangeSchema
     .refine(
         (data) => {
-            const criticalMin = parseFloat(data.critical.min);
-            const criticalMax = parseFloat(data.critical.max);
-            const alertMin = parseFloat(data.alert.min);
-            const alertMax = parseFloat(data.alert.max);
-            const okMin = parseFloat(data.ok.min);
-            const okMax = parseFloat(data.ok.max);
+            const criticalMin = parseDecimal(data.critical.min);
+            const criticalMax = parseDecimal(data.critical.max);
+            const alertMin = parseDecimal(data.alert.min);
+            const alertMax = parseDecimal(data.alert.max);
+            const okMin = parseDecimal(data.ok.min);
+            const okMax = parseDecimal(data.ok.max);
 
             return criticalMin < criticalMax && alertMin < alertMax && okMin < okMax;
         },
@@ -29,10 +33,10 @@ const speedRangeSchema = indicatorRangeSchema
     )
     .refine(
         (data) => {
-            const criticalMax = parseFloat(data.critical.max);
-            const alertMin = parseFloat(data.alert.min);
-            const alertMax = parseFloat(data.alert.max);
-            const okMin = parseFloat(data.ok.min);
+            const criticalMax = parseDecimal(data.critical.max);
+            const alertMin = parseDecimal(data.alert.min);
+            const alertMax = parseDecimal(data.alert.max);
+            const okMin = parseDecimal(data.ok.min);
 
             return criticalMax < alertMin && alertMax < okMin;
         },
@@ -44,12 +48,12 @@ const speedRangeSchema = indicatorRangeSchema
 const reworkRangeSchema = indicatorRangeSchema
     .refine(
         (data) => {
-            const criticalMin = parseFloat(data.critical.min);
-            const criticalMax = parseFloat(data.critical.max);
-            const alertMin = parseFloat(data.alert.min);
-            const alertMax = parseFloat(data.alert.max);
-            const okMin = parseFloat(data.ok.min);
-            const okMax = parseFloat(data.ok.max);
+            const criticalMin = parseDecimal(data.critical.min);
+            const criticalMax = parseDecimal(data.critical.max);
+            const alertMin = parseDecimal(data.alert.min);
+            const alertMax = parseDecimal(data.alert.max);
+            const okMin = parseDecimal(data.ok.min);
+            const okMax = parseDecimal(data.ok.max);
 
             return criticalMin < criticalMax && alertMin < alertMax && okMin < okMax;
         },
@@ -59,10 +63,10 @@ const reworkRangeSchema = indicatorRangeSchema
     )
     .refine(
         (data) => {
-            const okMax = parseFloat(data.ok.max);
-            const alertMin = parseFloat(data.alert.min);
-            const alertMax = parseFloat(data.alert.max);
-            const criticalMin = parseFloat(data.critical.min);
+            const okMax = parseDecimal(data.ok.max);
+            const alertMin = parseDecimal(data.alert.min);
+            const alertMax = parseDecimal(data.alert.max);
+            const criticalMin = parseDecimal(data.critical.min);
 
             return okMax < alertMin && alertMax < criticalMin;
         },
@@ -74,12 +78,12 @@ const reworkRangeSchema = indicatorRangeSchema
 const instabilityRangeSchema = indicatorRangeSchema
     .refine(
         (data) => {
-            const criticalMin = parseFloat(data.critical.min);
-            const criticalMax = parseFloat(data.critical.max);
-            const alertMin = parseFloat(data.alert.min);
-            const alertMax = parseFloat(data.alert.max);
-            const okMin = parseFloat(data.ok.min);
-            const okMax = parseFloat(data.ok.max);
+            const criticalMin = parseDecimal(data.critical.min);
+            const criticalMax = parseDecimal(data.critical.max);
+            const alertMin = parseDecimal(data.alert.min);
+            const alertMax = parseDecimal(data.alert.max);
+            const okMin = parseDecimal(data.ok.min);
+            const okMax = parseDecimal(data.ok.max);
 
             return criticalMin < criticalMax && alertMin < alertMax && okMin < okMax;
         },
@@ -89,10 +93,10 @@ const instabilityRangeSchema = indicatorRangeSchema
     )
     .refine(
         (data) => {
-            const okMax = parseFloat(data.ok.max);
-            const alertMin = parseFloat(data.alert.min);
-            const alertMax = parseFloat(data.alert.max);
-            const criticalMin = parseFloat(data.critical.min);
+            const okMax = parseDecimal(data.ok.max);
+            const alertMin = parseDecimal(data.alert.min);
+            const alertMax = parseDecimal(data.alert.max);
+            const criticalMin = parseDecimal(data.critical.min);
 
             return okMax < alertMin && alertMax < criticalMin;
         },
