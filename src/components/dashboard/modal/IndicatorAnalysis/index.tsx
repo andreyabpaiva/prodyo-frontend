@@ -189,7 +189,11 @@ export function IndicatorAnalysis() {
     );
   }
 
-  if (!data || (data.causes.length === 0 && data.actions.length === 0)) {
+  if (
+    !data ||
+    ((!data.causes || data.causes.length === 0) &&
+      (!data.actions || data.actions.length === 0))
+  ) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div className="absolute inset-0 bg-black/50" onClick={handleClose} />
@@ -220,11 +224,11 @@ export function IndicatorAnalysis() {
         </button>
 
         <h2 className="text-2xl font-bold text-black mb-6">
-          Análise do indicador
+          Análise dos indicadores
         </h2>
 
         {/* Causes Carousel */}
-        {data.causes.length > 0 && (
+        {data.causes && data.causes.length > 0 && (
           <div className="mb-6">
             <div className="flex gap-2">
               <h3 className="text-lg font-bold text-black mb-3">Causas</h3>
@@ -264,7 +268,7 @@ export function IndicatorAnalysis() {
             </div>
           </div>
         )}
-        {data.actions.length > 0 && (
+        {data.actions && data.actions.length > 0 && (
           <div>
             <div>
               <h3 className="text-lg font-bold text-black mb-3">Ações</h3>
