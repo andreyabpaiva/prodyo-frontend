@@ -250,7 +250,7 @@ export function IndicatorAnalysis() {
                                         shadow-[6px_6px_0px_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-1"
                   >
                     <div
-                      className={`p-4 bg-${getProductivityLevelColor(cause.productivity_level)}`}
+                      className={`p-4 bg-${getProductivityLevelColor(cause.productivity_level)} h-full`}
                     >
                       <div className="flex items-center gap-2">
                         <p className="text-lg font-bold text-black mb-1">
