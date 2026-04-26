@@ -57,9 +57,9 @@ export function IndicatorRange({ indicatorType }: IndicatorRangeProps) {
             name={fieldName}
             render={({ field, fieldState }) => (
                 <FormItem>
-                    <div className="bg-[var(--primary)] rounded-xl border-3 border-[var(--text)] p-4">
+                    <div className="bg-primary rounded-xl border-3 border-text p-4">
                         <div className="flex items-center gap-2 mb-3">
-                            <Icon className="w-4 h-4 text-[var(--text)]" />
+                            <Icon className="w-4 h-4 text-text" />
                             <span className="text-sm font-semibold text-gray-700">{config.label}</span>
                         </div>
 
@@ -67,7 +67,7 @@ export function IndicatorRange({ indicatorType }: IndicatorRangeProps) {
                             <div className="flex items-center gap-2">
                                 <Badge
                                     variant="outline"
-                                    className="bg-[var(--ok)] border-3 border-[var(--text)] font-bold py-0.5 rounded-full text-xs min-w-[9rem] justify-center"
+                                    className="bg-ok border-3 border-text font-bold py-0.5 rounded-full text-xs min-w-[9rem] justify-center"
                                 >
                                     OK
                                 </Badge>
@@ -77,7 +77,7 @@ export function IndicatorRange({ indicatorType }: IndicatorRangeProps) {
                                             type="text"
                                             inputMode="decimal"
                                             placeholder="Min"
-                                            className="rounded-full border-3 bg-[var(--background)] text-center h-7 flex-1 text-sm"
+                                            className="rounded-full border-3 bg-background text-center h-7 flex-1 text-sm"
                                             value={field.value?.ok?.min ?? ""}
                                             onChange={(e) => {
                                                 const sanitized = sanitizeNumericInput(e.target.value);
@@ -94,7 +94,7 @@ export function IndicatorRange({ indicatorType }: IndicatorRangeProps) {
                                             type="text"
                                             inputMode="decimal"
                                             placeholder="Max"
-                                            className="rounded-full border-3 bg-[var(--background)] text-center h-7 flex-1 text-sm"
+                                            className="rounded-full border-3 bg-background text-center h-7 flex-1 text-sm"
                                             value={field.value?.ok?.max ?? ""}
                                             onChange={(e) => {
                                                 const sanitized = sanitizeNumericInput(e.target.value);
@@ -112,7 +112,7 @@ export function IndicatorRange({ indicatorType }: IndicatorRangeProps) {
                             <div className="flex items-center gap-2">
                                 <Badge
                                     variant="outline"
-                                    className="bg-[var(--alert)] border-3 border-[var(--text)] font-bold py-0.5 rounded-full text-xs min-w-[9rem] justify-center"
+                                    className="bg-alert border-3 border-text font-bold py-0.5 rounded-full text-xs min-w-[9rem] justify-center"
                                 >
                                     ALERTA
                                 </Badge>
@@ -122,7 +122,7 @@ export function IndicatorRange({ indicatorType }: IndicatorRangeProps) {
                                             type="text"
                                             inputMode="decimal"
                                             placeholder="Min"
-                                            className="rounded-full bg-[var(--background)] border-3 text-center h-7 flex-1 text-sm"
+                                            className="rounded-full bg-background border-3 text-center h-7 flex-1 text-sm"
                                             value={field.value?.alert?.min ?? ""}
                                             onChange={(e) => {
                                                 const sanitized = sanitizeNumericInput(e.target.value);
@@ -139,7 +139,7 @@ export function IndicatorRange({ indicatorType }: IndicatorRangeProps) {
                                             type="text"
                                             inputMode="decimal"
                                             placeholder="Max"
-                                            className="rounded-full bg-[var(--background)] border-3 text-center h-7 flex-1 text-sm"
+                                            className="rounded-full bg-background border-3 text-center h-7 flex-1 text-sm"
                                             value={field.value?.alert?.max ?? ""}
                                             onChange={(e) => {
                                                 const sanitized = sanitizeNumericInput(e.target.value);
@@ -156,7 +156,7 @@ export function IndicatorRange({ indicatorType }: IndicatorRangeProps) {
                             <div className="flex items-center gap-2">
                                 <Badge
                                     variant="outline"
-                                    className="bg-[var(--critic)] border-3 border-[var(--text)] font-bold py-0.5 rounded-full text-xs min-w-[9rem] justify-center"
+                                    className="bg-critic border-3 border-text font-bold py-0.5 rounded-full text-xs min-w-[9rem] justify-center"
                                 >
                                     CRÍTICO
                                 </Badge>
@@ -166,7 +166,7 @@ export function IndicatorRange({ indicatorType }: IndicatorRangeProps) {
                                             type="text"
                                             inputMode="decimal"
                                             placeholder="Min"
-                                            className="rounded-full border-3 bg-[var(--background)] text-center h-7 flex-1 text-sm"
+                                            className="rounded-full border-3 bg-background text-center h-7 flex-1 text-sm"
                                             value={field.value?.critical?.min ?? ""}
                                             onChange={(e) => {
                                                 const sanitized = sanitizeNumericInput(e.target.value);
@@ -183,7 +183,7 @@ export function IndicatorRange({ indicatorType }: IndicatorRangeProps) {
                                             type="text"
                                             inputMode="decimal"
                                             placeholder="Max"
-                                            className="rounded-full border-3 bg-[var(--background)] text-center h-7 flex-1 text-sm"
+                                            className="rounded-full border-3 bg-background text-center h-7 flex-1 text-sm"
                                             value={field.value?.critical?.max ?? ""}
                                             onChange={(e) => {
                                                 const sanitized = sanitizeNumericInput(e.target.value);

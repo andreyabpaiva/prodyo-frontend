@@ -129,7 +129,7 @@ export default function CauseActionForm({
                     onClick={handleClose}
                 />
 
-                <div className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[32px] border-[3px] border-[var(--dark)] bg-[var(--primary)] px-10 py-8">
+                <div className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[32px] border-[3px] border-dark bg-primary px-10 py-8">
                     <button
                         onClick={handleClose}
                         className="absolute right-6 top-6 text-[--dark] hover:opacity-70 transition-opacity cursor-pointer"
@@ -146,10 +146,10 @@ export default function CauseActionForm({
                     <section className="mt-6 space-y-4">
                         <div className="flex items-center gap-3">
                             <p className="text-2xl font-bold">Causa</p>
-                            <Badge className={`${levelClasses[level]} border-3 border-[var(--dark)] rounded-2xl px-3 py-1 text-xs font-bold text-[var(--text)]`}>
+                            <Badge className={`${levelClasses[level]} border-3 border-dark rounded-2xl px-3 py-1 text-xs font-bold text-text`}>
                                 {level === "CRITICAL" ? "CRÍTICO" : level === "ALERT" ? "ALERTA" : "OK"}
                             </Badge>
-                            <Badge className="border-[3px] bg-[var(--divider)] rounded-2xl border-[var(--dark)] px-4 py-1 text-xs font-bold">
+                            <Badge className="border-[3px] bg-divider rounded-2xl border-dark px-4 py-1 text-xs font-bold">
                                 NÃO INICIADO
                             </Badge>
                         </div>
@@ -159,7 +159,7 @@ export default function CauseActionForm({
                         <Textarea
                             {...form.register("cause_description")}
                             placeholder="Descrição"
-                            className="mt-2 h-24 rounded-2xl border-[3px] border-[var(--dark)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--dark)]"
+                            className="mt-2 h-24 rounded-2xl border-[3px] border-dark bg-background px-4 py-3 text-sm text-dark"
                         />
                     </section>
 
@@ -168,7 +168,7 @@ export default function CauseActionForm({
                         <p className="text-xs font-semibold">
                             {metricLabel}
                         </p>
-                        <div className="inline-flex gap-2 rounded-full border-2 border-[var(--text)] px-4 py-2 w-auto">
+                        <div className="inline-flex gap-2 rounded-full border-2 border-text px-4 py-2 w-auto">
                             <input
                                 type="text"
                                 placeholder="__/__/__"
@@ -196,7 +196,7 @@ export default function CauseActionForm({
                         <Textarea
                             {...form.register("description")}
                             placeholder="Descrição"
-                            className="mt-2 h-24 rounded-2xl border-[3px] border-[var(--dark)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--dark)]"
+                            className="mt-2 h-24 rounded-2xl border-[3px] border-dark bg-background px-4 py-3 text-sm text-dark"
                         />
                         <div className="flex justify-end mt-5">
                             <Button

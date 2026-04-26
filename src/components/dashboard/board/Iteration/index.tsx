@@ -80,7 +80,7 @@ export function IterationBoard({ iterations }: { iterations: ModelsIteration[] }
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <h1 className="text-2xl font-bold">Iteração {activeIteration.number}</h1>
-                    <p className="text-sm text-[var(--disabled)]">{activeIteration.description}</p>
+                    <p className="text-sm text-disabled">{activeIteration.description}</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <div>

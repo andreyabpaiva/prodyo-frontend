@@ -56,11 +56,11 @@ const getMetricLabel = (metric: string): string => {
 
 const getProductivityLevelColor = (level: string): string => {
   const levelColorMap: Record<string, string> = {
-    OK: "[var(--ok)]",
-    Alert: "[var(--alert)]",
-    Critical: "[var(--critic)]",
+    OK: "ok",
+    Alert: "alert",
+    Critical: "critic",
   };
-  return levelColorMap[level] || "#FFF59D";
+  return levelColorMap[level] || "alert";
 };
 
 const getStatusLabel = (level: string): string => {
@@ -79,9 +79,9 @@ const statusLabels: Record<ModelsStatusEnum, string> = {
 };
 
 const statusTone: Record<ModelsStatusEnum, string> = {
-  [ModelsStatusEnum.StatusNotStarted]: "bg-[#bfbfbf] text-[var(--text)]",
-  [ModelsStatusEnum.StatusInProgress]: "bg-[#83B3FF] text-[var(--text)]",
-  [ModelsStatusEnum.StatusCompleted]: "bg-[var(--ok)] text-[var(--text)]",
+  [ModelsStatusEnum.StatusNotStarted]: "bg-status-not-started text-text",
+  [ModelsStatusEnum.StatusInProgress]: "bg-status-in-progress text-text",
+  [ModelsStatusEnum.StatusCompleted]: "bg-ok text-text",
 };
 
 const productivityToStatus: Record<string, ModelsStatusEnum> = {
@@ -234,8 +234,8 @@ export function IndicatorAnalysis() {
               <h3 className="text-lg font-bold text-black mb-3">Causas</h3>
               {data.causes.length > 2 && (
                 <div className="flex items-center gap-2 mb-2">
-                  <MoveRight size={14} className="text-[var(--disabled)]" />
-                  <p className="text-[var(--disabled)] text-sm">
+                  <MoveRight size={14} className="text-disabled" />
+                  <p className="text-disabled text-sm">
                     Arraste para o lado para visualizar mais
                   </p>
                 </div>
@@ -274,8 +274,8 @@ export function IndicatorAnalysis() {
               <h3 className="text-lg font-bold text-black mb-3">Ações</h3>
               {data.actions.length > 2 && (
                 <>
-                  <MoveRight className="text-[var(--disabled)]" />
-                  <p className="text-[var(--disabled)]">
+                  <MoveRight className="text-disabled" />
+                  <p className="text-disabled">
                     Arraste para o lado para visualizar mais
                   </p>
                 </>

@@ -76,7 +76,7 @@ export function CreateImprovementForm({ taskId }: CreateImprovementModalProps) {
                 onClick={handleClose}
             />
 
-            <div className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[32px] border-[3px] border-[var(--dark)] bg-[var(--primary)] px-10 py-8">
+            <div className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[32px] border-[3px] border-dark bg-primary px-10 py-8">
                 <button
                     onClick={handleClose}
                     className="absolute right-6 top-6 text-[--dark] hover:opacity-70 transition-opacity cursor-pointer"
@@ -91,13 +91,13 @@ export function CreateImprovementForm({ taskId }: CreateImprovementModalProps) {
                 </div>
 
                 <div className="flex justify-end gap-1">
-                    <p className="text-xs text-[var(--divider)]">selecione a pontuação da melhoria</p>
+                    <p className="text-xs text-divider">selecione a pontuação da melhoria</p>
                     <MoveDown color="var(--divider)" className="w-4 h-4 items-center justify-center" />
                 </div>
 
                 <div className="mt-6 flex items-center">
                     <h1 className="flex-1 text-3xl font-bold">Melhoria {nextImprovementNumber}</h1>
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--alert)] border-[3px] border-[var(--dark)] text-sm font-bold text-[var(--dark)]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-alert border-[3px] border-dark text-sm font-bold text-dark">
                         <input
                             type="text"
                             inputMode="numeric"
@@ -115,7 +115,7 @@ export function CreateImprovementForm({ taskId }: CreateImprovementModalProps) {
                     placeholder="Descrição"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="mt-6 h-36 w-full rounded-[16px] border-[3px] border-[var(--dark)] bg-[var(--modal)] px-6 py-4 text-md text-[var(--dark)] outline-none resize-none"
+                    className="mt-6 h-36 w-full rounded-[16px] border-[3px] border-dark bg-modal px-6 py-4 text-md text-dark outline-none resize-none"
                 />
 
                 {mutation.isError && (

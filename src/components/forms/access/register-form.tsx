@@ -79,7 +79,7 @@ export function RegisterForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex w-100 max-w-lg flex-col gap-6 text-[var(--primary)]"
+        className="flex w-100 max-w-lg flex-col gap-6 text-primary"
       >
         {registerFields.map((field) => {
           const isPasswordField = field.type === "password";
@@ -95,7 +95,7 @@ export function RegisterForm() {
               render={({ field: formField }) => (
                 <FormItem>
                   <div className="flex items-center gap-3 mb-2">
-                    <FormLabel className="text-sm font-bold text-[var(--divider)]">
+                    <FormLabel className="text-sm font-bold text-divider">
                       {field.label}
                     </FormLabel>
                     <FormMessage />

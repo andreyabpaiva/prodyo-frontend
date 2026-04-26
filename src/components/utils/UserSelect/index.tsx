@@ -71,13 +71,13 @@ export function UserSelect({ value, onChange, className = "" }: UserSelectProps)
                         className="fixed inset-0 z-10"
                         onClick={() => setIsOpen(false)}
                     />
-                    <div className="absolute top-full left-0 mt-2 z-20 w-48 rounded-[12px] border-[3px] border-[var(--dark)] bg-[var(--primary)] shadow-lg max-h-60 overflow-y-auto">
+                    <div className="absolute top-full left-0 mt-2 z-20 w-48 rounded-[12px] border-[3px] border-dark bg-primary shadow-lg max-h-60 overflow-y-auto">
                         {isLoading ? (
-                            <div className="px-4 py-2 text-sm text-[var(--disabled)]">
+                            <div className="px-4 py-2 text-sm text-disabled">
                                 Carregando...
                             </div>
                         ) : users.length === 0 ? (
-                            <div className="px-4 py-2 text-sm text-[var(--disabled)]">
+                            <div className="px-4 py-2 text-sm text-disabled">
                                 Nenhum usuário encontrado
                             </div>
                         ) : (
@@ -86,8 +86,8 @@ export function UserSelect({ value, onChange, className = "" }: UserSelectProps)
                                     key={user.id}
                                     type="button"
                                     onClick={() => handleSelect(user.id)}
-                                    className={`w-full text-left px-4 py-2 text-sm font-semibold hover:bg-[var(--background)] transition-colors ${
-                                        value === user.id ? "bg-[var(--modal)]" : ""
+                                    className={`w-full text-left px-4 py-2 text-sm font-semibold hover:bg-background transition-colors ${
+                                        value === user.id ? "bg-modal" : ""
                                     }`}
                                 >
                                     {user.name}

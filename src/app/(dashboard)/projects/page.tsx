@@ -5,7 +5,7 @@ import { ProjectsGrid } from "@/components/dashboard/grid/ProjectsGrid";
 export default function Projects() {
 
     return (
-        <main className="min-h-screen bg-[var(--background)] p-4 text-[var(--text)]">
+        <main className="min-h-screen bg-background p-4 text-text">
             <div className="mx-auto w-full max-w-7xl">
                 <div>
                     <ProjectsGrid />

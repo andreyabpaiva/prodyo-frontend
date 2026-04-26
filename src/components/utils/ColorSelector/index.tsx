@@ -4,11 +4,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { cn } from "@/lib/utils"
 
 const colors = [
-    { value: "red", color: "#FF5050" },
-    { value: "green", color: "#B9FF94" },
-    { value: "blue", color: "#83B3FF" },
-    { value: "gray", color: "#D9D9D9" },
-    { value: "yellow", color: "#FEFFDD" },
+    { value: "red", color: "var(--critic)" },
+    { value: "green", color: "var(--ok)" },
+    { value: "blue", color: "var(--status-in-progress)" },
+    { value: "gray", color: "var(--modal)" },
+    { value: "yellow", color: "var(--yellow-soft)" },
 ]
 
 export function ColorSelector({ value, onChange }: {

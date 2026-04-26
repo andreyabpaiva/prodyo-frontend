@@ -30,6 +30,7 @@ import {
 } from "@/store/iterationSlice";
 import { useQuery } from "@tanstack/react-query";
 import { projectService } from "@/services/project";
+import { cssVar } from "@/lib/theme";
 
 ChartJS.register(
   CategoryScale,
@@ -42,20 +43,22 @@ ChartJS.register(
   Legend,
 );
 
-const metricCopy = {
-  SpeedPerIteration: {
-    title: "VELOCIDADE",
-    color: "#83B3FF",
-  },
-  ReworkPerIteration: {
-    title: "ÍNDICE DE RETRABALHO",
-    color: "#FF6B6B",
-  },
-  InstabilityIndex: {
-    title: "ÍNDICE DE INSTABILIDADE",
-    color: "#B9FF94",
-  },
-};
+function getMetricCopy() {
+  return {
+    SpeedPerIteration: {
+      title: "VELOCIDADE",
+      color: cssVar("--status-in-progress"),
+    },
+    ReworkPerIteration: {
+      title: "ÍNDICE DE RETRABALHO",
+      color: cssVar("--chart-alert"),
+    },
+    InstabilityIndex: {
+      title: "ÍNDICE DE INSTABILIDADE",
+      color: cssVar("--ok"),
+    },
+  };
+}
 
 function StatusBadge({ level }: { level: ModelsProductivityEnum | undefined }) {
   const text =
@@ -68,12 +71,12 @@ function StatusBadge({ level }: { level: ModelsProductivityEnum | undefined }) {
           : "INDEFINIDO";
   const tone =
     level === ModelsProductivityEnum.ProductivityCritical
-      ? "bg-[var(--critic)] text-[var(--dark)] border-[var(--dark)]"
+      ? "bg-critic text-dark border-dark"
       : level === ModelsProductivityEnum.ProductivityAlert
-        ? "bg-[var(--alert)] text-[var(--dark)] border-[var(--dark)]"
+        ? "bg-alert text-dark border-dark"
         : level === ModelsProductivityEnum.ProductivityOk
-          ? "bg-[var(--ok)] text-[var(--dark)] border-[var(--dark)]"
-          : "bg-[var(--divider)] text-[var(--dark)] border-[var(--dark)]";
+          ? "bg-ok text-dark border-dark"
+          : "bg-divider text-dark border-dark";
   return (
     <Badge
       className={`rounded-full border-[3px] px-6 py-1 text-sm font-bold ${tone}`}
@@ -95,9 +98,9 @@ function BarChart({
   statuses?: (string | undefined)[];
 }) {
   const getBarColor = (status: string | undefined) => {
-    if (status === "Critical") return "#FF5050";
-    if (status === "Alert") return "#F3FF89";
-    if (status === "Ok") return "#B9FF94";
+    if (status === "Critical") return cssVar("--critic");
+    if (status === "Alert") return cssVar("--alert");
+    if (status === "Ok") return cssVar("--ok");
     return color;
   };
 
@@ -112,7 +115,7 @@ function BarChart({
         data: values,
         backgroundColor: labels.map((label, index) =>
           label === "EXPECTED"
-            ? "#999999"
+            ? cssVar("--divider")
             : statuses && statuses[index]
               ? getBarColor(statuses[index])
               : color,
@@ -156,7 +159,7 @@ function BarChart({
           display: false,
         },
         ticks: {
-          color: "#9ca3af",
+          color: cssVar("--chart-axis"),
           font: {
             size: 12,
             weight: 600,
@@ -166,10 +169,10 @@ function BarChart({
       y: {
         beginAtZero: true,
         grid: {
-          color: "#e5e7eb33",
+          color: cssVar("--chart-grid"),
         },
         ticks: {
-          color: "#9ca3af",
+          color: cssVar("--chart-axis"),
           font: {
             size: 11,
           },
@@ -206,7 +209,7 @@ function LineChart({
         pointRadius: 4,
         pointHoverRadius: 6,
         pointBackgroundColor: color,
-        pointBorderColor: "#ffffff",
+        pointBorderColor: cssVar("--primary"),
         pointBorderWidth: 2,
       },
     ],
@@ -238,7 +241,7 @@ function LineChart({
           display: false,
         },
         ticks: {
-          color: "#9ca3af",
+          color: cssVar("--chart-axis"),
           font: {
             size: 11,
             weight: 600,
@@ -247,10 +250,10 @@ function LineChart({
       },
       y: {
         grid: {
-          color: "#e5e7eb33",
+          color: cssVar("--chart-grid"),
         },
         ticks: {
-          color: "#9ca3af",
+          color: cssVar("--chart-axis"),
           font: {
             size: 11,
           },
@@ -271,6 +274,7 @@ function IndicatorPanel({
 }: {
   analysisData: ModelsIndicatorAnalysisData;
 }) {
+  const metricCopy = getMetricCopy();
   const copy =
     metricCopy[analysisData.indicatorType as keyof typeof metricCopy];
   const projectId = useSelector((state: RootState) => state.project.projectId);
@@ -339,10 +343,10 @@ function IndicatorPanel({
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-4 rounded-[32px] border-[3px] border-[--dark] bg-[var(--primary)] px-8 py-6">
+      <div className="flex flex-col gap-4 rounded-[32px] border-[3px] border-[--dark] bg-primary px-8 py-6">
         {analysisData.yAxis?.label && (
           <div className="flex items-center justify-between">
-            <p className="text-sm font-bold uppercase text-[var(--divider)]">
+            <p className="text-sm font-bold uppercase text-divider">
               {analysisData.yAxis.label}
             </p>
           </div>
@@ -359,7 +363,7 @@ function IndicatorPanel({
             <LineChart values={yValues} color={copy.color} labels={xLabels} />
           )}
           {analysisData.xAxis?.label && (
-            <div className="mt-2 text-center text-sm font-bold uppercase text-[var(--divider)]">
+            <div className="mt-2 text-center text-sm font-bold uppercase text-divider">
               <span>{analysisData.xAxis.label}</span>
             </div>
           )}

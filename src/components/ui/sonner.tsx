@@ -32,9 +32,9 @@ const Toaster = ({ ...props }: ToasterProps) => {
       }}
       toastOptions={{
         classNames: {
-          toast: "bg-[var(--primary)] text-[var(--text)]",
+          toast: "bg-primary text-text",
           title: "text-sm font-semibold",
-          description: "text-xs text-[var(--disabled)]",
+          description: "text-xs text-disabled",
         },
       }}
       style={

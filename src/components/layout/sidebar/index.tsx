@@ -41,9 +41,9 @@ export function IterationSidebar({ iterations, projectId }: IterationSidebarProp
                         className="flex items-center gap-2 text-md font-extrabold uppercase"
                     >
                         {isOpen ? (
-                            <ChevronDown className="h-4 w-4 text-[var(--divider)]" />
+                            <ChevronDown className="h-4 w-4 text-divider" />
                         ) : (
-                            <ChevronRight className="h-4 w-4 text-[var(--divider)]" />
+                            <ChevronRight className="h-4 w-4 text-divider" />
                         )}
                         <span>Iterações</span>
                     </button>
@@ -68,7 +68,7 @@ export function IterationSidebar({ iterations, projectId }: IterationSidebarProp
                         isOpen ? "mt-2 max-h-[500px] opacity-100" : "max-h-0 overflow-hidden opacity-0"
                     )}
                 >
-                    <span className="absolute left-[27px] top-4 bottom-2 w-[1px] bg-[var(--divider)]" aria-hidden />
+                    <span className="absolute left-[27px] top-4 bottom-2 w-[1px] bg-divider" aria-hidden />
                     <div className="flex flex-col gap-2">
                         {iterations.map((iteration) => {
                             if (!iteration.id) return null;
@@ -90,13 +90,13 @@ export function IterationSidebar({ iterations, projectId }: IterationSidebarProp
                                     <span
                                         className={cn(
                                             "absolute left-[0.2px] h-2 w-2 rounded-full",
-                                            isActive ? "bg-[var(--text)]" : "bg-[var(--divider)]"
+                                            isActive ? "bg-text" : "bg-divider"
                                         )}
                                     />
                                     <span
                                         className={cn(
                                             "ml-5 text-base font-semibold cursor-pointer",
-                                            isActive ? "text-[var(--text)]" : "text-[var(--disabled)]"
+                                            isActive ? "text-text" : "text-disabled"
                                         )}
                                     >
                                         Iteração {iteration.number || 0}
@@ -114,9 +114,9 @@ export function IterationSidebar({ iterations, projectId }: IterationSidebarProp
                             className="flex items-center gap-2 text-md font-extrabold uppercase"
                         >
                             {isGraphsOpen ? (
-                                <ChevronDown className="h-4 w-4 text-[var(--divider)]" />
+                                <ChevronDown className="h-4 w-4 text-divider" />
                             ) : (
-                                <ChevronRight className="h-4 w-4 text-[var(--divider)]" />
+                                <ChevronRight className="h-4 w-4 text-divider" />
                             )}
                             <span>Gráficos</span>
                         </button>
@@ -128,7 +128,7 @@ export function IterationSidebar({ iterations, projectId }: IterationSidebarProp
                             isGraphsOpen ? "mt-2 max-h-[500px] opacity-100" : "max-h-0 overflow-hidden opacity-0"
                         )}
                     >
-                        <span className="absolute left-[27px] top-4 bottom-2 w-[1px] bg-[var(--divider)]" aria-hidden />
+                        <span className="absolute left-[27px] top-4 bottom-2 w-[1px] bg-divider" aria-hidden />
                         <div className="flex flex-col gap-2">
                             {iterations.map((iteration) => {
                                 if (!iteration.id) return null;
@@ -151,13 +151,13 @@ export function IterationSidebar({ iterations, projectId }: IterationSidebarProp
                                         <span
                                             className={cn(
                                                 "absolute left-[0.2px] h-2 w-2 rounded-full",
-                                                isActive ? "bg-[var(--text)]" : "bg-[var(--divider)]"
+                                                isActive ? "bg-text" : "bg-divider"
                                             )}
                                         />
                                         <span
                                             className={cn(
                                                 "ml-5 text-base font-semibold",
-                                                isActive ? "" : "text-[var(--disabled)]"
+                                                isActive ? "" : "text-disabled"
                                             )}
                                         >
                                             Iteração {iteration.number || 0}
@@ -169,8 +169,8 @@ export function IterationSidebar({ iterations, projectId }: IterationSidebarProp
                     </div>
                 </div>
 
-                <div className="mt-auto flex items-center gap-3 rounded-full border-[3px] border-[var(--dark)] bg-[var(--background)] px-4 py-2 text-sm font-semibold">
-                    <div className="flex h-7 w-7 items-center justify-center gap-2 rounded-full border-[3px] border-[var(--dark)] bg-[var(--primary)]">
+                <div className="mt-auto flex items-center gap-3 rounded-full border-[3px] border-dark bg-background px-4 py-2 text-sm font-semibold">
+                    <div className="flex h-7 w-7 items-center justify-center gap-2 rounded-full border-[3px] border-dark bg-primary">
                         <UserRound />
                     </div>
                     <span className="text-sm font-semibold">{userName ?? "Admin"}</span>

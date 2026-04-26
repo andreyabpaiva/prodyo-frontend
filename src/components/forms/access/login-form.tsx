@@ -82,7 +82,7 @@ export function LoginForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex w-100 max-w-lg flex-col gap-6 text-[var(--primary)]"
+        className="flex w-100 max-w-lg flex-col gap-6 text-primary"
       >
         {fields.map((field) => (
           <FormField
@@ -91,7 +91,7 @@ export function LoginForm() {
             name={field.id}
             render={({ field: formField }) => (
               <FormItem>
-                <FormLabel className="text-sm font-bold text-[var(--divider)] mb-2">
+                <FormLabel className="text-sm font-bold text-divider mb-2">
                   {field.label}
                 </FormLabel>
                 <FormControl>

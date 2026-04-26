@@ -20,13 +20,13 @@ function ProjectCard({ project }: { project: ProjectWithIterations }) {
 
     return (
         <Link href={`/projects/${project.id}`}>
-            <article className="rounded-xl border-3 border-[var(--dark)] bg-[var(--primary)] p-4 shadow-[6px_6px_0px_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-1">
+            <article className="rounded-xl border-3 border-dark bg-primary p-4 shadow-[6px_6px_0px_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-1">
                 <div
-                    className="rounded-[12px] border-[3px] border-[var(--dark)] px-6 py-10 text-[var(--text)]"
-                    style={{ backgroundColor: project.color || "#B9FF94" }}
+                    className="rounded-[12px] border-[3px] border-dark px-6 py-10 text-text"
+                    style={{ backgroundColor: project.color || "var(--ok)" }}
                 >
                     <p className="text-xl font-semibold">{project.name || "Sem nome"}</p>
-                    <p className="mt-1 text-sm font-semibold uppercase text-[var(--disabled)]">
+                    <p className="mt-1 text-sm font-semibold uppercase text-disabled">
                         {project.iterations_count || 0} iterações
                     </p>
                 </div>
@@ -75,12 +75,12 @@ export function ProjectsGrid() {
         return (
             <>
                 <div className="my-3 flex justify-center">
-                    <Skeleton className="h-10 w-full max-w-xs rounded-20 mb-2 bg-[var(--divider)]" />
+                    <Skeleton className="h-10 w-full max-w-xs rounded-20 mb-2 bg-divider" />
                 </div>
                 <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
                         <div key={i} className="flex flex-col space-y-2">
-                            <Skeleton className="h-40 w-full rounded-xl bg-[var(--divider)] border-3 border-[var(--disabled)] p-4 shadow-[6px_6px_0px_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-1" />
+                            <Skeleton className="h-40 w-full rounded-xl bg-divider border-3 border-disabled p-4 shadow-[6px_6px_0px_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-1" />
                             <div className="space-y-2">
                                 <Skeleton className="h-4 w-3/4" />
                                 <Skeleton className="h-4 w-1/2" />
@@ -95,13 +95,13 @@ export function ProjectsGrid() {
     if (error) {
         return (
             <div className="flex min-h-[60vh] items-center justify-center text-center">
-                <div className="flex-col p-5 border-3 bg-[var(--critic)] rounded-md shadow-[6px_6px_0px_rgba(0,0,0,0.35)]">
+                <div className="flex-col p-5 border-3 bg-critic rounded-md shadow-[6px_6px_0px_rgba(0,0,0,0.35)]">
                     <div className="flex items-center gap-2">
-                        <Frown className="text-[var(--primary)]" />
-                        <p className="text-[var(--primary)] font-bold">Erro ao carregar projetos</p>
+                        <Frown className="text-primary" />
+                        <p className="text-primary font-bold">Erro ao carregar projetos</p>
                     </div>
                     <div className="items-center mt-2">
-                        <p className="text-[var(--primary)] text-sm">Tente novamente em breve</p>
+                        <p className="text-primary text-sm">Tente novamente em breve</p>
                     </div>
                 </div>
             </div>
@@ -111,7 +111,7 @@ export function ProjectsGrid() {
     if (!projects || projects.length === 0) {
         return (
             <div className="text-center py-8">
-                <p className="text-[var(--disabled)]">Nenhum projeto encontrado</p>
+                <p className="text-disabled">Nenhum projeto encontrado</p>
             </div>
         );
     }
@@ -123,7 +123,7 @@ export function ProjectsGrid() {
                     placeholder="Buscar projeto..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full max-w-xs rounded-20 border-3 border-[var(--dark)] px-5 py-2 text-left text-sm font-semibold outline-none"
+                    className="w-full max-w-xs rounded-20 border-3 border-dark px-5 py-2 text-left text-sm font-semibold outline-none"
                 />
             </div>
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">

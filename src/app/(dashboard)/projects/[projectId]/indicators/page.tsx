@@ -84,13 +84,13 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
     if (analysisError) {
         return (
             <div className="flex min-h-[60vh] items-center justify-center text-center">
-                <div className="flex-col p-5 border-3 bg-[var(--critic)] rounded-md shadow-[6px_6px_0px_rgba(0,0,0,0.35)]">
+                <div className="flex-col p-5 border-3 bg-critic rounded-md shadow-[6px_6px_0px_rgba(0,0,0,0.35)]">
                     <div className="flex items-center gap-2">
-                        <Frown className="text-[var(--primary)]" />
-                        <p className="text-[var(--primary)] font-bold">Erro ao carregar indicadores</p>
+                        <Frown className="text-primary" />
+                        <p className="text-primary font-bold">Erro ao carregar indicadores</p>
                     </div>
                     <div className="items-center mt-2">
-                        <p className="text-[var(--primary)] text-sm">Tente novamente em breve</p>
+                        <p className="text-primary text-sm">Tente novamente em breve</p>
                     </div>
                 </div>
             </div>
@@ -102,7 +102,7 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
             <header className="mb-8 flex justify-between ">
                 <div className="flex items-center gap-3">
                     <h1 className="text-2xl font-bold">Indicadores</h1>
-                    <p className="text-sm text-[var(--disabled)]">Iteração {currentIteration?.number || "-"}</p>
+                    <p className="text-sm text-disabled">Iteração {currentIteration?.number || "-"}</p>
                 </div>
                 <Button variant="default" size="sm" onClick={() => router.push(`/projects/${projectId}/indicators/indicator-analysis`)}>
                     Visualizar análise de indicadores

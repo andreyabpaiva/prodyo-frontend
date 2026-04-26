@@ -166,7 +166,7 @@ export function MembersSelect({
                                                     onSelect={() => handleSelect(user.id!)}
                                                     className={cn(
                                                         "px-4 py-3 cursor-pointer",
-                                                        "hover:bg-[var(--primary)] transition-colors duration-150",
+                                                        "hover:bg-primary transition-colors duration-150",
                                                         "flex items-center"
                                                     )}
                                                     role="button"

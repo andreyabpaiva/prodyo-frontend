@@ -38,11 +38,64 @@
   --alert: #F3FF89;
   --critic: #FF5050;
 
+  /* STATUS COLORS */
+  --status-not-started: #B8B8B8;
+  --status-in-progress: #83B3FF;
+
+  /* CHART COLORS */
+  --chart-alert: #FF6B6B;
+  --chart-axis: #9ca3af;
+  --chart-grid: #e5e7eb33;
+
+  /* MISC */
+  --yellow-soft: #FEFFDD;
+
   /* RADII */
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.625rem;
   --radius-xl: 0.75rem;
+}
+
+/* ========================================
+   TAILWIND THEME TOKENS
+   ======================================== */
+@theme {
+  /* Brand scale */
+  --color-brand-50:  var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-400: var(--brand-400);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+
+  /* Semantic tokens */
+  --color-primary:    var(--primary);
+  --color-divider:    var(--divider);
+  --color-disabled:   var(--disabled);
+  --color-secondary:  var(--secondary);
+  --color-background: var(--background);
+  --color-text:       var(--text);
+  --color-success:    var(--success);
+  --color-warning:    var(--warning);
+  --color-error:      var(--error);
+  --color-info:       var(--info);
+  --color-dark:       var(--dark);
+  --color-ok:         var(--ok);
+  --color-modal:      var(--modal);
+  --color-alert:      var(--alert);
+  --color-critic:     var(--critic);
+
+  /* Status tokens */
+  --color-status-not-started: var(--status-not-started);
+  --color-status-in-progress: var(--status-in-progress);
+
+  /* Misc tokens */
+  --color-yellow-soft: var(--yellow-soft);
 }
 
 /* ========================================

@@ -43,9 +43,9 @@ const statusLabels: Record<ModelsStatusEnum, string> = {
 };
 
 const statusTone: Record<ModelsStatusEnum, string> = {
-  [ModelsStatusEnum.StatusNotStarted]: "bg-[#bfbfbf] text-[var(--text)]",
-  [ModelsStatusEnum.StatusInProgress]: "bg-[#83B3FF] text-[var(--text)]",
-  [ModelsStatusEnum.StatusCompleted]: "bg-[var(--ok)] text-[var(--text)]",
+  [ModelsStatusEnum.StatusNotStarted]: "bg-status-not-started text-text",
+  [ModelsStatusEnum.StatusInProgress]: "bg-status-in-progress text-text",
+  [ModelsStatusEnum.StatusCompleted]: "bg-ok text-text",
 };
 
 export function IterationTaskList({
@@ -67,7 +67,7 @@ export function IterationTaskList({
                 color="var(--divider)"
                 className="w-4 h-4 items-center justify-center"
               />
-              <p className="text-xs text-[var(--divider)]">
+              <p className="text-xs text-divider">
                 Crie uma nova <u>tarefa</u> aqui
               </p>
             </div>
@@ -256,12 +256,12 @@ function TaskItem({
   };
 
   return (
-    <div className="rounded-[18px] border-[3px] border-[var(--dark)] bg-[var(--primary)] px-4 py-3 shadow-[0_4px_0_rgba(0,0,0,0.15)]">
+    <div className="rounded-[18px] border-[3px] border-dark bg-primary px-4 py-3 shadow-[0_4px_0_rgba(0,0,0,0.15)]">
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex flex-1 flex-col">
           <div className="flex items-center gap-3 mb-2">
             <div className="flex items-center gap-2">
-              <span className="text-sm text-[var(--divider)]">
+              <span className="text-sm text-divider">
                 {formatTime(elapsedSeconds)}
               </span>
               <Button
@@ -272,18 +272,18 @@ function TaskItem({
                 {isTimerRunning ? (
                   <CirclePause
                     size={18}
-                    className="text-[var(--divider)] cursor-pointer"
+                    className="text-divider cursor-pointer"
                   />
                 ) : (
                   <CirclePlay
                     size={18}
-                    className="text-[var(--divider)] cursor-pointer"
+                    className="text-divider cursor-pointer"
                   />
                 )}
               </Button>
             </div>
             <div className="flex items-center gap-1">
-              <span className="text-xs text-[var(--divider)]">
+              <span className="text-xs text-divider">
                 Tempo esperado:
               </span>
               <input
@@ -319,15 +319,15 @@ function TaskItem({
                     handleExpectedTimeChange(numericValue || 0);
                   }
                 }}
-                className="w-8 text-xs text-[var(--divider)] bg-transparent border-b border-[var(--divider)] text-center outline-none"
+                className="w-8 text-xs text-divider bg-transparent border-b border-divider text-center outline-none"
               />
-              <span className="text-xs text-[var(--divider)]">h</span>
+              <span className="text-xs text-divider">h</span>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <p className="text-lg font-semibold">{task.name}</p>
             <div className="flex items-center">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--dark)] text-sm font-bold text-[var(--primary)]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-dark text-sm font-bold text-primary">
                 <input
                   type="text"
                   disabled={task.status === ModelsStatusEnum.StatusCompleted}
@@ -351,7 +351,7 @@ function TaskItem({
 
         <div className="relative">
           <div
-            className="flex items-center gap-2 rounded-full border-[2px] border-[var(--dark)] bg-[var(--primary)] px-3 py-1 cursor-pointer hover:bg-[var(--background)] transition-colors"
+            className="flex items-center gap-2 rounded-full border-[2px] border-dark bg-primary px-3 py-1 cursor-pointer hover:bg-background transition-colors"
             onClick={() => {
               task.status === ModelsStatusEnum.StatusCompleted
                 ? setIsAssigneeOpen(false)
@@ -369,13 +369,13 @@ function TaskItem({
                 className="fixed inset-0 z-10"
                 onClick={() => setIsAssigneeOpen(false)}
               />
-              <div className="absolute top-full left-0 mt-2 z-20 w-48 rounded-[12px] border-[3px] border-[var(--dark)] bg-[var(--primary)] shadow-lg max-h-60 overflow-y-auto">
+              <div className="absolute top-full left-0 mt-2 z-20 w-48 rounded-[12px] border-[3px] border-dark bg-primary shadow-lg max-h-60 overflow-y-auto">
                 {isLoadingUsers ? (
-                  <div className="px-4 py-2 text-sm text-[var(--disabled)]">
+                  <div className="px-4 py-2 text-sm text-disabled">
                     Carregando...
                   </div>
                 ) : users.length === 0 ? (
-                  <div className="px-4 py-2 text-sm text-[var(--disabled)]">
+                  <div className="px-4 py-2 text-sm text-disabled">
                     Nenhum usuário encontrado
                   </div>
                 ) : (
@@ -383,8 +383,8 @@ function TaskItem({
                     <button
                       type="button"
                       onClick={() => handleAssigneeSelect("")}
-                      className={`w-full text-left px-4 py-2 text-sm font-semibold hover:bg-[var(--background)] transition-colors ${
-                        !task.assignee?.id ? "bg-[var(--modal)]" : ""
+                      className={`w-full text-left px-4 py-2 text-sm font-semibold hover:bg-background transition-colors ${
+                        !task.assignee?.id ? "bg-modal" : ""
                       }`}
                     >
                       Sem atribuição
@@ -395,9 +395,9 @@ function TaskItem({
                         type="button"
                         onClick={() => handleAssigneeSelect(user.id)}
                         disabled={updateTaskMutation.isPending}
-                        className={`w-full text-left px-4 py-2 text-sm font-semibold hover:bg-[var(--background)] transition-colors ${
+                        className={`w-full text-left px-4 py-2 text-sm font-semibold hover:bg-background transition-colors ${
                           task.assignee?.id === user.id
-                            ? "bg-[var(--modal)]"
+                            ? "bg-modal"
                             : ""
                         } ${updateTaskMutation.isPending ? "opacity-50 cursor-not-allowed" : ""}`}
                       >
@@ -414,7 +414,7 @@ function TaskItem({
           variant="outline"
           size="icon"
           onClick={() => toggleTask(task.id ?? "")}
-          className="rounded-full border-[2px] border-[var(--dark)]"
+          className="rounded-full border-[2px] border-dark"
         >
           {expandedTaskId === task.id ? (
             <ChevronUp strokeWidth={2.5} size={18} />
@@ -425,7 +425,7 @@ function TaskItem({
 
         <div className="relative">
           <Badge
-            className={`rounded-full border-[2px] border-[var(--dark)] px-4 py-1 text-xs font-bold cursor-pointer hover:opacity-80 transition-opacity ${task.status ? statusTone[task.status as ModelsStatusEnum] || "" : ""} ${updateTaskMutation.isPending ? "opacity-50 cursor-not-allowed" : ""}`}
+            className={`rounded-full border-[2px] border-dark px-4 py-1 text-xs font-bold cursor-pointer hover:opacity-80 transition-opacity ${task.status ? statusTone[task.status as ModelsStatusEnum] || "" : ""} ${updateTaskMutation.isPending ? "opacity-50 cursor-not-allowed" : ""}`}
             onClick={() =>
               task.status === ModelsStatusEnum.StatusCompleted
                 ? setIsStatusOpen(false)
@@ -443,7 +443,7 @@ function TaskItem({
                 className="fixed inset-0 z-10"
                 onClick={() => setIsStatusOpen(false)}
               />
-              <div className="absolute top-full right-0 mt-2 z-20 w-40 rounded-[12px] border-[3px] border-[var(--dark)] bg-[var(--primary)] shadow-lg overflow-hidden">
+              <div className="absolute top-full right-0 mt-2 z-20 w-40 rounded-[12px] border-[3px] border-dark bg-primary shadow-lg overflow-hidden">
                 {Object.entries(statusLabels).map(([status, label], index) => (
                   <button
                     key={status}
@@ -480,7 +480,7 @@ function TaskItem({
       >
         <div className="space-y-4">
           <div>
-            <p className="mt-1 text-sm text-[var(--text)]">
+            <p className="mt-1 text-sm text-text">
               {task.description}
             </p>
           </div>
@@ -489,7 +489,7 @@ function TaskItem({
             <div className="mb-2 flex items-center gap-2">
               <p className="text-sm font-semibold underline">Melhorias</p>
               <button
-                className="rounded-full border-[2px] border-[var(--dark)] cursor-pointer"
+                className="rounded-full border-[2px] border-dark cursor-pointer"
                 aria-label="Adicionar melhoria"
                 onClick={() =>
                   router.push(
@@ -507,7 +507,7 @@ function TaskItem({
                     <TooltipTrigger asChild>
                       <div
                         key={improvement.id}
-                        className="cursor-pointer rounded-[16px] border-[2px] border-[var(--dark)] bg-[var(--alert)] px-4 py-1 text-sm font-semibold shadow-[3px_3px_0px_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-0.5 active:translate-y-0 active:shadow-[1px_1px_0px_rgba(0,0,0,0.25)]"
+                        className="cursor-pointer rounded-[16px] border-[2px] border-dark bg-alert px-4 py-1 text-sm font-semibold shadow-[3px_3px_0px_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-0.5 active:translate-y-0 active:shadow-[1px_1px_0px_rgba(0,0,0,0.25)]"
                       >
                         <span className="mr-3">
                           {improvement.description &&
@@ -524,7 +524,7 @@ function TaskItem({
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-[var(--disabled)]">
+              <p className="text-sm text-disabled">
                 Nenhuma melhoria registrada
               </p>
             )}
@@ -534,7 +534,7 @@ function TaskItem({
             <div className="mb-2 flex items-center gap-3">
               <p className="text-sm font-semibold underline">Bugs</p>
               <button
-                className="rounded-full border-[2px] border-[var(--dark)] cursor-pointer"
+                className="rounded-full border-[2px] border-dark cursor-pointer"
                 aria-label="Adicionar bug"
                 onClick={() =>
                   router.push(
@@ -552,7 +552,7 @@ function TaskItem({
                     <TooltipTrigger asChild>
                       <div
                         key={bug.id}
-                        className="cursor-pointer rounded-[16px] border-[2px] border-[var(--dark)] bg-[var(--critic)] px-4 py-1 text-sm font-semibold text-[var(--primary)] shadow-[3px_3px_0px_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-0.5 active:translate-y-0 active:shadow-[1px_1px_0px_rgba(0,0,0,0.25)]"
+                        className="cursor-pointer rounded-[16px] border-[2px] border-dark bg-critic px-4 py-1 text-sm font-semibold text-primary shadow-[3px_3px_0px_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-0.5 active:translate-y-0 active:shadow-[1px_1px_0px_rgba(0,0,0,0.25)]"
                       >
                         <span className="mr-3">
                           {bug.description && bug.description.length > 20
@@ -568,7 +568,7 @@ function TaskItem({
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-[var(--disabled)]">
+              <p className="text-sm text-disabled">
                 Nenhum bug registrado
               </p>
             )}

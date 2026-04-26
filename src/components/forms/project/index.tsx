@@ -196,10 +196,10 @@ export default function ProjectForm() {
                 {page === 1 && (
                     <div className="animate-in fade-in slide-in-from-right-4 duration-300">
                         <div className="mt-8">
-                            <h3 className="text-2xl font-bold text-[var(--disabled)]">
+                            <h3 className="text-2xl font-bold text-disabled">
                                 Faixas de Produtividade
                             </h3>
-                            <p className="text-sm text-[var(--disabled)] mb-4">Defina as faixas de produtividade que seu projeto deve atender</p>
+                            <p className="text-sm text-disabled mb-4">Defina as faixas de produtividade que seu projeto deve atender</p>
 
                             <div className="grid grid-rows-3 gap-2">
                                 <IndicatorRange

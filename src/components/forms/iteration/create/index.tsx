@@ -126,7 +126,7 @@ export default function IterationForm({ projectId, iterationNumber: propIteratio
                 onClick={handleClose}
             />
 
-            <div className="relative z-10 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-[24px] border-[3px] border-[var(--dark)] bg-[var(--background)] p-8">
+            <div className="relative z-10 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-[24px] border-[3px] border-dark bg-background p-8">
                 <button
                     onClick={handleClose}
                     className="absolute right-6 top-6 text-[--dark] hover:opacity-70 transition-opacity cursor-pointer"
@@ -167,7 +167,7 @@ export default function IterationForm({ projectId, iterationNumber: propIteratio
                         <textarea
                             placeholder="Descrição"
                             {...form.register("description")}
-                            className="w-full h-32 rounded-[16px] border-[3px] border-[var(--dark)] bg-[var(--modal)] px-4 py-3 text-sm font-semibold outline-none resize-none"
+                            className="w-full h-32 rounded-[16px] border-[3px] border-dark bg-modal px-4 py-3 text-sm font-semibold outline-none resize-none"
                         />
                     </div>
 

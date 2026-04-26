@@ -27,9 +27,9 @@ type TaskFormValues = {
 };
 
 const statusClasses: Record<TaskStatus, string> = {
-    NOT_STARTED: "bg-[#B8B8B8] text-[var(--dark)]",
-    IN_PROGRESS: "bg-[#83B3FF] text-[var(--dark)]",
-    COMPLETED: "bg-[var(--ok)] text-[var(--dark)]",
+    NOT_STARTED: "bg-status-not-started text-dark",
+    IN_PROGRESS: "bg-status-in-progress text-dark",
+    COMPLETED: "bg-ok text-dark",
 };
 
 const statusLabels: Record<TaskStatus, string> = {
@@ -97,7 +97,7 @@ export default function CreateTaskForm({ projectId }: CreateTaskModalProps) {
                 onClick={handleClose}
             />
 
-            <div className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[32px] border-[3px] border-[var(--dark)] bg-[var(--primary)] px-10 py-8">
+            <div className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[32px] border-[3px] border-dark bg-primary px-10 py-8">
                 <button
                     onClick={handleClose}
                     className="absolute right-6 top-6 text-[--dark] hover:opacity-70 transition-opacity cursor-pointer"
@@ -107,7 +107,7 @@ export default function CreateTaskForm({ projectId }: CreateTaskModalProps) {
 
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <div className="flex items-center gap-3">
-                        <Badge className={`${statusClasses[status]} rounded-full border-[3px] border-[var(--dark)] px-6 py-1 text-sm font-bold`}>
+                        <Badge className={`${statusClasses[status]} rounded-full border-[3px] border-dark px-6 py-1 text-sm font-bold`}>
                             {statusLabels[status]}
                         </Badge>
                         <UserSelect
@@ -116,7 +116,7 @@ export default function CreateTaskForm({ projectId }: CreateTaskModalProps) {
                         />
                     </div>
                     <div className="flex justify-end gap-1">
-                        <p className="text-xs text-[var(--divider)]">selecione a pontuação da tarefa</p>
+                        <p className="text-xs text-divider">selecione a pontuação da tarefa</p>
                         <MoveDown color="var(--divider)" className="w-4 h-4 items-center justify-center" />
                     </div>
 
@@ -125,9 +125,9 @@ export default function CreateTaskForm({ projectId }: CreateTaskModalProps) {
                             type="text"
                             {...form.register("name")}
                             placeholder="Digite o nome da tarefa..."
-                            className="flex-1 bg-transparent text-3xl font-bold outline-none placeholder:text-[var(--divider)]"
+                            className="flex-1 bg-transparent text-3xl font-bold outline-none placeholder:text-divider"
                         />
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--dark)] text-sm font-bold text-[var(--primary)]">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-dark text-sm font-bold text-primary">
                             <input
                                 type="text"
                                 inputMode="numeric"
@@ -144,7 +144,7 @@ export default function CreateTaskForm({ projectId }: CreateTaskModalProps) {
                     </div>
 
                     <div className="mt-4">
-                        <label className="text-sm font-semibold text-[var(--dark)] mb-2 block">
+                        <label className="text-sm font-semibold text-dark mb-2 block">
                             Tempo Esperado (horas)
                         </label>
                         <Input
@@ -167,14 +167,14 @@ export default function CreateTaskForm({ projectId }: CreateTaskModalProps) {
                                     form.setValue("expected_time", numericValue || 0);
                                 },
                             })}
-                            className="rounded-full border-3 border-[var(--dark)] bg-[var(--modal)] px-6 py-3 text-sm text-[var(--dark)] outline-none"
+                            className="rounded-full border-3 border-dark bg-modal px-6 py-3 text-sm text-dark outline-none"
                         />
                     </div>
 
                     <textarea
                         placeholder="Descrição"
                         {...form.register("description")}
-                        className="mt-6 h-36 w-full rounded-[16px] border-[3px] border-[var(--dark)] bg-[var(--modal)] px-6 py-4 text-md text-[var(--dark)] outline-none resize-none"
+                        className="mt-6 h-36 w-full rounded-[16px] border-[3px] border-dark bg-modal px-6 py-4 text-md text-dark outline-none resize-none"
                     />
 
                     {mutation.isError && (

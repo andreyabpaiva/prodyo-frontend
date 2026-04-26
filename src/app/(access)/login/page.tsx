@@ -5,8 +5,8 @@ import { MoveRight } from "lucide-react";
 export default function LoginPage() {
     return (
         <div className="flex min-h-screen">
-            <div className="bg-[var(--primary)] w-1/2 flex flex-col items-center justify-center gap-6 border-r-[3px] border-[var(--dark)] px-6 text-center">
-                <p className="text-lg font-bold text-[var(--divider)]">
+            <div className="bg-primary w-1/2 flex flex-col items-center justify-center gap-6 border-r-[3px] border-dark px-6 text-center">
+                <p className="text-lg font-bold text-divider">
                     Bem-vindo de volta ao
                 </p>
                 <TypeWriterComponent
@@ -20,7 +20,7 @@ export default function LoginPage() {
                     <MoveRight strokeWidth={2.25} />
                 </div>
             </div>
-            <div className="w-1/2 bg-[var(--background)] flex items-center justify-center px-10">
+            <div className="w-1/2 bg-background flex items-center justify-center px-10">
                 <LoginForm />
             </div>
         </div>

@@ -53,7 +53,7 @@ export default function DeleteIterationForm({ projectId, iterationId }: DeleteIt
                 onClick={handleClose}
             />
 
-            <div className="relative z-10 w-full max-w-md rounded-[24px] border-[3px] border-[var(--dark)] bg-[var(--background)] p-8">
+            <div className="relative z-10 w-full max-w-md rounded-[24px] border-[3px] border-dark bg-background p-8">
 
                 <div className="mt-2 mb-6">
                     <p className="text-lg">

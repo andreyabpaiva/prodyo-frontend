@@ -79,7 +79,7 @@ export function CreateCauseForm({
                     className="absolute inset-0 bg-black/50"
                     onClick={handleClose}
                 />
-                <div className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[32px] border-[3px] border-[var(--dark)] bg-[var(--primary)] px-10 py-8">
+                <div className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[32px] border-[3px] border-dark bg-primary px-10 py-8">
                     <button
                         onClick={handleClose}
                         className="absolute right-6 top-6 text-[--dark] hover:opacity-70 transition-opacity cursor-pointer"
@@ -88,7 +88,7 @@ export function CreateCauseForm({
                     </button>
                     <div className="flex items-center gap-3">
                         <h2 className="text-2xl font-bold">{title}</h2>
-                        <Badge className={`bg-[var(--alert)] border-3 border-[var(--dark)] rounded-2xl px-3 py-1 text-xs font-bold text-[var(--text)]`}>
+                        <Badge className={`bg-alert border-3 border-dark rounded-2xl px-3 py-1 text-xs font-bold text-text`}>
                             ALERTA
                         </Badge>
                     </div>
@@ -100,7 +100,7 @@ export function CreateCauseForm({
                         </p>
                         <Textarea
                             placeholder="Descrição"
-                            className="mt-2 h-50 rounded-2xl border-[3px] border-[var(--dark)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--dark)]"
+                            className="mt-2 h-50 rounded-2xl border-[3px] border-dark bg-background px-4 py-3 text-sm text-dark"
                             {...form.register("description")}
                         />
                         <div className="flex justify-end mt-5">
