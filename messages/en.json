@@ -1,0 +1,126 @@
+{
+  "Common": {
+    "fillInfo": "Fill in the information on the side"
+  },
+  "LoginPage": {
+    "welcome": "Welcome back to"
+  },
+  "LoginForm": {
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter your email...",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password...",
+    "noAccount": "Don't have an account yet?",
+    "submitting": "Signing in...",
+    "submit": "Sign in",
+    "errorToast": "Login failed. Please check your credentials."
+  },
+  "RegisterPage": {
+    "welcome": "Welcome to"
+  },
+  "RegisterForm": {
+    "nameLabel": "Name *",
+    "namePlaceholder": "Enter your name...",
+    "emailLabel": "Email *",
+    "emailPlaceholder": "Enter your email...",
+    "passwordLabel": "Password *",
+    "passwordPlaceholder": "Enter your password...",
+    "confirmPasswordLabel": "Confirm your password *",
+    "confirmPasswordPlaceholder": "Confirm your password...",
+    "submitting": "Registering...",
+    "submit": "Register"
+  },
+  "CreateProject": {
+    "heading": "Let's start your new project in"
+  },
+  "ProjectForm": {
+    "nameLabel": "Project name *",
+    "namePlaceholder": "Enter the project name...",
+    "colorLabel": "Choose a color for your project",
+    "descriptionLabel": "Description *",
+    "descriptionPlaceholder": "Enter the project description...",
+    "membersLabel": "Project members *",
+    "next": "Next",
+    "rangesTitle": "Productivity Ranges",
+    "rangesSubtitle": "Define the productivity ranges your project should meet",
+    "back": "Back",
+    "creating": "Creating...",
+    "create": "Create",
+    "error": "Error creating project. Please try again."
+  },
+  "Navbar": {
+    "newProject": "New project"
+  },
+  "BugForm": {
+    "scoreHint": "select the bug score",
+    "title": "Bug {number}",
+    "descriptionPlaceholder": "Description",
+    "error": "Error creating bug. Please try again.",
+    "creating": "Creating...",
+    "create": "Create Bug"
+  },
+  "ImprovementForm": {
+    "scoreHint": "select the improvement score",
+    "title": "Improvement {number}",
+    "descriptionPlaceholder": "Description",
+    "error": "Error creating improvement. Please try again.",
+    "creating": "Creating...",
+    "create": "Create Improvement"
+  },
+  "TaskForm": {
+    "scoreHint": "select the task score",
+    "namePlaceholder": "Enter the task name...",
+    "expectedTimeLabel": "Expected Time (hours)",
+    "descriptionPlaceholder": "Description",
+    "error": "Error creating task. Please try again.",
+    "creating": "Creating...",
+    "create": "Create Task",
+    "statusNotStarted": "NOT STARTED",
+    "statusInProgress": "IN PROGRESS",
+    "statusCompleted": "COMPLETED"
+  },
+  "IterationForm": {
+    "title": "Iteration {number}",
+    "descriptionPlaceholder": "Description",
+    "error": "Error creating iteration. Please try again.",
+    "creating": "Creating...",
+    "create": "Create Iteration"
+  },
+  "DeleteIterationForm": {
+    "confirmText": "Are you sure you want to delete <strong>{iteration}</strong>?",
+    "thisIteration": "this iteration",
+    "iterationLabel": "Iteration {number}",
+    "error": "Error deleting iteration. Please try again.",
+    "deleting": "Deleting...",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
+  "ActionForm": {
+    "causeTitle": "Cause",
+    "actionTitle": "Action",
+    "levelCritical": "CRITICAL",
+    "levelAlert": "ALERT",
+    "levelOk": "OK",
+    "statusNotStarted": "NOT STARTED",
+    "descriptionPlaceholder": "Description",
+    "createAction": "Create action"
+  },
+  "CauseForm": {
+    "levelAlert": "ALERT",
+    "descriptionPlaceholder": "Description",
+    "createCause": "Create cause"
+  },
+  "ProjectDetail": {
+    "loadingIterations": "Loading iterations",
+    "noIterations": "No iterations available.",
+    "createIteration": "Create iteration"
+  },
+  "IndicatorsPage": {
+    "loading": "Loading indicators",
+    "errorTitle": "Error loading indicators",
+    "errorSubtitle": "Please try again shortly",
+    "title": "Indicators",
+    "iterationLabel": "Iteration {number}",
+    "viewAnalysis": "View indicator analysis"
+  }
+}

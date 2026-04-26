@@ -13,48 +13,48 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { registerSchema, type RegisterFormValues } from "./resolvers/register-resolver";
+import {
+  registerSchema,
+  type RegisterFormValues,
+} from "./resolvers/register-resolver";
 import { authService } from "@/services/auth";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
-
-type RegisterField = {
-  id: string;
-  label: string;
-  placeholder: string;
-  type?: string;
-};
-
-const registerFields: RegisterField[] = [
-  { 
-    id: "name", 
-    label: "Nome *", 
-    placeholder: "Insira seu nome...",
-  },
-  {
-    id: "email",
-    label: "Email *",
-    type: "email",
-    placeholder: "Insira seu email...",
-  },
-  {
-    id: "password",
-    label: "Senha *",
-    type: "password",
-    placeholder: "Insira sua senha...",
-  },
-  {
-    id: "confirmPassword",
-    label: "Confirme sua senha *",
-    type: "password",
-    placeholder: "Confirme sua senha...",
-  },
-];
+import { useTranslations } from "next-intl";
 
 export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
+  const t = useTranslations("RegisterForm");
+
+  const registerFields: {
+    id: string;
+    label: string;
+    placeholder: string;
+    type?: string;
+  }[] = [
+    { id: "name", label: t("nameLabel"), placeholder: t("namePlaceholder") },
+    {
+      id: "email",
+      label: t("emailLabel"),
+      placeholder: t("emailPlaceholder"),
+      type: "email",
+    },
+    {
+      id: "password",
+      label: t("passwordLabel"),
+      placeholder: t("passwordPlaceholder"),
+      type: "password",
+    },
+    {
+      id: "confirmPassword",
+      label: t("confirmPasswordLabel"),
+      placeholder: t("confirmPasswordPlaceholder"),
+      type: "password",
+    },
+  ];
+
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -84,8 +84,12 @@ export function RegisterForm() {
         {registerFields.map((field) => {
           const isPasswordField = field.type === "password";
           const isConfirmPassword = field.id === "confirmPassword";
-          const showField = isConfirmPassword ? showConfirmPassword : showPassword;
-          const setShowField = isConfirmPassword ? setShowConfirmPassword : setShowPassword;
+          const showField = isConfirmPassword
+            ? showConfirmPassword
+            : showPassword;
+          const setShowField = isConfirmPassword
+            ? setShowConfirmPassword
+            : setShowPassword;
 
           return (
             <FormField
@@ -139,12 +143,10 @@ export function RegisterForm() {
             className="w-full max-w-3xs"
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting ? "Cadastrando..." : "Cadastrar"}
+            {form.formState.isSubmitting ? t("submitting") : t("submit")}
           </Button>
         </div>
       </form>
     </Form>
   );
 }
-
-

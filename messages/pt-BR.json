@@ -1,0 +1,126 @@
+{
+  "Common": {
+    "fillInfo": "Insira as informações ao lado"
+  },
+  "LoginPage": {
+    "welcome": "Bem-vindo de volta ao"
+  },
+  "LoginForm": {
+    "emailLabel": "Email",
+    "emailPlaceholder": "Insira seu email...",
+    "passwordLabel": "Senha",
+    "passwordPlaceholder": "Insira sua senha...",
+    "noAccount": "Não possui conta ainda?",
+    "submitting": "Acessando...",
+    "submit": "Acessar",
+    "errorToast": "Falha ao acessar. Verifique suas credenciais."
+  },
+  "RegisterPage": {
+    "welcome": "Bem-vindo ao"
+  },
+  "RegisterForm": {
+    "nameLabel": "Nome *",
+    "namePlaceholder": "Insira seu nome...",
+    "emailLabel": "Email *",
+    "emailPlaceholder": "Insira seu email...",
+    "passwordLabel": "Senha *",
+    "passwordPlaceholder": "Insira sua senha...",
+    "confirmPasswordLabel": "Confirme sua senha *",
+    "confirmPasswordPlaceholder": "Confirme sua senha...",
+    "submitting": "Cadastrando...",
+    "submit": "Cadastrar"
+  },
+  "CreateProject": {
+    "heading": "Vamos iniciar seu novo projeto no"
+  },
+  "ProjectForm": {
+    "nameLabel": "Nome do projeto *",
+    "namePlaceholder": "Digite o nome do projeto...",
+    "colorLabel": "Defina uma cor para o seu projeto",
+    "descriptionLabel": "Descrição *",
+    "descriptionPlaceholder": "Digite a descrição do projeto...",
+    "membersLabel": "Membros do projeto *",
+    "next": "Avançar",
+    "rangesTitle": "Faixas de Produtividade",
+    "rangesSubtitle": "Defina as faixas de produtividade que seu projeto deve atender",
+    "back": "Voltar",
+    "creating": "Criando...",
+    "create": "Criar",
+    "error": "Erro ao criar projeto. Tente novamente."
+  },
+  "Navbar": {
+    "newProject": "Novo projeto"
+  },
+  "BugForm": {
+    "scoreHint": "selecione a pontuação do bug",
+    "title": "Bug {number}",
+    "descriptionPlaceholder": "Descrição",
+    "error": "Erro ao criar bug. Tente novamente.",
+    "creating": "Criando...",
+    "create": "Criar Bug"
+  },
+  "ImprovementForm": {
+    "scoreHint": "selecione a pontuação da melhoria",
+    "title": "Melhoria {number}",
+    "descriptionPlaceholder": "Descrição",
+    "error": "Erro ao criar melhoria. Tente novamente.",
+    "creating": "Criando...",
+    "create": "Criar Melhoria"
+  },
+  "TaskForm": {
+    "scoreHint": "selecione a pontuação da tarefa",
+    "namePlaceholder": "Digite o nome da tarefa...",
+    "expectedTimeLabel": "Tempo Esperado (horas)",
+    "descriptionPlaceholder": "Descrição",
+    "error": "Erro ao criar tarefa. Tente novamente.",
+    "creating": "Criando...",
+    "create": "Criar Tarefa",
+    "statusNotStarted": "NÃO INICIADO",
+    "statusInProgress": "EM PROGRESSO",
+    "statusCompleted": "FINALIZADO"
+  },
+  "IterationForm": {
+    "title": "Iteração {number}",
+    "descriptionPlaceholder": "Descrição",
+    "error": "Erro ao criar iteração. Tente novamente.",
+    "creating": "Criando...",
+    "create": "Criar Iteração"
+  },
+  "DeleteIterationForm": {
+    "confirmText": "Tem certeza que deseja deletar <strong>{iteration}</strong> ?",
+    "thisIteration": "esta iteração",
+    "iterationLabel": "Iteração {number}",
+    "error": "Erro ao deletar iteração. Tente novamente.",
+    "deleting": "Deletando...",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar"
+  },
+  "ActionForm": {
+    "causeTitle": "Causa",
+    "actionTitle": "Ação",
+    "levelCritical": "CRÍTICO",
+    "levelAlert": "ALERTA",
+    "levelOk": "OK",
+    "statusNotStarted": "NÃO INICIADO",
+    "descriptionPlaceholder": "Descrição",
+    "createAction": "Criar ação"
+  },
+  "CauseForm": {
+    "levelAlert": "ALERTA",
+    "descriptionPlaceholder": "Descrição",
+    "createCause": "Criar causa"
+  },
+  "ProjectDetail": {
+    "loadingIterations": "Carregando iterações",
+    "noIterations": "Nenhuma iteração disponível.",
+    "createIteration": "Criar iteração"
+  },
+  "IndicatorsPage": {
+    "loading": "Carregando indicadores",
+    "errorTitle": "Erro ao carregar indicadores",
+    "errorSubtitle": "Tente novamente em breve",
+    "title": "Indicadores",
+    "iterationLabel": "Iteração {number}",
+    "viewAnalysis": "Visualizar análise de indicadores"
+  }
+}

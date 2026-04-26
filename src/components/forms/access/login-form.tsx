@@ -21,33 +21,34 @@ import { useAppDispatch } from "@/store/hooks";
 import { setCredentials } from "@/store/authSlice";
 import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
-
-type AuthField = {
-  id: keyof LoginFormValues;
-  label: string;
-  placeholder: string;
-  type?: string;
-};
-
-const fields: AuthField[] = [
-  {
-    id: "email",
-    label: "Email",
-    placeholder: "Insira seu email...",
-    type: "email",
-  },
-  {
-    id: "password",
-    label: "Senha",
-    placeholder: "Insira sua senha...",
-    type: "password",
-  },
-];
+import { useTranslations } from "next-intl";
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const t = useTranslations("LoginForm");
+
+  const fields: {
+    id: keyof LoginFormValues;
+    label: string;
+    placeholder: string;
+    type?: string;
+  }[] = [
+    {
+      id: "email",
+      label: t("emailLabel"),
+      placeholder: t("emailPlaceholder"),
+      type: "email",
+    },
+    {
+      id: "password",
+      label: t("passwordLabel"),
+      placeholder: t("passwordPlaceholder"),
+      type: "password",
+    },
+  ];
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -68,12 +69,12 @@ export function LoginForm() {
               name: response.user.name || "",
               email: response.user.email || "",
             },
-          })
+          }),
         );
         router.push("/projects");
       }
     } catch (error) {
-      toast.error("Falha ao acessar. Verifique suas credenciais.");
+      toast.error(t("errorToast"));
       throw error;
     }
   };
@@ -129,7 +130,7 @@ export function LoginForm() {
         ))}
 
         <Button asChild variant="link">
-          <Link href="/register">Não possui conta ainda?</Link>
+          <Link href="/register">{t("noAccount")}</Link>
         </Button>
         <div className="flex justify-center">
           <Button
@@ -137,12 +138,10 @@ export function LoginForm() {
             className="w-full max-w-3xs"
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting ? "Acessando..." : "Acessar"}
+            {form.formState.isSubmitting ? t("submitting") : t("submit")}
           </Button>
         </div>
       </form>
     </Form>
   );
 }
-
-
