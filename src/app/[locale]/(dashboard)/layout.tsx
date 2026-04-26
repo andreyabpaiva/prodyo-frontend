@@ -1,4 +1,4 @@
-import Navbar from "@/components/organisms/navbar";
+import Navbar from "@/components/molecules/navbar";
 import { ReactNode } from "react";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {

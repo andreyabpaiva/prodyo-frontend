@@ -8,7 +8,7 @@ import { useAppDispatch } from "@/store/hooks";
 import { setProjectId } from "@/store/projectSlice";
 import { Button } from "@/components/atoms/ui/button";
 import { Spinner } from "@/components/atoms/ui/spinner";
-import { IterationBoard } from "@/components/organisms/iteration-board";
+import { IterationBoard } from "@/components/organisms/dashboard/views/iteration-board";
 import { useTranslations } from "next-intl";
 
 type ProjectDetailProps = {

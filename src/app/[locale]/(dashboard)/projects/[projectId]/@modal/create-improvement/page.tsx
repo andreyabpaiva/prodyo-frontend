@@ -1,4 +1,4 @@
-import { CreateImprovementForm } from "@/components/organisms/improvement-form";
+import { CreateImprovementForm } from "@/components/organisms/dashboard/forms/improvement-form";
 
 type CreateImprovementPageProps = {
   searchParams: Promise<{ taskId?: string }>;

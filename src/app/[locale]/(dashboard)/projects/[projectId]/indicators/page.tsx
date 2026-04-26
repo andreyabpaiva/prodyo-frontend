@@ -1,6 +1,6 @@
 "use client";
 
-import { IndicatorBoard } from "@/components/organisms/indicator-board";
+import { IndicatorBoard } from "@/components/organisms/dashboard/views/indicator-board";
 import { useQuery } from "@tanstack/react-query";
 import { iterationService } from "@/services/iteration";
 import { useRouter, useSearchParams } from "next/navigation";

@@ -1,4 +1,4 @@
-import DeleteIterationForm from "@/components/organisms/iteration-form/delete";
+import DeleteIterationForm from "@/components/organisms/dashboard/forms/iteration-form/delete";
 import { use } from "react";
 
 type DeleteIterationPageProps = {

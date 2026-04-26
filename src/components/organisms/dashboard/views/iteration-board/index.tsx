@@ -12,7 +12,7 @@ import { Spinner } from "@/components/atoms/ui/spinner";
 import { Input } from "@/components/atoms/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/atoms/ui/tooltip";
 import { Button } from "@/components/atoms/ui/button";
-import { IterationTaskList } from "@/components/organisms/iteration-list";
+import { IterationTaskList } from "@/components/organisms/dashboard/views/iteration-list";
 
 export function IterationBoard({ iterations }: { iterations: ModelsIteration[] }) {
     const dispatch = useAppDispatch();

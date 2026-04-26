@@ -1,5 +1,5 @@
 "use client";
-import { CreateCauseForm } from "@/components/organisms/cause-form";
+import { CreateCauseForm } from "@/components/organisms/dashboard/forms/cause-form";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 

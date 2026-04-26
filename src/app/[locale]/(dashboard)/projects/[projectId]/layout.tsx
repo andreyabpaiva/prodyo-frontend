@@ -4,7 +4,7 @@ import { ReactNode, use } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { iterationService } from "@/services/iteration";
 import { usePathname } from "next/navigation";
-import { IterationSidebar } from "@/components/organisms/sidebar";
+import { IterationSidebar } from "@/components/molecules/sidebar";
 
 export default function Layout({
   children,

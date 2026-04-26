@@ -1,4 +1,4 @@
-import CreateBugForm from "@/components/organisms/bug-form";
+import CreateBugForm from "@/components/organisms/dashboard/forms/bug-form";
 
 type CreateBugPageProps = {
   searchParams: Promise<{ taskId?: string }>;
