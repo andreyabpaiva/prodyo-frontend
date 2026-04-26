@@ -1,19 +1,10 @@
 import { LoginForm } from "@/components/organisms/access/forms/login-form";
-import TypeWriterComponent from "@/components/molecules/prodyo-type-writer";
-import { MoveRight } from "lucide-react";
-import { getTranslations } from "next-intl/server";
-import Welcome from "@/components/organisms/access/views/welcome";
+import AccessTemplate from "@/components/templates/acces-template";
 
-export default async function LoginPage() {
-  const tLogin = await getTranslations("LoginPage");
-  const tCommon = await getTranslations("Common");
-
+export default function LoginPage() {
   return (
-    <div className="flex min-h-screen">
-      <Welcome title={tLogin("welcome")} subtitle={tCommon("fillInfo")} />
-      <div className="w-1/2 bg-background flex items-center justify-center px-10">
-        <LoginForm />
-      </div>
-    </div>
+    <AccessTemplate variant="login">
+      <LoginForm />
+    </AccessTemplate>
   );
 }
