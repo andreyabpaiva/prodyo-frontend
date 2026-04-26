@@ -1,6 +1,6 @@
 "use client";
-import ProjectForm from "@/components/forms/project";
-import TypeWriterComponent from "@/components/utils/TypeWriter";
+import ProjectForm from "@/components/organisms/project-form";
+import TypeWriterComponent from "@/components/molecules/type-writer";
 import { MoveRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 

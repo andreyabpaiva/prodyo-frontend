@@ -1,4 +1,4 @@
-import CreateTaskForm from "@/components/forms/task";
+import CreateTaskForm from "@/components/organisms/task-form";
 
 type CreateTaskPageProps = {
   params: Promise<{ projectId: string }>;

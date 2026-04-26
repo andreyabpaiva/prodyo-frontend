@@ -6,9 +6,9 @@ import { useRouter } from "next/navigation";
 import { iterationService } from "@/services/iteration";
 import { useAppDispatch } from "@/store/hooks";
 import { setProjectId } from "@/store/projectSlice";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
-import { IterationBoard } from "@/components/dashboard/board/Iteration";
+import { Button } from "@/components/atoms/ui/button";
+import { Spinner } from "@/components/atoms/ui/spinner";
+import { IterationBoard } from "@/components/organisms/iteration-board";
 import { useTranslations } from "next-intl";
 
 type ProjectDetailProps = {

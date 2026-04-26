@@ -1,5 +1,5 @@
-import { RegisterForm } from "@/components/forms/access/register-form";
-import TypeWriterComponent from "@/components/utils/TypeWriter";
+import { RegisterForm } from "@/components/organisms/register-form";
+import TypeWriterComponent from "@/components/molecules/type-writer";
 import { MoveRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 

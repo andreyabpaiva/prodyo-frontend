@@ -1,4 +1,4 @@
-import IterationForm from "@/components/forms/iteration/create";
+import IterationForm from "@/components/organisms/iteration-form/create";
 
 type CreateIterationPageProps = {
   params: Promise<{ projectId: string }>;

@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import StoreProvider from "@/store/StoreProvider";
 import { QueryProvider } from "@/lib/query-client";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/atoms/ui/sonner";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";

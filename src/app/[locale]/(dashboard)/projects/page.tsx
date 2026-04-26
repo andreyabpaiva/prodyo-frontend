@@ -1,6 +1,6 @@
 "use client";
 
-import { ProjectsGrid } from "@/components/dashboard/grid/ProjectsGrid";
+import { ProjectsGrid } from "@/components/organisms/projects-grid";
 
 export default function Projects() {
   return (

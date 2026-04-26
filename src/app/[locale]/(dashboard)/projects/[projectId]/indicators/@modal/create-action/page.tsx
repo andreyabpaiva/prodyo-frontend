@@ -1,7 +1,7 @@
 "use client";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import CauseActionForm from "@/components/forms/action";
+import CauseActionForm from "@/components/organisms/action-form";
 
 export default function CreateActionPage() {
   const metricLabel = useSelector(

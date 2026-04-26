@@ -1,6 +1,6 @@
 "use client";
 
-import { IndicatorBoard } from "@/components/dashboard/board/Indicator";
+import { IndicatorBoard } from "@/components/organisms/indicator-board";
 import { useQuery } from "@tanstack/react-query";
 import { iterationService } from "@/services/iteration";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -8,9 +8,9 @@ import { useEffect, use } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { setActiveGraphsId } from "@/store/iterationSlice";
-import { Spinner } from "@/components/ui/spinner";
+import { Spinner } from "@/components/atoms/ui/spinner";
 import { Frown } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/atoms/ui/button";
 import { setProjectId } from "@/store/projectSlice";
 import { useTranslations } from "next-intl";
 
