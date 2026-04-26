@@ -17,7 +17,7 @@ import {
   registerSchema,
   type RegisterFormValues,
 } from "./register-resolver";
-import { authService } from "@/services/auth";
+import { authAction } from "@/request/auth/action";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -68,7 +68,7 @@ export function RegisterForm() {
   const onSubmit = async (data: RegisterFormValues) => {
     try {
       const { confirmPassword, ...registerData } = data;
-      await authService.register(registerData);
+      await authAction.register(registerData);
       router.push("/login");
     } catch (error) {
       throw error;

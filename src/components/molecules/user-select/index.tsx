@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ChevronDown, UserRound } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useAppSelector } from "@/store/hooks";
-import { userService } from "@/services/user";
+import { userQuery } from "@/request/user/query";
 
 type UserSelectProps = {
     value?: string;
@@ -22,7 +22,7 @@ export function UserSelect({ value, onChange, className = "" }: UserSelectProps)
             if (!projectId) {
                 throw new Error("Project ID is required");
             }
-            return userService.projectDetail({
+            return userQuery.projectDetail({
                 projectId,
                 page: 1,
                 page_size: 100,

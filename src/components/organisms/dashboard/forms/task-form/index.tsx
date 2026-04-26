@@ -8,7 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TaskStatus } from "@/types/domain";
 import { Badge } from "@/components/atoms/ui/badge";
 import { UserSelect } from "@/components/molecules/user-select";
-import { taskService } from "@/services/task";
+import { taskAction } from "@/request/task/action";
 import type { HandlersCreateTaskRequest } from "@/apis/data-contracts";
 import { useAppSelector } from "@/store/hooks";
 import { Input } from "@/components/atoms/ui/input";
@@ -71,7 +71,7 @@ export default function CreateTaskForm({ projectId }: CreateTaskModalProps) {
         expected_time: data.expected_time,
       };
 
-      return await taskService.create(payload);
+      return await taskAction.create(payload);
     },
     onSuccess: async () => {
       if (activeIterationId) {

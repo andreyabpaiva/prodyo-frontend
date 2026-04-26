@@ -5,7 +5,8 @@ import { Button } from "@/components/atoms/ui/button";
 import { useRouter } from "next/navigation";
 import { useState, useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { improvementService } from "@/services/improvement";
+import { improvementQuery } from "@/request/improvement/query";
+import { improvementAction } from "@/request/improvement/action";
 import type { HandlersCreateImprovRequest } from "@/apis/data-contracts";
 import { UserSelect } from "@/components/molecules/user-select";
 import { useTranslations } from "next-intl";
@@ -28,7 +29,7 @@ export function CreateImprovementForm({ taskId }: CreateImprovementModalProps) {
       if (!taskId) {
         throw new Error("Task ID is required");
       }
-      return improvementService.list({ task_id: taskId });
+      return improvementQuery.list({ task_id: taskId });
     },
     enabled: !!taskId,
   });
@@ -53,7 +54,7 @@ export function CreateImprovementForm({ taskId }: CreateImprovementModalProps) {
         number: nextImprovementNumber,
       };
 
-      return await improvementService.create(payload);
+      return await improvementAction.create(payload);
     },
     onSuccess: async () => {
       await queryClient.refetchQueries({ queryKey: ["improvements", taskId] });

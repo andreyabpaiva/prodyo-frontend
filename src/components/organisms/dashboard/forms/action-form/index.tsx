@@ -1,4 +1,4 @@
-import { indicatorService } from "@/services";
+import { indicatorAction } from "@/request/indicator/action";
 import { ProductivityLevel } from "@/types/domain";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -116,7 +116,7 @@ export default function CauseActionForm({
         indicator_range_id: indicatorRangeId,
         status: "NotStarted",
       };
-      await indicatorService.createAction(payload);
+      await indicatorAction.createAction(payload);
       router.back();
     } catch (error) {
       console.error("Error creating action and cause:", error);

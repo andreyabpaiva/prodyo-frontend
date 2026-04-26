@@ -2,7 +2,7 @@
 
 import { ReactNode, use } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { iterationService } from "@/services/iteration";
+import { iterationQuery } from "@/request/iteration/query";
 import { usePathname } from "next/navigation";
 import { IterationSidebar } from "@/components/molecules/sidebar";
 
@@ -20,7 +20,7 @@ export default function Layout({
 
   const { data: iterations } = useQuery({
     queryKey: ["iterations", projectId],
-    queryFn: () => iterationService.list({ project_id: projectId }),
+    queryFn: () => iterationQuery.list({ project_id: projectId }),
     enabled: !!projectId,
   });
 

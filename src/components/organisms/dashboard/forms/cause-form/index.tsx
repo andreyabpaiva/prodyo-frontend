@@ -7,7 +7,7 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { ModelsMetricEnum } from "@/apis/data-contracts";
-import { indicatorService } from "@/services/indicator";
+import { indicatorAction } from "@/request/indicator/action";
 import { Button } from "@/components/atoms/ui/button";
 import { useTranslations } from "next-intl";
 
@@ -65,7 +65,7 @@ export function CreateCauseForm({
         productivity_level: "Alert" as ProductivityLevel,
       };
 
-      await indicatorService.createCause(payload);
+      await indicatorAction.createCause(payload);
       router.back();
     } catch (error) {
       throw error;

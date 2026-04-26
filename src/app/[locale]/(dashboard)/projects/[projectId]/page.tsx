@@ -3,7 +3,7 @@
 import { use, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { iterationService } from "@/services/iteration";
+import { iterationQuery } from "@/request/iteration/query";
 import { useAppDispatch } from "@/store/hooks";
 import { setProjectId } from "@/store/projectSlice";
 import { Button } from "@/components/atoms/ui/button";
@@ -22,7 +22,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailProps) {
 
   const { data: iterations = [], isLoading: isLoading } = useQuery({
     queryKey: ["iterations", projectId],
-    queryFn: () => iterationService.list({ project_id: projectId ?? "" }),
+    queryFn: () => iterationQuery.list({ project_id: projectId ?? "" }),
     enabled: !!projectId,
   });
 

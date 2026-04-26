@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "@/components/atoms/ui/form";
 import { loginSchema, type LoginFormValues } from "./login-resolver";
-import { authService } from "@/services/auth";
+import { authAction } from "@/request/auth/action";
 import { useAppDispatch } from "@/store/hooks";
 import { setCredentials } from "@/store/authSlice";
 import { Eye, EyeOff } from "lucide-react";
@@ -59,7 +59,7 @@ export function LoginForm() {
 
   const onSubmit = async (data: LoginFormValues) => {
     try {
-      const response = await authService.login(data);
+      const response = await authAction.login(data);
       if (response.token && response.user) {
         dispatch(
           setCredentials({

@@ -2,7 +2,7 @@
 
 import { IndicatorBoard } from "@/components/organisms/dashboard/views/indicator-board";
 import { useQuery } from "@tanstack/react-query";
-import { iterationService } from "@/services/iteration";
+import { iterationQuery } from "@/request/iteration/query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, use } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,7 +31,7 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
 
   const { data: iterations, isLoading: isLoadingIterations } = useQuery({
     queryKey: ["iterations", projectId],
-    queryFn: () => iterationService.list({ project_id: projectId }),
+    queryFn: () => iterationQuery.list({ project_id: projectId }),
     enabled: !!projectId,
     retry: false,
     refetchOnWindowFocus: false,
@@ -61,7 +61,7 @@ export default function ProjectIndicatorsPage({ params }: IndicatorsPageProps) {
       if (!activeGraphsId) {
         throw new Error("No active iteration selected");
       }
-      return iterationService.analysis(activeGraphsId);
+      return iterationQuery.analysis(activeGraphsId);
     },
     enabled: !!activeGraphsId,
     refetchOnWindowFocus: false,

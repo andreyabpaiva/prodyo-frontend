@@ -29,7 +29,7 @@ import {
   setCriticalMetricLabel,
 } from "@/store/iterationSlice";
 import { useQuery } from "@tanstack/react-query";
-import { projectService } from "@/services/project";
+import { projectQuery } from "@/request/project/query";
 import { cssVar } from "@/lib/theme";
 
 ChartJS.register(
@@ -284,7 +284,7 @@ function IndicatorPanel({
   const { data } = useQuery({
     queryKey: ["indicatorRanges", projectId, analysisData.indicatorType],
     queryFn: () =>
-      projectService.getIndicatorsIdByProjectId({
+      projectQuery.getIndicatorsIdByProjectId({
         projectId: projectId ?? "",
         indicatorType: analysisData.indicatorType ?? "",
       }),

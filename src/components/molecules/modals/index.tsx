@@ -21,7 +21,7 @@ import {
 import { ChevronDown, Plus, UserRound, X } from "lucide-react";
 import { ReactNode, useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { userService } from "@/services/user";
+import { userQuery } from "@/request/user/query";
 import type { ModelsUser } from "@/apis/data-contracts";
 import {
   Command,
@@ -35,7 +35,7 @@ import { UserSelect } from "@/components/molecules/user-select";
 import z from "zod";
 import { Form, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { indicatorService } from "@/services/indicator";
+import { indicatorAction } from "@/request/indicator/action";
 
 const statusClasses: Record<TaskStatus, string> = {
   NOT_STARTED: "bg-status-not-started text-dark",

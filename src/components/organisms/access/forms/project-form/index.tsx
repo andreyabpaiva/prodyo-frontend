@@ -15,7 +15,7 @@ import { MembersSelect } from "@/components/molecules/members-select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { projectSchema, type ProjectFormValues } from "./resolver";
-import { projectService } from "@/services";
+import { projectAction } from "@/request/project/action";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAppSelector } from "@/store/hooks";
@@ -92,7 +92,7 @@ export default function ProjectForm() {
         member_ids: data.members,
         indicator_ranges: indicatorRangesArray,
       };
-      return await projectService.create(payload);
+      return await projectAction.create(payload);
     },
     onSuccess: async () => {
       form.reset();
@@ -171,7 +171,7 @@ export default function ProjectForm() {
                   <Textarea
                     {...field}
                     placeholder={t("descriptionPlaceholder")}
-                    className="min-h-20 resize-none !overflow-hidden"
+                    className="min-h-20 resize-none overflow-hidden!"
                     id="description"
                   />
                 </FormItem>
@@ -251,7 +251,7 @@ export default function ProjectForm() {
         )}
 
         {mutation.isError && (
-          <div className="mt-4 p-3 rounded-[12px] bg-red-100 border-2 border-red-500">
+          <div className="mt-4 p-3 rounded-xl bg-red-100 border-2 border-red-500">
             <p className="text-sm text-red-700 font-semibold text-center">
               {t("error")}
             </p>

@@ -18,10 +18,10 @@ import {
 import { useRouter } from "next/navigation";
 import { ModelsStatusEnum, ModelsTask } from "@/apis/data-contracts";
 import { useDispatch } from "react-redux";
-import { bugService } from "@/services/bug";
-import { improvementService } from "@/services/improvement";
-import { taskService } from "@/services/task";
-import { userService } from "@/services/user";
+import { bugQuery } from "@/request/bug/query";
+import { improvementQuery } from "@/request/improvement/query";
+import { taskAction } from "@/request/task/action";
+import { userQuery } from "@/request/user/query";
 import { useAppSelector } from "@/store/hooks";
 import { RootState } from "@/store/store";
 import {
@@ -133,7 +133,7 @@ function TaskItem({
       if (!task.id) {
         throw new Error("Task ID is required");
       }
-      return bugService.list({ task_id: task.id });
+      return bugQuery.list({ task_id: task.id });
     },
     enabled: !!task.id && expandedTaskId === task.id,
   });
@@ -144,7 +144,7 @@ function TaskItem({
       if (!task.id) {
         throw new Error("Task ID is required");
       }
-      return improvementService.list({ task_id: task.id });
+      return improvementQuery.list({ task_id: task.id });
     },
     enabled: !!task.id && expandedTaskId === task.id,
   });
@@ -155,7 +155,7 @@ function TaskItem({
       if (!projectId) {
         throw new Error("Project ID is required");
       }
-      return userService.projectDetail({
+      return userQuery.projectDetail({
         projectId,
         page: 1,
         page_size: 100,
@@ -186,7 +186,7 @@ function TaskItem({
       if (!task.id) {
         throw new Error("Task ID is required");
       }
-      return await taskService.patch(task.id, {
+      return await taskAction.patch(task.id, {
         ...(assigneeId !== undefined && {
           assignee_id: assigneeId || undefined,
         }),

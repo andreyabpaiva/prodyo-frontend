@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { ModelsIteration } from "@/apis/data-contracts";
 import { useRouter } from "next/navigation";
-import { taskService } from "@/services/task";
+import { taskQuery } from "@/request/task/query";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setActiveIterationsId } from "@/store/iterationSlice";
 import { Plus, Trash2 } from "lucide-react";
@@ -49,7 +49,7 @@ export function IterationBoard({ iterations }: { iterations: ModelsIteration[] }
             if (!activeIterationId) {
                 throw new Error("Iteration ID is required");
             }
-            return taskService.list({ iteration_id: activeIterationId });
+            return taskQuery.list({ iteration_id: activeIterationId });
         },
         enabled: !!activeIterationId,
     });

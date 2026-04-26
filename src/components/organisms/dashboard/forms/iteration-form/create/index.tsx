@@ -1,7 +1,8 @@
 "use client";
 import { HandlersCreateIterationRequest } from "@/apis/data-contracts";
 import { Button } from "@/components/atoms/ui/button";
-import { iterationService } from "@/services/iteration";
+import { iterationQuery } from "@/request/iteration/query";
+import { iterationAction } from "@/request/iteration/action";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -73,7 +74,7 @@ export default function IterationForm({
 
   const { data: iterations = [] } = useQuery({
     queryKey: ["iterations", projectId],
-    queryFn: () => iterationService.list({ project_id: projectId }),
+    queryFn: () => iterationQuery.list({ project_id: projectId }),
     enabled: !!projectId,
   });
 
@@ -108,7 +109,7 @@ export default function IterationForm({
         end_at: formatDateToISO(data.endDate),
       };
 
-      return await iterationService.create(payload);
+      return await iterationAction.create(payload);
     },
     onSuccess: async () => {
       await queryClient.refetchQueries({ queryKey: ["iterations", projectId] });

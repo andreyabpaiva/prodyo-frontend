@@ -7,7 +7,7 @@ import { useMemo, useState } from "react";
 import { useAppSelector } from "@/store/hooks";
 import { RootState } from "@/store/store";
 import { useQuery } from "@tanstack/react-query";
-import { projectService } from "@/services/project";
+import { projectQuery } from "@/request/project/query";
 import { Frown } from "lucide-react";
 import { Input } from "@/components/atoms/ui/input";
 
@@ -46,7 +46,7 @@ export function ProjectsGrid() {
             if (!userId) {
                 throw new Error("User ID is required");
             }
-            return projectService.memberDetail({
+            return projectQuery.memberDetail({
                 userId: userId,
                 page: 1,
                 page_size: 20,

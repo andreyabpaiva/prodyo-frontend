@@ -5,7 +5,8 @@ import { Button } from "@/components/atoms/ui/button";
 import { useRouter } from "next/navigation";
 import { useState, useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { bugService } from "@/services/bug";
+import { bugQuery } from "@/request/bug/query";
+import { bugAction } from "@/request/bug/action";
 import type { HandlersCreateBugRequest } from "@/apis/data-contracts";
 import { UserSelect } from "@/components/molecules/user-select";
 import { useTranslations } from "next-intl";
@@ -28,7 +29,7 @@ export default function CreateBugForm({ taskId }: CreateBugModalProps) {
       if (!taskId) {
         throw new Error("Task ID is required");
       }
-      return bugService.list({ task_id: taskId });
+      return bugQuery.list({ task_id: taskId });
     },
     enabled: !!taskId,
   });
@@ -51,7 +52,7 @@ export default function CreateBugForm({ taskId }: CreateBugModalProps) {
         number: nextBugNumber,
       };
 
-      return await bugService.create(payload);
+      return await bugAction.create(payload);
     },
     onSuccess: async () => {
       await queryClient.refetchQueries({ queryKey: ["bugs", taskId] });

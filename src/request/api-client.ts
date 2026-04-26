@@ -1,4 +1,4 @@
-const API_BASE_URL =
+export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8081/api/v1";
 
 type Primitive = string | number | boolean | undefined | null;
@@ -73,4 +73,3 @@ async function safeParseError(response: Response) {
     return response.statusText || "Unexpected API error";
   }
 }
-

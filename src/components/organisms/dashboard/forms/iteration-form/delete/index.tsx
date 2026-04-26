@@ -4,7 +4,8 @@ import { X } from "lucide-react";
 import { Button } from "@/components/atoms/ui/button";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { iterationService } from "@/services/iteration";
+import { iterationQuery } from "@/request/iteration/query";
+import { iterationAction } from "@/request/iteration/action";
 import { useTranslations } from "next-intl";
 
 type DeleteIterationModalProps = {
@@ -22,7 +23,7 @@ export default function DeleteIterationForm({
 
   const { data: iterations = [] } = useQuery({
     queryKey: ["iterations", projectId],
-    queryFn: () => iterationService.list({ project_id: projectId }),
+    queryFn: () => iterationQuery.list({ project_id: projectId }),
     enabled: !!projectId,
   });
 
@@ -33,7 +34,7 @@ export default function DeleteIterationForm({
 
   const mutation = useMutation({
     mutationFn: async () => {
-      return await iterationService.delete({ id: iterationId });
+      return await iterationAction.delete({ id: iterationId });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["iterations", projectId] });

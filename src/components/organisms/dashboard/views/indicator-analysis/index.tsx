@@ -1,7 +1,9 @@
 "use client";
 
 import { Badge } from "@/components/atoms/ui/badge";
-import { indicatorService, iterationService, userService } from "@/services";
+import { iterationQuery } from "@/request/iteration/query";
+import { userQuery } from "@/request/user/query";
+import { indicatorAction } from "@/request/indicator/action";
 import { RootState } from "@/store/store";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronDown, MoveRight, UserRound, X } from "lucide-react";
@@ -112,7 +114,7 @@ export function IndicatorAnalysis() {
   const { data, isLoading } = useQuery({
     queryKey: ["cause-action-list", iterationId],
     queryFn: async () => {
-      const response = await iterationService.causeActionList({
+      const response = await iterationQuery.causeActionList({
         iterationId: iterationId ?? "",
       });
       return response as ApiCauseActionResponse;
@@ -128,7 +130,7 @@ export function IndicatorAnalysis() {
     queryKey: ["users", projectId],
     queryFn: async () => {
       if (!projectId) return [];
-      const response = await userService.projectDetail({ projectId });
+      const response = await userQuery.projectDetail({ projectId });
       return response?.data || [];
     },
     enabled: !!projectId,
@@ -146,7 +148,7 @@ export function IndicatorAnalysis() {
       assigneeId?: string;
       status?: string;
     }) => {
-      return await indicatorService.patchAction(
+      return await indicatorAction.patchAction(
         { id: actionId },
         {
           assignee_id: assigneeId !== undefined ? assigneeId : undefined,
