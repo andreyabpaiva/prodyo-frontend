@@ -1,27 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@tailwind base;
-@tailwind utilities;
-@tailwind utilities;
-
-/* ========================================
-   ROOT VARIABLES - CORES E RADIUS
-   ======================================== */
 :root {
-  /* BRAND COLORS */
-  --brand-50: #f5f7ff;
-  --brand-100: #e0e7ff;
-  --brand-200: #c7d2fe;
-  --brand-300: #a5b4fc;
-  --brand-400: #818cf8;
-  --brand-500: #6366f1;
-  --brand-600: #4f46e5;
-  --brand-700: #4338ca;
-  --brand-800: #3730a3;
-  --brand-900: #312e81;
 
-  /* OUTROS COLORS */
   --primary: #FEFEFE;
   --divider: #999999;
   --disabled: #696969;
@@ -38,42 +19,22 @@
   --alert: #F3FF89;
   --critic: #FF5050;
 
-  /* STATUS COLORS */
   --status-not-started: #B8B8B8;
   --status-in-progress: #83B3FF;
 
-  /* CHART COLORS */
   --chart-alert: #FF6B6B;
   --chart-axis: #9ca3af;
   --chart-grid: #e5e7eb33;
 
-  /* MISC */
   --yellow-soft: #FEFFDD;
 
-  /* RADII */
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.625rem;
   --radius-xl: 0.75rem;
 }
 
-/* ========================================
-   TAILWIND THEME TOKENS
-   ======================================== */
 @theme {
-  /* Brand scale */
-  --color-brand-50:  var(--brand-50);
-  --color-brand-100: var(--brand-100);
-  --color-brand-200: var(--brand-200);
-  --color-brand-300: var(--brand-300);
-  --color-brand-400: var(--brand-400);
-  --color-brand-500: var(--brand-500);
-  --color-brand-600: var(--brand-600);
-  --color-brand-700: var(--brand-700);
-  --color-brand-800: var(--brand-800);
-  --color-brand-900: var(--brand-900);
-
-  /* Semantic tokens */
   --color-primary:    var(--primary);
   --color-divider:    var(--divider);
   --color-disabled:   var(--disabled);
@@ -90,17 +51,12 @@
   --color-alert:      var(--alert);
   --color-critic:     var(--critic);
 
-  /* Status tokens */
   --color-status-not-started: var(--status-not-started);
   --color-status-in-progress: var(--status-in-progress);
 
-  /* Misc tokens */
   --color-yellow-soft: var(--yellow-soft);
 }
 
-/* ========================================
-   BASE STYLES
-   ======================================== */
 @layer base {
   body {
     background-color: var(--background);
@@ -115,18 +71,14 @@
   }
 }
 
-/* ========================================
-   UTILITIES
-   ======================================== */
 @layer utilities {
-  /* Hide scrollbar for Chrome, Safari and Opera */
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
 
-  /* Hide scrollbar for IE, Edge and Firefox */
   .scrollbar-hide {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
