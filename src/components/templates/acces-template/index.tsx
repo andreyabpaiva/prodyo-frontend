@@ -16,7 +16,7 @@ export default function AccessTemplate({
     <div className="flex min-h-screen">
       <Welcome title={tVariant(config.key)} subtitle={tCommon("fillInfo")} />
       <div className="w-1/2 bg-background text-text flex items-center justify-center">
-        <div className="w-full max-w-3xl px-18 py-2">{children}</div>
+        <div className="items-center justify-center">{children}</div>
       </div>
     </div>
   );
