@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import StoreProvider from "@/store/StoreProvider";
 import { QueryProvider } from "@/lib/query-client";
+import { AuthProvider } from "@/contexts/auth-context";
 import { Toaster } from "@/components/atoms/ui/sonner";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
@@ -41,10 +42,12 @@ export default async function LocaleLayout({ children, params }: Props) {
       <body className={inter.className}>
         <NextIntlClientProvider messages={messages}>
           <QueryProvider>
-            <StoreProvider>
-              {children}
-              <Toaster />
-            </StoreProvider>
+            <AuthProvider>
+              <StoreProvider>
+                {children}
+                <Toaster />
+              </StoreProvider>
+            </AuthProvider>
           </QueryProvider>
         </NextIntlClientProvider>
       </body>
