@@ -18,18 +18,17 @@ import { projectSchema, type ProjectFormValues } from "./resolver";
 import { projectAction } from "@/request/project/action";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAppSelector } from "@/store/hooks";
-import type { RootState } from "@/store/store";
 import { IndicatorRange } from "@/components/molecules/indicator-range";
 import { ModelsIndicatorEnum } from "@/apis/data-contracts";
 import { useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function ProjectForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const user = useAppSelector((state: RootState) => state.auth.user);
+  const { user } = useAuth();
   const [page, setPage] = useState<number>(0);
   const t = useTranslations("ProjectForm");
 
@@ -81,7 +80,7 @@ export default function ProjectForm() {
                   max: parseDecimal(ranges?.critical?.max),
                 },
               },
-            }),
+            })
           )
         : [];
 
