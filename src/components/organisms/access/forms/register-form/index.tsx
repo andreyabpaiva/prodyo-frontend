@@ -13,10 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/atoms/ui/form";
-import {
-  registerSchema,
-  type RegisterFormValues,
-} from "./register-resolver";
+import { registerSchema, type RegisterFormValues } from "./register-resolver";
 import { authAction } from "@/request/auth/action";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";

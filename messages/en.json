@@ -8,8 +8,11 @@
   "LoginForm": {
     "emailLabel": "Email",
     "emailPlaceholder": "Enter your email...",
+    "emailInvalid": "Invalid email",
+    "emailRequired": "Email is required",
     "passwordLabel": "Password",
     "passwordPlaceholder": "Enter your password...",
+    "passwordRequired": "Password is required",
     "noAccount": "Don't have an account yet?",
     "submitting": "Signing in...",
     "submit": "Sign in",

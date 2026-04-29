@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "./authSlice";
 import projectReducer from "./projectSlice";
 import taskReducer from "./taskSlice";
 import iterationReducer from "./iterationSlice";
@@ -7,7 +6,6 @@ import iterationReducer from "./iterationSlice";
 export const makeStore = () => {
   return configureStore({
     reducer: {
-      auth: authReducer,
       project: projectReducer,
       task: taskReducer,
       iteration: iterationReducer,
